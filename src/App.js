@@ -1,6 +1,5 @@
 import { RecoilRoot } from "recoil";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import MainCards from "./components/MainCards";
 import CodePage from "./components/CodePage";
 
 
