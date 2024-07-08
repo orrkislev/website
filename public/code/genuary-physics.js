@@ -124,11 +124,11 @@ class Ball {
         rotate(this.eyeRot)
         if (this.blinkCounter-- < 0) {
             if (this.blinkCounter < -5) this.blinkCounter = round(random(250))
-            } else {
-            fill(0)
-            noStroke()
-            ellipse(-this.body.circleRadius / 2 + this.eyeOffsets[0], -this.body.circleRadius / 2, 4)
-            ellipse(this.body.circleRadius / 2 - this.eyeOffsets[1], -this.body.circleRadius / 2, 4)
+        } else {
+            strokeWeight(4)
+            stroke(0)
+            point(-this.body.circleRadius / 2 + this.eyeOffsets[0], -this.body.circleRadius / 2)
+            point(this.body.circleRadius / 2 - this.eyeOffsets[1], -this.body.circleRadius / 2)
         }
         pop()
 

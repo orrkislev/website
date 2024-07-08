@@ -3,6 +3,7 @@ import MonacoEditor, { useMonaco } from '@monaco-editor/react';
 import styled from "styled-components";
 import "monaco-themes/themes/Monokai.json";
 import { setupMonaco } from '../utils/monacoStuff';
+import LibraryIcon from './LibraryIcon';
 
 const options = {
   language: 'javascript',
@@ -178,7 +179,7 @@ export default function Code({ files, settings }) {
       <TopBar>
         <TabContainer>
           {files.map((f, i) => (
-            <Tab key={i} onClick={() => setFileIndex(i)} isactive={i === fileIndex ? 1 : 0}>
+            <Tab key={i} onClick={() => {setFileIndex(i); setShowExplanation(false)}} isactive={i === fileIndex ? 1 : 0}>
               {f.name}
               {filesData[i].changed && '*'}
             </Tab>
@@ -186,7 +187,7 @@ export default function Code({ files, settings }) {
         </TabContainer>
         <TabContainer>
           {settings.libraries.map((lib, i) => (
-            <Tab key={i}>{lib}</Tab>
+            <LibraryIcon key={i} name={lib} />
           ))}
         </TabContainer>
       </TopBar>
