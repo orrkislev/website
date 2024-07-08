@@ -1,0 +1,4 @@
+{
+    "plugins": ["jest"],
+    // ... other configurations
+  }
