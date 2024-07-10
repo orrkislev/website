@@ -45,11 +45,6 @@ export default function Editor({ files }) {
                     if (!model) monaco.editor.createModel(f.code, 'javascript', monaco.Uri.parse('/' + f.name), options);
                 })
             }
-            if (topBarState.main == 'parameters'){
-                const model = allModels.find((m) => m.uri.path === '/params');
-                if (model) model.setValue(projectState.params);
-                else monaco.editor.createModel(projectState.params, 'javascript', monaco.Uri.parse('/params'), options);
-            }
             setRerender(!rerender);
         }
     }, [monaco, topBarState.main])
@@ -57,9 +52,12 @@ export default function Editor({ files }) {
 
     if (!monaco) return null;
 
+    if (topBarState.main !== 'code') return null;
+
     let path = topBarState.main == 'code' ? topBarState.editor : 'params';
     const model = monaco.editor.getModels().find((m) => m.uri.path === '/' + path);
     if (!model) path = 'placeholder'
+
 
     return (
         <>

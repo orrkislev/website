@@ -17,19 +17,7 @@ export default function useProject() {
                 const res_settings = await fetch(`/code/${projectName}/settings.json`);
                 const settings = await res_settings.json();
 
-                const params = Object.entries(settings.params)
-                    .map(([key, value]) => {
-                        if (Array.isArray(value)) {
-                            return `${key} = [${value.map(item =>
-                                typeof item === 'string' ? `"${item}"` : item
-                            ).join(', ')}]`;
-                        } else if (typeof value === 'string') {
-                            return `${key} = "${value}"`;
-                        } else {
-                            return `${key} = ${value}`;
-                        }
-                    })
-                    .join('\n');
+                const params = settings.params
 
                 const res_files = await fetch(`/code/${projectName}/${settings.script}`);
                 const text_files = await res_files.text();
@@ -60,15 +48,14 @@ export default function useProject() {
         setAllCode(newCode);
         runCounter.current++;
     }
-    const runParameters = (newParams) => {
+    const runParameters = () => {
         let newCode = ''
         project.files.forEach((f) => {
             newCode += f.code + '\n';
         })
-        newCode += newParams;
-        // Object.entries(newParams).forEach(([key, value]) => {
-        //     newCode += `${key} = ${value}\n`
-        // })
+        Object.entries(project.params).forEach(([key, param]) => {
+            newCode += getCodeLine(key,param)
+        })
         runCode(newCode)
     }
 
@@ -76,4 +63,19 @@ export default function useProject() {
         project, allCode,
         runCode, runParameters
     }
+}
+
+
+function getCodeLine(key,param){
+    if (param.type == 'range') return `${key} = [${param.value[0]},${param.value[1]}];\n`
+    if (param.type == 'number') return `${key} = ${param.value};\n`
+    if (param.type == 'color') return `${key} = '${param.value}';\n`
+    if (param.type == 'boolean') return `${key} = ${param.value};\n`
+    if (param.type == 'expression') return `${key} = ${param.value};\n`
+    if (param.type == 'string') return `${key} = '${param.value}';\n`
+
+    if (param.type == 'array'){
+        if (param.subtype == 'color') return `${key} = ['${param.value.join("','")}'];\n`
+    }
+
 }

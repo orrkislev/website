@@ -4,6 +4,7 @@ import useProject from '../utils/useProject';
 import Editor from './Editor';
 import { EditorTabs, LibraryTabs, MainTabs, topBarAtom } from "./Tabs";
 import { useRecoilValue } from "recoil";
+import Params from "./Params";
 
 const FullScreen = styled.div`
   position: absolute;
@@ -60,10 +61,8 @@ export default function Code() {
       projectData.runCode(allCode);
     }
 
-    if (topBarState.main === 'parameters') {
-      const model = allModels.find((m) => m.uri.path === '/params');
-      projectData.runParameters(model.getValue());
-    }
+    if (topBarState.main === 'parameters')
+      projectData.runParameters();
   }
 
   return (
@@ -81,6 +80,7 @@ export default function Code() {
 
         <FullScreen style={{ zIndex: 20 }}>
           <Editor />
+          <Params />
         </FullScreen>
 
         <RunButton onClick={updateCode}>Run Code</RunButton>
