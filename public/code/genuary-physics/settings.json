@@ -8,6 +8,16 @@
     "script": [
         "genuary-physics.js"
     ],
+    "variations": [
+        {
+            "name": "Hey look! they pop!",
+            "file": "pops.js"
+        },
+        {
+            "name": "Too Many Eyes",
+            "file": "eyes.js"
+        }
+    ],
     "params": {
         "ballSizeRange": {
             "name": "Ball Size Range",

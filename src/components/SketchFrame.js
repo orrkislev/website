@@ -14,6 +14,37 @@ export default function SketchFrame() {
   const iframeRefs = [useRef(null), useRef(null)]
   const [rerender, setRerender] = useState(false);
 
+  useEffect(() => {
+    const forwardEvent = (event) => {
+      const boundingRect = iframeRefs[0].current.getBoundingClientRect();
+      const _x = event.clientX - boundingRect.left;
+      const _y = event.clientY - boundingRect.top;
+
+      // deep clone the event
+      const newEventProps = cloneEventProperties(event);
+      newEventProps.clientX = _x;
+      newEventProps.clientY = _y;
+
+      const new_event = new MouseEvent(event.type, newEventProps);
+
+      iframeRefs[0].current.contentWindow.dispatchEvent(new_event);
+      iframeRefs[1].current.contentWindow.dispatchEvent(new_event);
+    };
+
+    const events = ['mousemove', 'mousedown', 'mouseup', 'click', 'wheel'];
+    if (iframeRefs[0].current && iframeRefs[1].current) {
+      events.forEach(eventType => {
+        window.addEventListener(eventType, forwardEvent);
+      });
+    }
+
+    return () => {
+      events.forEach(eventType => {
+        window.removeEventListener(eventType, forwardEvent);
+      });
+    };
+  }, [iframeRefs]);
+
   const generateIframeContent = () => {
     return `
       <html>
@@ -29,6 +60,7 @@ export default function SketchFrame() {
     `;
   };
 
+
   const loadIframeContent = (iframeRef) => {
     if (iframeRef.current) {
       iframeRef.current.srcdoc = generateIframeContent();
@@ -41,7 +73,7 @@ export default function SketchFrame() {
 
     if (nextIframeRef.current) {
       loadIframeContent(nextIframeRef);
-      
+
       requestAnimationFrame(() => {
         setActiveIframe(nextIframe);
 
@@ -79,4 +111,14 @@ export default function SketchFrame() {
       ))}
     </div>
   );
+}
+
+function cloneEventProperties(event) {
+  const props = {};
+  for (const key in event) {
+    if (typeof event[key] !== 'function') {
+      props[key] = event[key];
+    }
+  }
+  return props;
 }

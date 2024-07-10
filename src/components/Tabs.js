@@ -30,7 +30,7 @@ export const topBarAtom = atom({
 
 
 
-export function EditorTabs({ files }) {
+export function EditorTabs() {
   const projectState = useRecoilValue(projectAtom)
   const [topBarState, setTopBarState] = useRecoilState(topBarAtom);
 
@@ -59,6 +59,14 @@ export function EditorTabs({ files }) {
     )
   }
 
+  if (topBarState.main == 'variations') {
+    return (
+      <TabContainer>
+        <Tab>variations</Tab>
+      </TabContainer>
+    )
+  }
+
   return null
 }
 
@@ -72,15 +80,40 @@ export function MainTabs() {
         isactive={topBarState.main === 'code' ? 1 : 0}>Code</Tab>
       <Tab onClick={() => setTopBarState({ ...topBarState, main: 'parameters', editor: 'params' })}
         isactive={topBarState.main === 'parameters' ? 1 : 0}>Parameters</Tab>
+      <Tab onClick={() => setTopBarState({ ...topBarState, main: 'variations', editor: 'params' })}
+        isactive={topBarState.main === 'variations' ? 1 : 0}>Variations</Tab>
+      <Tab onClick={() => setTopBarState({ ...topBarState, main: 'clean', editor: 'params' })}
+        isactive={topBarState.main === 'clean' ? 1 : 0}>Clean</Tab>
     </TabContainer>
   )
 }
 
 export function LibraryTabs() {
+  const projectData = useProject()
+
+  const save = () => {
+    const allModels = monaco.editor.getModels();
+    let allCode = ''
+    projectData.project.files.forEach((f) => {
+      const model = allModels.find((m) => m.uri.path === '/' + f.name);
+      allCode += model.getValue() + '\n';
+    })
+    // download the code as a js file
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(allCode));
+    element.setAttribute('download', 'sketch.js');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+     
+  }
+
   return (
     <TabContainer>
       <Tab>Matter</Tab>
       <Tab>p5</Tab>
+      <Tab onClick={save}>Save</Tab>
     </TabContainer>
   )
 }

@@ -59,9 +59,21 @@ export default function useProject() {
         runCode(newCode)
     }
 
+    const runVariation = async (v) => {
+        const res_files = await fetch(`/code/${projectName}/${v.file}`);
+        const text_files = await res_files.text();
+        setAllCode(text_files);
+        runCounter.current++;
+    }
+
+    const rerun = ()=>{
+        setAllCode(allCode + `\n console.log('run ${runCounter.current}')`);
+    }
+
+
     return {
         project, allCode,
-        runCode, runParameters
+        runCode, runParameters, runVariation, rerun
     }
 }
 

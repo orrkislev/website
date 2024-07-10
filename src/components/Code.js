@@ -5,6 +5,7 @@ import Editor from './Editor';
 import { EditorTabs, LibraryTabs, MainTabs, topBarAtom } from "./Tabs";
 import { useRecoilValue } from "recoil";
 import Params from "./Params";
+import Variations from "./Variations";
 
 const FullScreen = styled.div`
   position: absolute;
@@ -61,8 +62,8 @@ export default function Code() {
       projectData.runCode(allCode);
     }
 
-    if (topBarState.main === 'parameters')
-      projectData.runParameters();
+    if (topBarState.main === 'parameters') projectData.runParameters();
+    if (topBarState.main === 'variations') projectData.rerun()
   }
 
   return (
@@ -81,6 +82,7 @@ export default function Code() {
         <FullScreen style={{ zIndex: 20 }}>
           <Editor />
           <Params />
+          <Variations />
         </FullScreen>
 
         <RunButton onClick={updateCode}>Run Code</RunButton>
