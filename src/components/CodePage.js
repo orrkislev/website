@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import Code from "./Code";
 
-const libs = {
-  matter: "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js",
-  p5: "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js",
-  paper: "https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.0/paper-full.min.js"
-}
-
 const filename = 'genuary-physics';
 
 export default function CodePage() {
@@ -42,23 +36,24 @@ export default function CodePage() {
           part.variables = (part.code.match(/(?:const|let) (\w+)/g) || []).map((match) => match.replace(/(?:const|let) /, ''));
         })
         setData({ settings: settingsObject, files: parts });
-        if (settingsObject.libraries) loadLibraries(settingsObject.libraries);
-        else setReady(true);
+        setReady(true);
+        // if (settingsObject.libraries) loadLibraries(settingsObject.libraries);
+        // else setReady(true);
       });
   }, []);
 
-  const loadLibraries = async (libraries) => {
-    await Promise.all(libraries.map((lib) => {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = libs[lib];
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    }));
-    setReady(true);
-  }
+  // const loadLibraries = async (libraries) => {
+  //   await Promise.all(libraries.map((lib) => {
+  //     return new Promise((resolve, reject) => {
+  //       const script = document.createElement('script');
+  //       script.src = libs[lib];
+  //       script.onload = resolve;
+  //       script.onerror = reject;
+  //       document.head.appendChild(script);
+  //     });
+  //   }));
+  //   setReady(true);
+  // }
 
   if (!ready) return <div>Loading...</div>;
   return <Code {...data} />

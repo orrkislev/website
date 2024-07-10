@@ -4,6 +4,7 @@ import styled from "styled-components";
 import "monaco-themes/themes/Monokai.json";
 import { setupMonaco } from '../utils/monacoStuff';
 import LibraryIcon from './LibraryIcon';
+import SketchFrame from './SketchFrame';
 
 const options = {
   language: 'javascript',
@@ -94,14 +95,12 @@ const RunButton = styled.button`
 
 export default function Code({ files, settings }) {
   const editorRef = useRef(null);
-  const canvasRef = useRef(null);
   const [filesData, setFilesData] = useState(files.map(() => ({ changed: false, view: 'comment' })))
   const [showExplanation, setShowExplanation] = useState(true);
   const [fileIndex, setFileIndex] = useState(-1);
   const monaco = useMonaco()
-  const scriptRef = useRef(null);
-  const p5Instance = useRef(null);
-  const globals = useRef([]);
+  const allTheCode = useRef('');
+  const [sketchKey, setSketchKey] = useState(0);
 
   useEffect(() => {
     startStuff();
@@ -139,11 +138,6 @@ export default function Code({ files, settings }) {
 
 
   const runCode = () => {
-    window.setup = undefined;
-    window.draw = undefined;
-    if (scriptRef.current) document.body.removeChild(scriptRef.current);
-    canvasRef.current.innerHTML = '';
-
     let allCode = ''
     const allModels = monaco.editor.getModels();
     files.forEach((f) => {
@@ -151,25 +145,9 @@ export default function Code({ files, settings }) {
       allCode += model.getValue() + '\n';
     })
 
-    allCode = `(function() {
-      ${allCode}
-      if (typeof setup !== 'undefined') window.setup = setup;
-      if (typeof draw !== 'undefined') window.draw = draw;
-    })();`
-
-
-    const script = document.createElement('script');
-    script.name = 'script';
-    script.innerHTML = allCode;
-    document.body.appendChild(script);
-    scriptRef.current = script;
-
-    if (p5Instance.current) p5Instance.current.remove();
-    p5Instance.current = new p5(null, canvasRef.current);
-
+    allTheCode.current = allCode;
+    setSketchKey(sketchKey + 1);
   }
-
-
 
 
   const file = fileIndex === -1 ? null : files[fileIndex];
@@ -195,7 +173,7 @@ export default function Code({ files, settings }) {
 
       <div style={{ position: 'relative', height: '100%' }}>
         <FullScreen style={{ zIndex: 10 }}>
-          <div ref={canvasRef}></div>
+          <SketchFrame settings={settings} allTheCode={allTheCode.current} sketchKey={sketchKey} />
         </FullScreen>
 
         {fileIndex !== -1 && (

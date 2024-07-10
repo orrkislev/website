@@ -38,6 +38,11 @@ the renderLoop function updates the physics engine every frame and draws the bal
 
 //CODE
 
+ballSizeRange = [10, 60]
+totalBalls = 100
+colors = ['pink', 'seagreen', 'salmon', 'azure']
+eyeSize = 4
+eyeColor = 'black'
 
 // setup runs once at the beginning of the sketch
 // it creates the canvas, initializes the physics engine
@@ -56,14 +61,14 @@ function setup() {
 // this is an async function, it runs 'in parallel' with the draw function
 // it creates a new ball every 10ms, 200 times
 async function buildImage() {
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < totalBalls; i++) {
         const ballX = random(width * .45, width * .55)
-        const ballY = height + 80
-        const ballSize = random(10, 60)
+        const ballY = height/2
+        const ballSize = random(...ballSizeRange)
         ball = new Ball(ballX, ballY, ballSize)
 
         const ballForceX = random(-.01, .01)
-        const ballForceY = random(-.1, -.2)
+        const ballForceY = random(-.1, .1)
         ball.force(ballForceX, ballForceY)
         await timeout(10)
     }
@@ -100,8 +105,7 @@ class Ball {
         this.body.restitution = 1.2
         this.body.mass = 1
         balls.push(this)
-        // this.clr = color(choose(['cornflowerblue', 'tomato', 'gold', 'mediumseagreen']))
-        this.clr = color(choose(['pink', 'seagreen', 'salmon', 'azure']))
+        this.clr = color(choose(colors))
         this.eyeOffsets = [random(r * .1, r * .4), random(r * .1, r * .4)]
         this.eyeRot = random(-30, 30)
         this.blinkCounter = round(random(2500))
@@ -125,8 +129,8 @@ class Ball {
         if (this.blinkCounter-- < 0) {
             if (this.blinkCounter < -5) this.blinkCounter = round(random(250))
         } else {
-            strokeWeight(4)
-            stroke(0)
+            strokeWeight(eyeSize)
+            stroke(eyeColor)
             point(-this.body.circleRadius / 2 + this.eyeOffsets[0], -this.body.circleRadius / 2)
             point(this.body.circleRadius / 2 - this.eyeOffsets[1], -this.body.circleRadius / 2)
         }
