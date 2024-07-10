@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import useProject from '../utils/useProject';
 
 const libs = {
   matter: "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js",
@@ -6,7 +7,9 @@ const libs = {
   paper: "https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.0/paper-full.min.js"
 }
 
-export default function SketchFrame({ settings, allTheCode, sketchKey }) {
+export default function SketchFrame() {
+  const projectData = useProject()
+
   const [activeIframe, setActiveIframe] = useState(0);
   const iframeRefs = [useRef(null), useRef(null)]
   const [rerender, setRerender] = useState(false);
@@ -15,11 +18,11 @@ export default function SketchFrame({ settings, allTheCode, sketchKey }) {
     return `
       <html>
         <head>
-          ${settings.libraries.map((lib) => `<script src="${libs[lib]}"></script>`).join('\n')}
+          ${projectData.project.settings.libraries.map((lib) => `<script src="${libs[lib]}"></script>`).join('\n')}
         </head>
         <body style="margin: 0; overflow: hidden;">
           <script>
-            ${allTheCode}
+            ${projectData.allCode}
           </script>
         </body>
       </html>
@@ -43,12 +46,12 @@ export default function SketchFrame({ settings, allTheCode, sketchKey }) {
         setActiveIframe(nextIframe);
 
         setTimeout(() => {
-          iframeRefs[activeIframe].current.srcdoc = '';
+          if (iframeRefs[activeIframe].current) iframeRefs[activeIframe].current.srcdoc = '';
           setRerender(!rerender);
         }, 100);
       });
     }
-  }, [sketchKey, settings, allTheCode]);
+  }, [projectData.allCode]);
 
   useEffect(() => {
     loadIframeContent(iframeRefs[0]);

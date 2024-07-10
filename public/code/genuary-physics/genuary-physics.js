@@ -1,48 +1,11 @@
-//SETTINGS
-{
-    "title": true,
-    "libraries": ["matter", "p5"]
-}
-//SETTINGSEND
-
-//EXPLANATION
-this sketch draws a bunch of friendly friends, they get pushed upward as more and more friends join the party
-
-each friend is a circle with eyes, and they are being pushed around by more circles, calculated by the matter.js physics engine
-and drawn using p5js circle() function
-
-as the canvas does not clear itself, the friends leave a trail behind them, making them look snake-like
-
-TRY: try adding a background at the beginning of the draw function to remove the trails of the friends, and see how it looks
-TRY: try changing the colors of the friends, or the eyes, or the background
-TRY: try changing the physics engine parameters, like gravity or restitution
-TRY: try adding more friends, or changing their size or the force applied to them
-TRY: try constraining the friends' movement to a certain area, like a box or a circle
-
-?? what would make them form a flower? or a spiral? or a heart? or a tree?
-?? what happens if similar colors are attracted to each other, and different colors repel each other?
-
-//EXPLANATIONEND
-
 //FILE main.js
-
-//COMMENTS
-this sketch uses matter.js physics engine to handle collision of circles
-every 10ms a new 'ball' is added to the simulation
-and it is drawn as a circle with eyes
-
-the buildImage function creates walls on the sides of the canvas, so the balls don't fall off the screen
-then it creates 100 balls, one by one, with random size at the bottom at the screen
-
-the renderLoop function updates the physics engine every frame and draws the balls
-
-//CODE
 
 ballSizeRange = [10, 60]
 totalBalls = 100
 colors = ['pink', 'seagreen', 'salmon', 'azure']
 eyeSize = 4
 eyeColor = 'black'
+backgroundColor = 'darkgray'
 
 // setup runs once at the beginning of the sketch
 // it creates the canvas, initializes the physics engine
@@ -53,7 +16,7 @@ function setup() {
     initMatter()
 
     noStroke()
-    background(30)
+    background(backgroundColor)
 
     buildImage()
 }
@@ -86,10 +49,6 @@ function draw() {
 
 //FILE ball.js
 
-//COMMENTS
-
-
-//CODE
 // this file contains the Ball class
 // each ball has a Matter.js body and is drawn as a circle
 // each ball has a color and eyes
@@ -142,10 +101,6 @@ class Ball {
 
 //FILE utils
 
-//COMMENTS
-this file contains utility functions
-
-//CODE
 // some utility functions
 
 // choose a random element from an array

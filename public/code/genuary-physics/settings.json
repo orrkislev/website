@@ -1,0 +1,14 @@
+{
+    "name": "genuary-physics",
+    "description": "Physics simulation for Genuary 2021",
+    "libraries": ["matter", "p5"],
+    "script": ["genuary-physics.js"],
+    "params": {
+        "ballSizeRange": [10, 60],
+        "totalBalls": 100,
+        "colors": ["pink", "seagreen", "salmon", "azure"],
+        "eyeSize": 4,
+        "eyeColor": "black",
+        "backgroundColor": "darkgray"
+    }
+}

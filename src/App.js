@@ -1,6 +1,6 @@
 import { RecoilRoot } from "recoil";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import CodePage from "./components/CodePage";
+import Code from "./components/Code";
 
 
 
@@ -9,7 +9,7 @@ export default function App() {
     <RecoilRoot>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<CodePage />} />
+          <Route path="/" element={<Code />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>

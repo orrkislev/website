@@ -1,26 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import MonacoEditor, { useMonaco } from '@monaco-editor/react';
 import styled from "styled-components";
-import "monaco-themes/themes/Monokai.json";
-import { setupMonaco } from '../utils/monacoStuff';
-import LibraryIcon from './LibraryIcon';
 import SketchFrame from './SketchFrame';
-
-const options = {
-  language: 'javascript',
-  automaticLayout: true,
-  minimap: { enabled: false },
-  scrollBeyondLastLine: false,
-  wordWrap: 'on',
-  theme: 'monokai',
-  tabSize: 2,
-  fontSize: 14,
-  libraries: {
-    include: [
-      '/code/p5.global-mode.d.ts'
-    ]
-  },
-};
+import useProject from '../utils/useProject';
+import Editor from './Editor';
+import { EditorTabs, LibraryTabs, MainTabs, topBarAtom } from "./Tabs";
+import { useRecoilValue } from "recoil";
 
 const FullScreen = styled.div`
   position: absolute;
@@ -38,40 +21,6 @@ const TopBar = styled.div`
   align-items: center;
   justify-content: space-between;
 `
-
-const TabContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 3px;
-`;
-const Tab = styled.div`
-  display: inline-block;
-  padding: 1em 10px;
-  background-color: ${(props) => (props.isactive ? "white" : "#34352F")};
-  color: ${(props) => (props.isactive ? "black" : "#8C8C8C")};
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-`;
-
-const CommentsSection = styled.div`
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: 20px;
-  font-family: courier;
-  font-weight: bold;
-  line-height: 1.5;
-  padding: 10px;
-  cursor: pointer;
-  background-color: #34352Faa;
-  padding: 2em;
-  backdrop-filter: blur(5px);
-  color: white;
-  font-size: 20px;
-`;
 
 const RunButton = styled.button`
   background-color: #74C991;
@@ -93,142 +42,50 @@ const RunButton = styled.button`
   } 
 `;
 
-export default function Code({ files, settings }) {
-  const editorRef = useRef(null);
-  const [filesData, setFilesData] = useState(files.map(() => ({ changed: false, view: 'comment' })))
-  const [showExplanation, setShowExplanation] = useState(true);
-  const [fileIndex, setFileIndex] = useState(-1);
-  const monaco = useMonaco()
-  const allTheCode = useRef('');
-  const [sketchKey, setSketchKey] = useState(0);
+export default function Code() {
+  const projectData = useProject()
+  const topBarState = useRecoilValue(topBarAtom)
 
-  useEffect(() => {
-    startStuff();
-  }, [monaco])
+  if (!projectData.project.files) return null;
 
-  const startStuff = async () => {
-    if (!monaco) return;
-    await setupMonaco(monaco);
+  const updateCode = () => {
     const allModels = monaco.editor.getModels();
-    files.forEach((f) => {
-      const model = allModels.find((m) => m.uri.path === '/' + f.name);
-      if (model) model.dispose();
-      monaco.editor.createModel(f.code, 'javascript', monaco.Uri.parse('/' + f.name), options);
-    })
-    setFileIndex(0);
-    runCode()
-  }
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.metaKey && e.key === 'Enter') {
-        runCode();
-      }
+    if (topBarState.main === 'code') {
+      let allCode = ''
+      projectData.project.files.forEach((f) => {
+        const model = allModels.find((m) => m.uri.path === '/' + f.name);
+        allCode += model.getValue() + '\n';
+      })
+      projectData.runCode(allCode);
     }
-    window.addEventListener('keydown', handleKeyDown);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      files.forEach((f) => {
-        const prevScript = document.querySelector(`script[name="${f.name}"]`);
-        if (prevScript) document.body.removeChild(prevScript);
-      });
+    if (topBarState.main === 'parameters') {
+      const model = allModels.find((m) => m.uri.path === '/params');
+      projectData.runParameters(model.getValue());
     }
-  }, []);
-
-
-  const runCode = () => {
-    let allCode = ''
-    const allModels = monaco.editor.getModels();
-    files.forEach((f) => {
-      const model = allModels.find((m) => m.uri.path === '/' + f.name);
-      allCode += model.getValue() + '\n';
-    })
-
-    allTheCode.current = allCode;
-    setSketchKey(sketchKey + 1);
   }
-
-
-  const file = fileIndex === -1 ? null : files[fileIndex];
 
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
       <TopBar>
-        <TabContainer>
-          {files.map((f, i) => (
-            <Tab key={i} onClick={() => {setFileIndex(i); setShowExplanation(false)}} isactive={i === fileIndex ? 1 : 0}>
-              {f.name}
-              {filesData[i].changed && '*'}
-            </Tab>
-          ))}
-        </TabContainer>
-        <TabContainer>
-          {settings.libraries.map((lib, i) => (
-            <LibraryIcon key={i} name={lib} />
-          ))}
-        </TabContainer>
+        <EditorTabs />
+        <MainTabs />
+        <LibraryTabs />
       </TopBar>
-
 
       <div style={{ position: 'relative', height: '100%' }}>
         <FullScreen style={{ zIndex: 10 }}>
-          <SketchFrame settings={settings} allTheCode={allTheCode.current} sketchKey={sketchKey} />
+          <SketchFrame />
         </FullScreen>
 
-        {fileIndex !== -1 && (
-          <FullScreen style={{ zIndex: 10 }}>
-            <MonacoEditor
-              width="100%"
-              height="100%"
-              path={file.name}
-              onChange={(value) => {
-                const newFileData = [...filesData];
-                newFileData[fileIndex].changed = true;
-                setFilesData(newFileData);
-              }}
-              onMount={(editor) => editorRef.current = editor}
-              options={options}
-            />
-          </FullScreen>
-        )}
+        <FullScreen style={{ zIndex: 20 }}>
+          <Editor />
+        </FullScreen>
 
-        {showExplanation && (
-          <FullScreen style={{ zIndex: 20 }} >
-            <CommentsSection onClick={() => setShowExplanation(!showExplanation)}>
-              {settings.explanation.split('\n').map((line, i) => (
-                <div key={i}>{line}<br /></div>
-              ))}
-            </CommentsSection>
-          </FullScreen>
-        )}
+        <RunButton onClick={updateCode}>Run Code</RunButton>
 
-        <RunButton onClick={runCode}>Run Code</RunButton>
       </div>
-
-
-      <style jsx="true">
-        {`
-        .current-line {
-          background-color: #ffffffaa;
-          border: none;
-        }
-        .monaco-editor, .monaco-editor-background {
-          background-color: transparent !important;
-        }
-        .monaco-editor {
-          --vscode-editor-selectionBackground: #74C991 !important;
-          --vscode-editorGutter-background: transparent !important;
-        }
-        .view-line span{
-          background-color: white;
-          }
-          .mtk8{
-            background-color: #4B8A6A !important;
-            color: white;
-          }
-        `}
-      </style>
     </div>
-  );
-};
+  )
+}
