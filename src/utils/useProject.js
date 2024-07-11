@@ -43,6 +43,10 @@ export default function useProject() {
         if (!project.settings) fetchStuff();
     }, []);
 
+    useEffect(() => {
+        if (project.params) runParameters()
+    }, [project.params])
+
     const runCode = (newCode) => {
         newCode += `\n console.log('run ${runCounter.current}')`;
         setAllCode(newCode);
@@ -54,7 +58,7 @@ export default function useProject() {
             newCode += f.code + '\n';
         })
         Object.entries(project.params).forEach(([key, param]) => {
-            newCode += getCodeLine(key,param)
+            newCode += getCodeLine(key, param)
         })
         runCode(newCode)
     }
@@ -66,7 +70,7 @@ export default function useProject() {
         runCounter.current++;
     }
 
-    const rerun = ()=>{
+    const rerun = () => {
         setAllCode(allCode + `\n console.log('run ${runCounter.current}')`);
     }
 
@@ -78,7 +82,7 @@ export default function useProject() {
 }
 
 
-function getCodeLine(key,param){
+function getCodeLine(key, param) {
     if (param.type == 'range') return `${key} = [${param.value[0]},${param.value[1]}];\n`
     if (param.type == 'number') return `${key} = ${param.value};\n`
     if (param.type == 'color') return `${key} = '${param.value}';\n`
@@ -86,7 +90,7 @@ function getCodeLine(key,param){
     if (param.type == 'expression') return `${key} = ${param.value};\n`
     if (param.type == 'string') return `${key} = '${param.value}';\n`
 
-    if (param.type == 'array'){
+    if (param.type == 'array') {
         if (param.subtype == 'color') return `${key} = ['${param.value.join("','")}'];\n`
     }
 

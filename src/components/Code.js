@@ -2,7 +2,7 @@ import styled from "styled-components";
 import SketchFrame from './SketchFrame';
 import useProject from '../utils/useProject';
 import Editor from './Editor';
-import { EditorTabs, LibraryTabs, MainTabs, topBarAtom } from "./Tabs";
+import { LibraryTabs, MainTabs, topBarAtom } from "./Tabs";
 import { useRecoilValue } from "recoil";
 import Params from "./Params";
 import Variations from "./Variations";
@@ -15,10 +15,11 @@ const FullScreen = styled.div`
   height: 100%;
 `;
 
-const TopBar = styled.div`
+export const TopBar = styled.div`
   display: flex;
   flex-direction: row;
   background-color: #34352F;
+  padding: 0 1em;
   height: 3em;
   align-items: center;
   justify-content: space-between;
@@ -27,16 +28,18 @@ const TopBar = styled.div`
 const RunButton = styled.button`
   background-color: #74C991;
   color: #34352F;
-  padding: 10px;
+  padding: 10px 20px;
+  box-shadow: 0px 0px 10px 0px #00000055;
   cursor: pointer;
   border: none;
   font-size: 16px;
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 999px;
   transition: all 0.2s;
   position: absolute;
-  bottom: 25px;
-  right: 25px;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
   z-index: 100;
   &:hover {
     background-color: #34352F;
@@ -69,7 +72,6 @@ export default function Code() {
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
       <TopBar>
-        <EditorTabs />
         <MainTabs />
         <LibraryTabs />
       </TopBar>
@@ -84,8 +86,10 @@ export default function Code() {
           <Params />
           <Variations />
         </FullScreen>
+        
 
-        <RunButton onClick={updateCode}>Run Code</RunButton>
+
+        <RunButton onClick={updateCode}>RUN</RunButton>
 
       </div>
     </div>

@@ -27,8 +27,29 @@ export const topBarAtom = atom({
 
 
 
+const EditorTabContainer = styled.div`
+  display: flex;
+  background:white;
+  flex-direction: row;
+  gap: 3px;
+  padding-left: 10px;
+  padding-right: 100px;
+  margin-bottom: 10px;
+`;
 
-
+const EditorTab = styled.div`
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: ${(props) => (props.isactive ? "white" : "#34352F")};
+  color: ${(props) => (props.isactive ? "black" : "#8C8C8C")};
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover {
+    background-color: ${(props) => (props.isactive ? "white" : "#444")};
+    color: ${(props) => (props.isactive ? "black" : "#8C8C8C")};
+  }
+`;
 
 export function EditorTabs() {
   const projectState = useRecoilValue(projectAtom)
@@ -40,35 +61,35 @@ export function EditorTabs() {
 
   if (topBarState.main == 'code') {
     return (
-      <TabContainer>
-        {projectState.files.map((f, i) => (
-          <Tab key={i} onClick={() => setTopBarState({ ...topBarState, editor: f.name })}
-            isactive={topBarState.editor === f.name ? 1 : 0}>
-            {f.name}
-          </Tab>
-        ))}
-      </TabContainer>
-    )
-  } 
-
-  if (topBarState.main == 'parameters') {
-    return (
-      <TabContainer>
-        <Tab>params</Tab>
-      </TabContainer>
-    )
-  }
-
-  if (topBarState.main == 'variations') {
-    return (
-      <TabContainer>
-        <Tab>variations</Tab>
-      </TabContainer>
+      <EditorTabContainer>
+      {projectState.files.map((f, i) => (
+        <EditorTab key={i} onClick={() => setTopBarState({ ...topBarState, editor: f.name })}
+        isactive={topBarState.editor === f.name ? 1 : 0}>
+        {f.name}
+        </EditorTab>
+      ))}
+      </EditorTabContainer>
     )
   }
 
   return null
 }
+
+const MainTab = styled.div`
+  display: inline-block;
+  margin: 0 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background-color: ${(props) => (props.isactive ? "white" : "#444")};
+  color: ${(props) => (props.isactive ? "black" : "#8C8C8C")};
+  font-size: 18px;
+  cursor: pointer;
+  transition: all .3s;
+  &:hover {
+    background-color: ${(props) => (props.isactive ? "white" : "#555")};
+    color: ${(props) => (props.isactive ? "#666" : "#8C8C8C")};
+  }
+`;
 
 export function MainTabs() {
   const projectState = useRecoilValue(projectAtom)
@@ -76,14 +97,14 @@ export function MainTabs() {
 
   return (
     <TabContainer>
-      <Tab onClick={() => setTopBarState({ ...topBarState, main: 'code', editor: projectState.files[0].name })}
-        isactive={topBarState.main === 'code' ? 1 : 0}>Code</Tab>
-      <Tab onClick={() => setTopBarState({ ...topBarState, main: 'parameters', editor: 'params' })}
-        isactive={topBarState.main === 'parameters' ? 1 : 0}>Parameters</Tab>
-      <Tab onClick={() => setTopBarState({ ...topBarState, main: 'variations', editor: 'params' })}
-        isactive={topBarState.main === 'variations' ? 1 : 0}>Variations</Tab>
-      <Tab onClick={() => setTopBarState({ ...topBarState, main: 'clean', editor: 'params' })}
-        isactive={topBarState.main === 'clean' ? 1 : 0}>Clean</Tab>
+      <MainTab onClick={() => setTopBarState({ ...topBarState, main: 'parameters', editor: 'params' })}
+        isactive={topBarState.main === 'parameters' ? 1 : 0}>PLAY</MainTab>
+
+      <MainTab onClick={() => setTopBarState({ ...topBarState, main: 'code', editor: projectState.files[0].name })}
+        isactive={topBarState.main === 'code' ? 1 : 0}>WORK</MainTab>
+
+      <MainTab onClick={() => setTopBarState({ ...topBarState, main: 'variations', editor: 'params' })}
+        isactive={topBarState.main === 'variations' ? 1 : 0}>EXPLORE</MainTab>
     </TabContainer>
   )
 }
@@ -106,7 +127,7 @@ export function LibraryTabs() {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
-     
+
   }
 
   return (

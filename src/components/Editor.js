@@ -1,7 +1,7 @@
 import MonacoEditor, { useMonaco } from '@monaco-editor/react';
 import { useEffect, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { topBarAtom } from './Tabs';
+import { EditorTabs, topBarAtom } from './Tabs';
 import { projectAtom } from '../utils/useProject';
 
 const options = {
@@ -61,6 +61,7 @@ export default function Editor({ files }) {
 
     return (
         <>
+            <EditorTabs />
             <MonacoEditor
                 width="100%"
                 height="100%"

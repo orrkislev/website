@@ -26,15 +26,17 @@ function setup() {
 async function buildImage() {
     for (let i = 0; i < totalBalls; i++) {
         const ballX = random(width * .45, width * .55)
-        const ballY = height/2
-        const ballSize = random(...ballSizeRange)
-        ball = new Ball(ballX, ballY, ballSize)
-
-        const ballForceX = random(-.01, .01)
-        const ballForceY = random(-.1, .1)
-        ball.force(ballForceX, ballForceY)
+        const ballY = height / 2
+        createBall(ballX, ballY)
         await timeout(10)
     }
+}
+
+function mousePressed() {
+    createBall(mouseX, mouseY)
+}
+function mouseDragged(){
+    createBall(mouseX, mouseY)
 }
 
 // this is the main loop of the sketch, runs every frame
@@ -97,6 +99,15 @@ class Ball {
 
         this.lastPos = { x: pos.x, y: pos.y }
     }
+}
+
+function createBall(x, y) {
+    const ballSize = random(...ballSizeRange)
+    ball = new Ball(x, y, ballSize)
+
+    const ballForceX = random(-.01, .01)
+    const ballForceY = random(-.1, .1)
+    ball.force(ballForceX, ballForceY)
 }
 
 //FILE utils
