@@ -32,22 +32,20 @@ const EditorTabContainer = styled.div`
   background:white;
   flex-direction: row;
   gap: 3px;
-  padding-left: 10px;
-  padding-right: 100px;
-  margin-bottom: 10px;
 `;
 
 const EditorTab = styled.div`
   display: inline-block;
   padding: 6px 12px;
-  background-color: ${(props) => (props.isactive ? "white" : "#34352F")};
   color: ${(props) => (props.isactive ? "black" : "#8C8C8C")};
+  border-radius: 999px;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
+  border: ${(props) => (props.isactive ? "2px solid black" : "2px solid #CCC")};
   &:hover {
-    background-color: ${(props) => (props.isactive ? "white" : "#444")};
     color: ${(props) => (props.isactive ? "black" : "#8C8C8C")};
+    border: 2px solid black;
   }
 `;
 
@@ -62,17 +60,17 @@ export function EditorTabs() {
   if (topBarState.main == 'code') {
     return (
       <EditorTabContainer>
-      {projectState.files.map((f, i) => (
-        <EditorTab key={i} onClick={() => setTopBarState({ ...topBarState, editor: f.name })}
-        isactive={topBarState.editor === f.name ? 1 : 0}>
-        {f.name}
-        </EditorTab>
-      ))}
+        {projectState.files.map((f, i) => (
+          <EditorTab key={i} onClick={() => setTopBarState({ ...topBarState, editor: f.name })}
+            isactive={topBarState.editor === f.name ? 1 : 0}>
+            {f.name}
+          </EditorTab>
+        ))}
       </EditorTabContainer>
     )
   }
 
-  return null
+  return (<div></div>)
 }
 
 const MainTab = styled.div`
@@ -91,24 +89,6 @@ const MainTab = styled.div`
   }
 `;
 
-export function MainTabs() {
-  const projectState = useRecoilValue(projectAtom)
-  const [topBarState, setTopBarState] = useRecoilState(topBarAtom);
-
-  return (
-    <TabContainer>
-      <MainTab onClick={() => setTopBarState({ ...topBarState, main: 'parameters', editor: 'params' })}
-        isactive={topBarState.main === 'parameters' ? 1 : 0}>PLAY</MainTab>
-
-      <MainTab onClick={() => setTopBarState({ ...topBarState, main: 'code', editor: projectState.files[0].name })}
-        isactive={topBarState.main === 'code' ? 1 : 0}>WORK</MainTab>
-
-      <MainTab onClick={() => setTopBarState({ ...topBarState, main: 'variations', editor: 'params' })}
-        isactive={topBarState.main === 'variations' ? 1 : 0}>EXPLORE</MainTab>
-    </TabContainer>
-  )
-}
-
 export function LibraryTabs() {
   const projectData = useProject()
 
@@ -119,7 +99,6 @@ export function LibraryTabs() {
       const model = allModels.find((m) => m.uri.path === '/' + f.name);
       allCode += model.getValue() + '\n';
     })
-    // download the code as a js file
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(allCode));
     element.setAttribute('download', 'sketch.js');
@@ -131,11 +110,16 @@ export function LibraryTabs() {
   }
 
   return (
-    <TabContainer>
-      <Tab>Matter</Tab>
-      <Tab>p5</Tab>
-      <Tab onClick={save}>Save</Tab>
-    </TabContainer>
+    <div style={{justifySelf:'end',marginRight:'2em',cursor: 'pointer', borderRadius:'999px', border:'2px solid black', width:'1.5em', height:'1.5em', display:'flex', justifyContent:'center', alignItems:'center'}}>
+      <div style={{ fontFamily: 'serif', fontSize: '18px' }}>
+        i
+      </div>
+    </div>
+    // <TabContainer>
+    //   <Tab>Matter</Tab>
+    //   <Tab>p5</Tab>
+    //   <Tab onClick={save}>Save</Tab>
+    // </TabContainer>
   )
 }
 

@@ -2,10 +2,11 @@ import styled from "styled-components";
 import SketchFrame from './SketchFrame';
 import useProject from '../utils/useProject';
 import Editor from './Editor';
-import { LibraryTabs, MainTabs, topBarAtom } from "./Tabs";
+import { EditorTabs, LibraryTabs, topBarAtom } from "./Tabs";
 import { useRecoilValue } from "recoil";
 import Params from "./Params";
 import Variations from "./Variations";
+import MainBtns from "./MainBtns";
 
 const FullScreen = styled.div`
   position: absolute;
@@ -16,34 +17,35 @@ const FullScreen = styled.div`
 `;
 
 export const TopBar = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   flex-direction: row;
-  background-color: #34352F;
+  background-color: white;
+  border-bottom: 2px solid black;
   padding: 0 1em;
-  height: 3em;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 `
 
 const RunButton = styled.button`
-  background-color: #74C991;
+  background-color: white;
   color: #34352F;
-  padding: 10px 20px;
-  box-shadow: 0px 0px 10px 0px #00000055;
+  padding: 5px 50px;
   cursor: pointer;
-  border: none;
+  border: 2px solid black;
   font-size: 16px;
   font-weight: bold;
   border-radius: 999px;
   transition: all 0.2s;
   position: absolute;
-  top: 0px;
+  top: 1em;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50);
   z-index: 100;
   &:hover {
-    background-color: #34352F;
-    color: #74C991;
+    background-color: black;
+    color: white;
   } 
 `;
 
@@ -72,7 +74,8 @@ export default function Code() {
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
       <TopBar>
-        <MainTabs />
+        <EditorTabs />
+        <MainBtns />
         <LibraryTabs />
       </TopBar>
 
@@ -89,7 +92,7 @@ export default function Code() {
         
 
 
-        <RunButton onClick={updateCode}>RUN</RunButton>
+        {topBarState.main == 'code' &&  <RunButton onClick={updateCode}>RUN</RunButton>}
 
       </div>
     </div>

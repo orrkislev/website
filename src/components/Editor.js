@@ -61,7 +61,6 @@ export default function Editor({ files }) {
 
     return (
         <>
-            <EditorTabs />
             <MonacoEditor
                 width="100%"
                 height="100%"
@@ -84,6 +83,7 @@ export default function Editor({ files }) {
                 .view-line span{
                     background-color: white;
                 }
+
                 .mtk8{
                     background-color: #4B8A6A !important;
                     color: white;

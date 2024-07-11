@@ -80,7 +80,7 @@ function Param(props) {
     }
 
     return (
-        <Form.Item label={props.name} style={{ background: 'white', marginBottom: '5px', padding: '0px 2em' }}>
+        <Form.Item label={props.name} style={{ background: 'white', marginBottom: '5px', padding: '0px 2em', border:'2px solid black', borderRadius:'999px' }}>
             {el}
         </Form.Item>
     )
