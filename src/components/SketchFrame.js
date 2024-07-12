@@ -20,7 +20,6 @@ export default function SketchFrame() {
       const _x = event.clientX - boundingRect.left;
       const _y = event.clientY - boundingRect.top;
 
-      // deep clone the event
       const newEventProps = cloneEventProperties(event);
       newEventProps.clientX = _x;
       newEventProps.clientY = _y;

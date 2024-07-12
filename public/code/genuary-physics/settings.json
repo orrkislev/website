@@ -5,9 +5,7 @@
         "matter",
         "p5"
     ],
-    "script": [
-        "genuary-physics.js"
-    ],
+    "script": "genuary-physics.js",
     "variations": [
         {
             "name": "Hey look! they pop!",

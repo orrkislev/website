@@ -9,8 +9,8 @@ const Variation = styled.div`
     padding-right: 50px;
     cursor: pointer;
     border-radius: 10px;
-    background-color: ${props => props.isActive ? 'white' : '#333'};
-    color: ${props => props.isActive ? 'black' : 'white'};
+    background-color: ${props => props.isactive ? 'white' : '#333'};
+    color: ${props => props.isactive ? 'black' : 'white'};
     transition: all 0.2s;
     &:hover {
         background-color: ${(props) => (props.isactive ? "#555" : "white")};
@@ -48,7 +48,7 @@ export default function Variations() {
                 {projectData.project.settings.variations.map((v, i) => (
                     <Variation key={i}
                         onClick={() => clickHandler(v)} style={{ padding: '10px', cursor: 'pointer' }}
-                        isActive={currVariation === v.name ? 1 : 0}
+                        isactive={currVariation === v.name ? 1 : 0}
                     >
                         {v.name}
                     </Variation>

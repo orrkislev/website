@@ -9,7 +9,7 @@ export default function App() {
     <RecoilRoot>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Code />} />
+          <Route path="/:name" element={<Code />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>

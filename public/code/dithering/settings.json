@@ -1,0 +1,17 @@
+{
+    "name": "genuary-physics",
+    "description": "Physics simulation for Genuary 2021",
+    "libraries": [
+        "p5"
+    ],
+    "script": "dithering.js",
+    "variations": [
+    ],
+    "params": {
+        "imageFile": {
+            "name": "Image",
+            "type": "image",
+            "value": "pic.png"
+        }
+    }
+}

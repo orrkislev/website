@@ -7,6 +7,9 @@ import { useRecoilValue } from "recoil";
 import Params from "./Params";
 import Variations from "./Variations";
 import MainBtns from "./MainBtns";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import Explanation from "./Explanation";
 
 const FullScreen = styled.div`
   position: absolute;
@@ -26,6 +29,7 @@ export const TopBar = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  overflow: auto;
 `
 
 const RunButton = styled.button`
@@ -41,7 +45,7 @@ const RunButton = styled.button`
   position: absolute;
   top: 1em;
   left: 50%;
-  transform: translateX(-50);
+  transform: translateX(-50%);
   z-index: 100;
   &:hover {
     background-color: black;
@@ -50,8 +54,14 @@ const RunButton = styled.button`
 `;
 
 export default function Code() {
+  const { name } = useParams()
   const projectData = useProject()
   const topBarState = useRecoilValue(topBarAtom)
+
+  useEffect(()=>{
+    if (!projectData.project.name || projectData.project.name !== name)
+    projectData.initProject(name);
+  }, [name, projectData])
 
   if (!projectData.project.files) return null;
 
@@ -88,11 +98,11 @@ export default function Code() {
           <Editor />
           <Params />
           <Variations />
+          <Explanation />
         </FullScreen>
         
 
-
-        {topBarState.main == 'code' &&  <RunButton onClick={updateCode}>RUN</RunButton>}
+        {topBarState.main == 'code' && <RunButton onClick={updateCode}>RUN</RunButton>}
 
       </div>
     </div>

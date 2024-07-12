@@ -22,6 +22,7 @@ export const topBarAtom = atom({
   key: "topBarState", default: {
     main: 'parameters',
     editor: 'placeholder',
+    info: false
   }
 });
 
@@ -91,6 +92,7 @@ const MainTab = styled.div`
 
 export function LibraryTabs() {
   const projectData = useProject()
+  const [topBarState, setTopBarState] = useRecoilState(topBarAtom);
 
   const save = () => {
     const allModels = monaco.editor.getModels();
@@ -106,20 +108,19 @@ export function LibraryTabs() {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+  }
 
+  const clickInfo = () => {
+    setTopBarState({ ...topBarState, info: !topBarState.info })
   }
 
   return (
-    <div style={{justifySelf:'end',marginRight:'2em',cursor: 'pointer', borderRadius:'999px', border:'2px solid black', width:'1.5em', height:'1.5em', display:'flex', justifyContent:'center', alignItems:'center'}}>
+    <div onClick={clickInfo}
+       style={{justifySelf:'end',marginRight:'2em',cursor: 'pointer', borderRadius:'999px', border:'2px solid black', width:'1.5em', height:'1.5em', display:'flex', justifyContent:'center', alignItems:'center'}}>
       <div style={{ fontFamily: 'serif', fontSize: '18px' }}>
         i
       </div>
     </div>
-    // <TabContainer>
-    //   <Tab>Matter</Tab>
-    //   <Tab>p5</Tab>
-    //   <Tab onClick={save}>Save</Tab>
-    // </TabContainer>
   )
 }
 

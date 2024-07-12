@@ -25,7 +25,7 @@ const SVGContainer = styled.div`
   top: -5px;
   left: -10px;
   width: 100%;
-  height: 100%;
+  height: 110%;
   pointer-events: none;
 `;
 
