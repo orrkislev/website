@@ -2,7 +2,7 @@ import styled from "styled-components";
 import SketchFrame from './SketchFrame';
 import useProject from '../utils/useProject';
 import Editor from './Editor';
-import { EditorTabs, LibraryTabs, topBarAtom } from "./Tabs";
+import { LibraryTabs, topBarAtom } from "./Tabs";
 import { useRecoilValue } from "recoil";
 import Params from "./Params";
 import Variations from "./Variations";
@@ -10,6 +10,7 @@ import MainBtns from "./MainBtns";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import Explanation from "./Explanation";
+import HomeLogo from "./HomeLogo";
 
 const FullScreen = styled.div`
   position: absolute;
@@ -53,14 +54,14 @@ const RunButton = styled.button`
   } 
 `;
 
-export default function Code() {
+export default function ProjectPage() {
   const { name } = useParams()
   const projectData = useProject()
   const topBarState = useRecoilValue(topBarAtom)
 
-  useEffect(()=>{
+  useEffect(() => {
     if (!projectData.project.name || projectData.project.name !== name)
-    projectData.initProject(name);
+      projectData.initProject(name);
   }, [name, projectData])
 
   if (!projectData.project.files) return null;
@@ -84,7 +85,7 @@ export default function Code() {
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
       <TopBar>
-        <EditorTabs />
+        <HomeLogo />
         <MainBtns />
         <LibraryTabs />
       </TopBar>
@@ -95,15 +96,14 @@ export default function Code() {
         </FullScreen>
 
         <FullScreen style={{ zIndex: 20 }}>
-          <Editor />
-          <Params />
-          <Variations />
-          <Explanation />
+          {topBarState.main == 'code' && <Editor />}
+          {topBarState.main == 'parameters' && <Params />}
+          {topBarState.main == 'variations' && <Variations />}
+          {topBarState.info && <Explanation />}
         </FullScreen>
-        
+
 
         {topBarState.main == 'code' && <RunButton onClick={updateCode}>RUN</RunButton>}
-
       </div>
     </div>
   )

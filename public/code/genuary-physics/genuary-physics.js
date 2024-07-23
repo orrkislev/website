@@ -7,22 +7,13 @@ eyeSize = 4
 eyeColor = 'black'
 backgroundColor = 'darkgray'
 
-// setup runs once at the beginning of the sketch
-// it creates the canvas, initializes the physics engine
-// and calls the buildImage function (down below)
 function setup() {
-    createCanvas(windowWidth, windowHeight)
-    angleMode(DEGREES)
+    initP5(true)
     initMatter()
-
-    noStroke()
     background(backgroundColor)
-
     buildImage()
 }
 
-// this is an async function, it runs 'in parallel' with the draw function
-// it creates a new ball every 10ms, 200 times
 async function buildImage() {
     for (let i = 0; i < totalBalls; i++) {
         const ballX = random(width * .45, width * .55)
@@ -39,23 +30,12 @@ function mouseDragged(){
     createBall(mouseX, mouseY)
 }
 
-// this is the main loop of the sketch, runs every frame
-// it updates the physics engine and draws the balls in their new positions
-
-// TODO : try adding a background at the beginning of the draw function
-// to remove the trails of the balls, and see how it looks
 function draw() {
     Matter.Engine.update(engine, 0.1, .1)
     balls.forEach(ball => ball.show())
 }
 
 //FILE ball.js
-
-// this file contains the Ball class
-// each ball has a Matter.js body and is drawn as a circle
-// each ball has a color and eyes
-// the force function applies a force to the ball
-// the show function draws the ball and its eyes
 
 let balls = []
 class Ball {
@@ -108,22 +88,4 @@ function createBall(x, y) {
     const ballForceX = random(-.01, .01)
     const ballForceY = random(-.1, .1)
     ball.force(ballForceX, ballForceY)
-}
-
-//FILE utils
-
-// some utility functions
-
-// choose a random element from an array
-const choose = arr => arr[floor(random(arr.length))]
-
-// wait for a number of milliseconds
-const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-// initialize the physics engine
-function initMatter() {
-    engine = Matter.Engine.create();
-    engine.gravity.y = 0
-    world = engine.world
-    engineRunner = Matter.Runner.run(engine);
 }

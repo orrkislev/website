@@ -63,10 +63,6 @@ export default function Params() {
                      transition={{ duration: 0.3 }}
                     onClick={() => setHidden(!hidden)}>
 
-                    {/* <motion.div
-                        style={{ position: 'absolute', width: '20px', height: '20px', background: 'white', border: '2px solid black', borderRadius: '50%' }}
-                        animate={{ scale: arrowHover ? 1 : 0 }} transition={{ duration: 0.3 }}/> */}
-
                     <motion.svg width="40" height="40" viewBox="-10 -10 30 30" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute' }}
                         animate={{ rotate: hidden ? 180 : 0 }}>
 

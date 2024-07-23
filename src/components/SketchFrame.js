@@ -45,15 +45,16 @@ export default function SketchFrame() {
   }, [iframeRefs]);
 
   const generateIframeContent = () => {
+    let snippetsCode = ''
+    if (projectData.project.snippets) snippetsCode = '<script>' + Object.values(projectData.project.snippets).join('\n') + '</script>'
     return `
       <html>
         <head>
           ${projectData.project.settings.libraries.map((lib) => `<script src="${libs[lib]}"></script>`).join('\n')}
         </head>
         <body style="margin: 0; overflow: hidden;">
-          <script>
-            ${projectData.allCode}
-          </script>
+          ${snippetsCode}
+          <script> ${projectData.allCode} </script>
         </body>
       </html>
     `;

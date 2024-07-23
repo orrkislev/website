@@ -29,17 +29,21 @@ const SVGContainer = styled.div`
   pointer-events: none;
 `;
 
-export default function MainBtns(){
+export default function MainBtns() {
     const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
+
+    useEffect(() => {
+        return () => setTopBarState({ main: 'parameters', info: false })
+    }, [])
 
     const [activeButton, setActiveButton] = useState('PLAY');
     const buttonRefs = [useRef(), useRef(), useRef()]
     const mainRef = useRef();
 
     const buttons = [
-        {name:'PLAY',value:'parameters'},
-        {name:'WORK',value:'code'}, 
-        {name:'EXPLORE',value:'variations'}
+        { name: 'PLAY', value: 'parameters' },
+        { name: 'WORK', value: 'code' },
+        { name: 'EXPLORE', value: 'variations' }
     ]
     const buttonVariants = {
         active: { scale: 1.1, transition: { duration: 0.3 } },
@@ -65,78 +69,78 @@ export default function MainBtns(){
         };
 
         const rectVariants = {
-            play: { x: btn_play.x - 1, y: 5, rotate: 30},
+            play: { x: btn_play.x - 1, y: 5, rotate: 30 },
             work: { x: btn_work.x + btn_work.width - 7.5, y: 25, rotate: -90 },
             explore: { x: btn_expl.x - 7.5, y: 7.5, rotate: 180 }
         }
         const circleVariants = {
             play: { cx: btn_play.x + 2, cy: 22.5 + 9 },
-            work: { cx: btn_work.x + btn_work.width, cy: 22.5-6 },
-            explore: { cx: btn_expl.x + btn_expl.width - 2,  cy: 22.5 - 8 }
+            work: { cx: btn_work.x + btn_work.width, cy: 22.5 - 6 },
+            explore: { cx: btn_expl.x + btn_expl.width - 2, cy: 22.5 - 8 }
         }
         const malbenVariants = {
-            play: { x: btn_play.x + btn_play.width - 10, y: 10, rotate: 20},
+            play: { x: btn_play.x + btn_play.width - 10, y: 10, rotate: 20 },
             work: { x: btn_work.x - 10, y: 15, rotate: 0 },
             explore: { x: btn_expl.x + btn_expl.width, y: 12, rotate: 220 }
         }
         const triangleVariants = {
-            play: { x: btn_play.x + btn_play.width - 20, y: 5, rotate: 30},
+            play: { x: btn_play.x + btn_play.width - 20, y: 5, rotate: 30 },
             work: { x: btn_work.x - 10, y: 0, rotate: -180 },
             explore: { x: btn_expl.x - 7, y: 23, rotate: 180 }
         }
 
-        
+
         svg = (
             <SVGContainer>
                 <svg width="600px" height="45px" viewBox="0 0 600 45">
                     <motion.rect
-                        x="0" y={(45-30)/2} width="180" height="30" rx="15" ry="15"
+                        x="0" y={(45 - 30) / 2} width="180" height="30" rx="15" ry="15"
                         initial={{ x: shapeVariants.play.x, width: shapeVariants.play.width }}
                         fill="none" stroke="black" strokeWidth="2"
                         animate={activeButton.toLowerCase()}
                         variants={shapeVariants}
                     />
 
-                    <motion.rect 
+                    <motion.rect
                         x="0" y="0"
                         initial={{ x: rectVariants.play.x, y: rectVariants.play.y, rotate: rectVariants.play.rotate }}
-                        width="15" height="15" rx="2" ry="2" 
-                        fill="tomato" stroke="black" strokeWidth="2" 
-                        transition={{ duration: 0.5, type: 'spring', delay: 0.5}}
-                        animate={activeButton.toLowerCase()} 
+                        width="15" height="15" rx="2" ry="2"
+                        fill="tomato" stroke="black" strokeWidth="2"
+                        transition={{ duration: 0.5, type: 'spring', delay: 0.5 }}
+                        animate={activeButton.toLowerCase()}
                         variants={rectVariants} />
 
                     <motion.circle
                         cx="0" cy="0" r="7.5"
                         initial={{ cx: circleVariants.play.cx, cy: circleVariants.play.cy }}
                         fill="cornflowerblue" stroke="black" strokeWidth="2"
-                        transition={{ duration: 0.3, ease: 'easeInOut', delay: 0.7}}
+                        transition={{ duration: 0.3, ease: 'easeInOut', delay: 0.7 }}
                         animate={activeButton.toLowerCase()}
-                        variants={circleVariants}/>
-                    
-                    <motion.rect 
-                        x="0" y="0" width="15" height="30" rx="2" ry="2" 
+                        variants={circleVariants} />
+
+                    <motion.rect
+                        x="0" y="0" width="15" height="30" rx="2" ry="2"
                         initial={{ x: malbenVariants.play.x, y: malbenVariants.play.y, rotate: malbenVariants.play.rotate }}
-                        fill="orange" stroke="black" strokeWidth="2" 
-                        transition={{ duration: 0.4, ease: 'easeInOut', delay: 0.6}}
-                        animate={activeButton.toLowerCase()} 
+                        fill="orange" stroke="black" strokeWidth="2"
+                        transition={{ duration: 0.4, ease: 'easeInOut', delay: 0.6 }}
+                        animate={activeButton.toLowerCase()}
                         variants={malbenVariants} />
 
                     <motion.g
                         x="0" y="0"
-                        transition={{ duration: 1.0, ease: 'easeInOut', delay: 0.0}}
+                        transition={{ duration: 1.0, ease: 'easeInOut', delay: 0.0 }}
                         initial={{ x: triangleVariants.play.x, y: triangleVariants.play.y, rotate: triangleVariants.play.rotate }}
-                        animate={activeButton.toLowerCase()} 
+                        animate={activeButton.toLowerCase()}
                         variants={triangleVariants}>
                         <polygon points="0,0 15,0 7.5,12.99" fill="seagreen" stroke="black" strokeWidth="2" />
-                      </motion.g>
+                    </motion.g>
                 </svg>
             </SVGContainer>
         )
     }
 
     return (
-        <div ref={mainRef} style={{position:'relative', margin:'3px 0'}}>
+        <div ref={mainRef} style={{ position: 'relative', margin: '3px 0' }}>
             <ButtonContainer>
                 {buttons.map((button, index) => (
                     <StyledButton
