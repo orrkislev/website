@@ -70,7 +70,7 @@ export default function useProject() {
     }
 
     const runVariation = async (v) => {
-        const res = await fetch(`/code/${project.name}/${v.file}`);
+        const res = await fetch(`/code/${project.name}/variations/${v.file}`);
         const txt = await res.text();
         runCode(txt);
     }
@@ -110,7 +110,7 @@ const allHelperFiles = ['setup', 'hashgrid', 'utils']
 async function getSnippets(snippets) {
     let allHelperCode = ''
     for (const file of allHelperFiles) {
-        let newUtil = await fetch(`/code/utils/${file}.js`);
+        let newUtil = await fetch(`/code/__utils/${file}.js`);
         newUtil = await newUtil.text();
         allHelperCode += newUtil + '\n';
     }

@@ -6,8 +6,7 @@ eyeColor = 'black'
 backgroundColor = 'darkgray'
 
 function setup() {
-    createCanvas(windowWidth, windowHeight)
-    angleMode(DEGREES)
+    initP5(true)
     initMatter()
     noStroke()
     background(backgroundColor)
@@ -94,12 +93,4 @@ class Ball {
 
         this.lastPos = { x: pos.x, y: pos.y }
     }
-}
-const choose = arr => arr[floor(random(arr.length))]
-const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
-function initMatter() {
-    engine = Matter.Engine.create();
-    engine.gravity.y = 0
-    world = engine.world
-    engineRunner = Matter.Runner.run(engine);
 }

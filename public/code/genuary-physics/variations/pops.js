@@ -123,18 +123,3 @@ class Ball {
         this.lastPos = { x: pos.x, y: pos.y }
     }
 }
-// some utility functions
-
-// choose a random element from an array
-const choose = arr => arr[floor(random(arr.length))]
-
-// wait for a number of milliseconds
-const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-// initialize the physics engine
-function initMatter() {
-    engine = Matter.Engine.create();
-    engine.gravity.y = 0
-    world = engine.world
-    engineRunner = Matter.Runner.run(engine);
-}

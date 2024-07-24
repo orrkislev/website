@@ -4,8 +4,9 @@
     "libraries": [
         "p5"
     ],
-    "script": "dithering.js",
+    "script": "main.js",
     "variations": [
+        { "name" : "1", "file" : "1.js" }
     ],
     "params": {
         "imageFile": {

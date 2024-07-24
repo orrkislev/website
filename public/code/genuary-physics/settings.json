@@ -5,7 +5,7 @@
         "matter",
         "p5"
     ],
-    "script": "genuary-physics.js",
+    "script": "main.js",
     "snippets": [
         "initP5", "initMatter","timeout", "choose", "round_random"
     ],

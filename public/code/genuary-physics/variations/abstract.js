@@ -7,18 +7,10 @@ let engine, world, engineRunner;
 let balls = [];
 
 function setup() {
-    createCanvas(windowWidth, windowHeight);
-    angleMode(DEGREES);
+    initP5(true)
     initMatter();
     background(backgroundColor);
     buildImage();
-}
-
-function initMatter() {
-    engine = Matter.Engine.create();
-    engine.gravity.y = 0;
-    world = engine.world;
-    engineRunner = Matter.Runner.run(engine);
 }
 
 async function buildImage() {
@@ -58,7 +50,6 @@ function draw() {
 
     fill(0)
     balls.forEach(ball => circle(ball.body.position.x, ball.body.position.y, 3));
-
 }
 
 class Ball {
@@ -76,4 +67,3 @@ class Ball {
         this.r = r;
     }
 }
-const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
