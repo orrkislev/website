@@ -26,11 +26,12 @@ async function buildImage() {
 function mousePressed() {
     createBall(mouseX, mouseY)
 }
-function mouseDragged(){
+function mouseDragged() {
     createBall(mouseX, mouseY)
 }
 
 function draw() {
+    if (debugMode) background(0)
     Matter.Engine.update(engine, 0.1, .1)
     balls.forEach(ball => ball.show())
 }
@@ -59,23 +60,35 @@ class Ball {
         let pos = this.body.position
         let angle = this.body.angle * 180 / PI
 
-        strokeWeight(this.body.circleRadius * 2)
-        stroke(this.clr)
-        line(this.lastPos.x, this.lastPos.y, pos.x, pos.y)
-
-        push()
-        translate(pos.x, pos.y)
-        rotate(angle)
-        rotate(this.eyeRot)
-        if (this.blinkCounter-- < 0) {
-            if (this.blinkCounter < -5) this.blinkCounter = round(random(250))
+        if (debugMode) {
+            push()
+            translate(pos.x, pos.y)
+            rotate(angle)
+            fill(0)
+            stroke(255,255,0)
+            circle(0, 0, this.body.circleRadius * 2)
+            line(-this.body.circleRadius, 0, this.body.circleRadius, 0)
+            line(0, -this.body.circleRadius, 0, this.body.circleRadius)
+            pop()
         } else {
-            strokeWeight(eyeSize)
-            stroke(eyeColor)
-            point(-this.body.circleRadius / 2 + this.eyeOffsets[0], -this.body.circleRadius / 2)
-            point(this.body.circleRadius / 2 - this.eyeOffsets[1], -this.body.circleRadius / 2)
+            strokeWeight(this.body.circleRadius * 2)
+            stroke(this.clr)
+            line(this.lastPos.x, this.lastPos.y, pos.x, pos.y)
+
+            push()
+            translate(pos.x, pos.y)
+            rotate(angle)
+            rotate(this.eyeRot)
+            if (this.blinkCounter-- < 0) {
+                if (this.blinkCounter < -5) this.blinkCounter = round(random(250))
+            } else {
+                strokeWeight(eyeSize)
+                stroke(eyeColor)
+                point(-this.body.circleRadius / 2 + this.eyeOffsets[0], -this.body.circleRadius / 2)
+                point(this.body.circleRadius / 2 - this.eyeOffsets[1], -this.body.circleRadius / 2)
+            }
+            pop()
         }
-        pop()
 
         this.lastPos = { x: pos.x, y: pos.y }
     }

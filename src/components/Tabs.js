@@ -17,7 +17,8 @@ const InfoDiv = styled.div`
 export const topBarAtom = atom({
   key: "topBarState", default: {
     main: 'parameters',
-    info: false
+    info: false,
+    debug: false
   }
 });
 

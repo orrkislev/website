@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useProject from '../utils/useProject';
+import { useRecoilValue } from 'recoil';
+import { topBarAtom } from './Tabs';
 
 const libs = {
   matter: "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js",
@@ -9,6 +11,7 @@ const libs = {
 
 export default function SketchFrame() {
   const projectData = useProject()
+  const topBarState = useRecoilValue(topBarAtom)
 
   const [activeIframe, setActiveIframe] = useState(0);
   const iframeRefs = [useRef(null), useRef(null)]
@@ -54,7 +57,10 @@ export default function SketchFrame() {
         </head>
         <body style="margin: 0; overflow: hidden;">
           ${snippetsCode}
-          <script> ${projectData.allCode} </script>
+          <script> 
+            const debugMode = ${topBarState.debug ? 'true' : 'false'};
+            ${projectData.allCode} 
+          </script>
         </body>
       </html>
     `;
