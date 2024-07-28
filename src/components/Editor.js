@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { editorModelsAtom, projectAtom } from '../utils/useProject';
 import styled from 'styled-components';
+import { JSLibs } from './SketchFrame';
+import { Popover } from 'antd';
 
 const options = {
     language: 'javascript',
@@ -45,17 +47,14 @@ export default function Editor() {
             const allModels = monaco.editor.getModels();
 
             const savedModelsNum = Object.keys(editorModels).length
-            console.log('loading: savedModelsNum', savedModelsNum, 'monaco:', allModels.length)
             if (savedModelsNum != 0 && editorModels && savedModelsNum == allModels.length) return
             if (savedModelsNum == 0) {
-                console.log('loading from projectState')
                 projectState.files.forEach((f) => {
                     const model = allModels.find((m) => m.uri.path === '/' + f.name);
                     if (!model) monaco.editor.createModel(f.code, 'javascript', monaco.Uri.parse('/' + f.name), options);
                     newTabs.push(f.name)
                 })
             } else {
-                console.log('loading from editorModels')
                 Object.entries(editorModels).forEach(([path, code]) => {
                     const model = allModels.find((m) => m.uri.path === '/' + path);
                     if (!model) monaco.editor.createModel(code, 'javascript', monaco.Uri.parse('/' + path), options);
@@ -92,7 +91,7 @@ export default function Editor() {
         const editor = editorRef.current;
         const model = editor.getModel();
         const snippets = projectState.snippets;
-        
+
         // Function to find all occurrences of helper functions
         const findHelperFunctions = () => {
             let decorations = [];
@@ -107,23 +106,35 @@ export default function Editor() {
                     });
                 });
             });
+
+            // debug mode
+            const matches = model.findMatches('debugMode', false, false, true, null, true);
+            matches.forEach(match => {
+                decorations.push({
+                    range: match.range,
+                    options: {
+                        inlineClassName: 'debugModeHighlight'
+                    }
+                });
+            });
+
             return decorations;
         };
-    
+
         // Apply decorations
         let decorations = [];
         const updateDecorations = () => {
             decorations = editor.deltaDecorations(decorations, findHelperFunctions());
         };
-    
+
         // Initial decoration
         updateDecorations();
-    
+
         // Update decorations on content change
         model.onDidChangeContent(() => {
             updateDecorations();
         });
-    
+
         // Add hover provider
         if (hoverDisposable.current) hoverDisposable.current.dispose();
         hoverDisposable.current = monaco.languages.registerHoverProvider('javascript', {
@@ -181,6 +192,10 @@ export default function Editor() {
                     background-color: #CCC !important;
                     text-decoration: underline;
                 }
+                .debugModeHighlight{
+                    background-color: black !important;
+                    color: #FFD700;
+                }
             `}</style>
         </>
 
@@ -196,9 +211,17 @@ export default function Editor() {
 // ------- TABS -------
 // --------------------
 
+const EditorBar = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em;
+    background: white;
+`;
+
 const EditorTabContainer = styled.div`
   display: flex;
-  background:white;
   flex-direction: row;
   gap: 8px;
   padding: 3px 1em;
@@ -220,15 +243,30 @@ const EditorTab = styled.div`
 `;
 
 function EditorTabs(props) {
+    const projectState = useRecoilValue(projectAtom)
+
+
+
     return (
-        <EditorTabContainer>
-            {props.tabs.map((tab, i) => (
-                <EditorTab key={i} onClick={() => props.onChange(tab)}
-                    $isactive={props.current === tab ? 1 : 0}>
-                    {tab}
-                </EditorTab>
-            ))}
-        </EditorTabContainer>
+        <EditorBar>
+            <EditorTabContainer>
+                {props.tabs.map((tab, i) => (
+                    <EditorTab key={i} onClick={() => props.onChange(tab)}
+                        $isactive={props.current === tab ? 1 : 0}>
+                        {tab}
+                    </EditorTab>
+                ))}
+            </EditorTabContainer>
+            <EditorTabContainer>
+                {projectState.settings.libraries.map((lib, i) => (
+                    <Popover key={i} content={JSLibs[lib].desc} placement="bottomRight">
+                        <EditorTab onClick={() => location.href = JSLibs[lib].url}>
+                            {JSLibs[lib].name}
+                        </EditorTab>
+                    </Popover>
+                ))}
+            </EditorTabContainer>
+        </EditorBar>
     )
 }
 

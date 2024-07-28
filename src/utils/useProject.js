@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { atom, useRecoilState, useResetRecoilState } from "recoil";
+import parseFile from "./parser";
 
 export const projectAtom = atom({ key: "projectState", default: {} });
 const allCodeAtom = atom({ key: "allCode", default: '' });
@@ -12,7 +13,6 @@ export default function useProject() {
     const runCounter = useRef(0);
 
     const reset = ()=>{
-        console.log('reset project')
         setProject({})
         setAllCode('')
         resetEditorModels()
@@ -54,7 +54,7 @@ export default function useProject() {
     }, [project.params])
 
     const runCode = (newCode) => {
-        newCode += `\n console.log('run ${runCounter.current}')`;
+        newCode += `\n // ---- this is run ${runCounter.current}`;
         setAllCode(newCode);
         runCounter.current++;
     }
@@ -109,7 +109,7 @@ function getCodeLine(key, param) {
 }
 
 
-const allHelperFiles = ['setup', 'hashgrid', 'utils']
+const allHelperFiles = ['setup', 'hashgrid', 'utils', 'svg']
 async function getSnippets(snippets) {
     let allHelperCode = ''
     for (const file of allHelperFiles) {

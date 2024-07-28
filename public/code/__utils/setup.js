@@ -11,7 +11,7 @@ function initP5(show = false, webgl = false, ratio) {
     }
     ctx = drawingContext
     PS = width / 500
-    noiseSeed(round_random(1000))
+    noiseSeed(round(random(1000)))
     angleMode(DEGREES)
     if (!show) p5Canvas.elt.style.display = 'none'
     V = createVector
@@ -48,7 +48,6 @@ function initPaper(show = false) {
 
 //SNIPPET initMatter
 function initMatter() {
-    Matter.use('matter-attractors');
     window.Engine = Matter.Engine,
         window.Render = Matter.Render,
         window.Runner = Matter.Runner,

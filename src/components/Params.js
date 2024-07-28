@@ -8,7 +8,7 @@ import { ColorPicker, Checkbox, Slider, Input, ConfigProvider } from "antd";
 import { useRef, useState } from "react";
 
 
-const ParamContainer = styled.div`
+const ParamContainer = styled(motion.div)`
     position: relative;
     display: flex;
     flex-direction: column;
@@ -37,43 +37,63 @@ const ParamInput = styled.div`
 `;
 
 
+
 export default function Params() {
     const [projectState, setProjectState] = useRecoilState(projectAtom);
-    const topBarState = useRecoilValue(topBarAtom)
-    const [arrowHover, setArrowHover] = useState(false)
-    const [hidden, setHidden] = useState(false)
+    const topBarState = useRecoilValue(topBarAtom);
+    const [arrowHover, setArrowHover] = useState(false);
+    const [hidden, setHidden] = useState(false);
 
     if (topBarState.main !== 'parameters') return null;
     if (!projectState.params) return null;
 
     const onChange = (key, value) => {
-        const newParams = structuredClone(projectState.params)
-        newParams[key].value = value
-        setProjectState({ ...projectState, params: newParams })
-    }
+        const newParams = structuredClone(projectState.params);
+        newParams[key].value = value;
+        setProjectState({ ...projectState, params: newParams });
+    };
 
     return (
-        <motion.div animate={{ x: hidden ? '-20em' : 0 }} initial={{ x: '-25em' }}>
-            <ParamContainer>
-                {Object.entries(projectState.params).map(([key, value]) => (
-                    <Param key={key} {...value} param={key} update={newVal => onChange(key, newVal)} />
-                ))}
-                <div style={{ position: 'absolute', top: '45%', left: '95%', cursor: 'pointer' }}
-                    onMouseEnter={() => setArrowHover(true)} onMouseLeave={() => setArrowHover(false)}
-                     transition={{ duration: 0.3 }}
-                    onClick={() => setHidden(!hidden)}>
-
-                    <motion.svg width="40" height="40" viewBox="-10 -10 30 30" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute' }}
-                        animate={{ rotate: hidden ? 180 : 0 }}>
-
-                        <motion.circle cx="3" cy="5" r="0" fill="white" stroke="black" strokeWidth="1.5" 
-                            animate={{ r: arrowHover ? 12 : 8 }} transition={{ duration: 0.3 }}
-                        />
-                        <polyline points="5,0 0,5 5,10" stroke="black" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                    </motion.svg>
-                </div>
-            </ParamContainer>
-        </motion.div>
+        <ParamContainer animate={{ x: hidden ? '-20em' : 0 }} initial={{ x: '-25em' }} transition={{ type: 'spring', stiffness: 200, damping: 20 }}>
+            {Object.entries(projectState.params).map(([key, value]) => (
+                <Param key={key} {...value} param={key} update={newVal => onChange(key, newVal)} />
+            ))}
+            <motion.div
+                style={{
+                    position: 'absolute',
+                    top: '45%',
+                    left: '95%',
+                    cursor: 'pointer',
+                    width: '40px',
+                    height: '40px'
+                }}
+                onMouseEnter={() => setArrowHover(true)}
+                onMouseLeave={() => setArrowHover(false)}
+                onClick={() => setHidden(!hidden)}
+                animate={{ rotate: hidden ? 180 : 0 }}
+            >
+                <svg width="40" height="40" viewBox="-10 -10 30 30" xmlns="http://www.w3.org/2000/svg">
+                    <motion.circle
+                        cx="3"
+                        cy="5"
+                        r="8"
+                        fill="white"
+                        stroke="black"
+                        strokeWidth="1.5"
+                        animate={{ r: arrowHover ? 12 : 8 }}
+                        transition={{ duration: 0.3, type: 'spring', stiffness: 200 }}
+                    />
+                    <polyline
+                        points="5,0 0,5 5,10"
+                        stroke="black"
+                        strokeWidth="1.5"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                </svg>
+            </motion.div>
+        </ParamContainer>
     );
 }
 

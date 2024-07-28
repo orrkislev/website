@@ -1,6 +1,4 @@
 import { Link } from "react-router-dom";
-import useProject from "../utils/useProject";
-import { useEffect } from "react";
 import styled from "styled-components";
 
 const MainContainer = styled.div`
@@ -38,9 +36,6 @@ const MainLink = styled(Link)`
 
 
 export default function Main() {
-    const projectData = useProject()
-    useEffect(projectData.reset, [])
-
     return (
         <MainContainer>
             <MainTitle>
@@ -58,6 +53,14 @@ export default function Main() {
 
             <div>
                 <MainLink to="/waters">Living Waters</MainLink>
+            </div>
+
+            <div>
+                <MainLink to="/marbling">Marbling</MainLink>
+            </div>
+
+            <div>
+                <MainLink to="/growth">Growth</MainLink>
             </div>
         </MainContainer>
     )

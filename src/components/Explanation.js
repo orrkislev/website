@@ -9,7 +9,10 @@ const ExplanationContainer = styled.div`
     right: 0;
     width: 20em;
     height: 100%;
-    margin-right: 1em;
+    margin: 1em;
+    user-select: none;
+    margin-top: ${props => props.$stepdown ? '3em' : '0em'};
+    transition: all 1s;
     `;
 
 export default function Explanation() {
@@ -19,6 +22,6 @@ export default function Explanation() {
     if (!topBarState.info) return null;
 
     return (
-        <ExplanationContainer dangerouslySetInnerHTML={{ __html: projectState.explanation }} />
+        <ExplanationContainer dangerouslySetInnerHTML={{ __html: projectState.explanation }} $stepdown={topBarState.main == 'code' ? 1 : 0} />
     )
 }

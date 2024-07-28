@@ -8,13 +8,18 @@ const Variation = styled.div`
     padding: 10px;
     padding-right: 50px;
     cursor: pointer;
-    border-radius: 10px;
-    background-color: ${props => props.isactive ? 'white' : '#333'};
-    color: ${props => props.isactive ? 'black' : 'white'};
+    border-radius: 999px;
+    border: 2px solid black;
+    text-align: center;
+    min-width: 6em;
+
+    background-color: ${props => props.$isactive ? 'black' : 'white'};
+    color: ${props => props.$isactive ? 'white' : 'black'};
     transition: all 0.2s;
+
     &:hover {
-        background-color: ${(props) => (props.isactive ? "#555" : "white")};
-        color: ${(props) => (props.isactive ? "#888" : "#8C8C8C")};
+        background-color: ${(props) => (props.$isactive ? "white" : "black")};
+        color: ${(props) => (props.$isactive ? "black" : "white")};
     }
 `
 
@@ -48,7 +53,7 @@ export default function Variations() {
                 {projectData.project.settings.variations.map((v, i) => (
                     <Variation key={i}
                         onClick={() => clickHandler(v)} style={{ padding: '10px', cursor: 'pointer' }}
-                        isactive={currVariation === v.name ? 1 : 0}
+                        $isactive={currVariation === v.name ? 1 : 0}
                     >
                         {v.name}
                     </Variation>

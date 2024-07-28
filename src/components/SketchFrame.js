@@ -2,23 +2,44 @@ import React, { useState, useEffect, useRef } from 'react';
 import useProject from '../utils/useProject';
 import { useRecoilValue } from 'recoil';
 import { topBarAtom } from './Tabs';
+import { useMonaco } from '@monaco-editor/react';
 
-const libs = {
-  matter: "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js",
-  p5: "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js",
-  paper: "https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.0/paper-full.min.js"
+export const JSLibs = {
+  matter: {
+    cdn: "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js",
+    url: "https://brm.io/matter-js/",
+    name: "Matter.js",
+    desc: "2D physics engine for the web"
+  },
+  p5: {
+    cdn: "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js",
+    url: "https://p5js.org/",
+    name: "p5.js",
+    desc: "creative coding multi-toolkit"
+  },
+  paper: {
+    cdn: "https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.0/paper-full.min.js",
+    url: "http://paperjs.org/",
+    name: "Paper.js",
+    desc: "vector graphics scripting framework"
+  }
 }
 
 export default function SketchFrame() {
   const projectData = useProject()
   const topBarState = useRecoilValue(topBarAtom)
+  useMonaco()
 
   const [activeIframe, setActiveIframe] = useState(0);
   const iframeRefs = [useRef(null), useRef(null)]
   const [rerender, setRerender] = useState(false);
+  const sketchContainerRef = useRef(null);
 
   useEffect(() => {
-    const forwardEvent = (event) => {
+    if (!sketchContainerRef.current) return;
+    if (!iframeRefs[0].current || !iframeRefs[1].current) return;
+
+    const forwardMouseEvent = (event) => {
       const boundingRect = iframeRefs[0].current.getBoundingClientRect();
       const _x = event.clientX - boundingRect.left;
       const _y = event.clientY - boundingRect.top;
@@ -33,19 +54,34 @@ export default function SketchFrame() {
       iframeRefs[1].current.contentWindow.dispatchEvent(new_event);
     };
 
-    const events = ['mousemove', 'mousedown', 'mouseup', 'click', 'wheel'];
+    const mouseEvents = ['mousemove', 'mousedown', 'mouseup', 'click', 'wheel'];
     if (iframeRefs[0].current && iframeRefs[1].current) {
-      events.forEach(eventType => {
-        window.addEventListener(eventType, forwardEvent);
+      mouseEvents.forEach(eventType => {
+        window.addEventListener(eventType, forwardMouseEvent);
+      });
+    }
+
+    const forwardKeyboardEvent = (event) => {
+      iframeRefs[0].current.contentWindow.dispatchEvent(new KeyboardEvent(event.type, event));
+      iframeRefs[1].current.contentWindow.dispatchEvent(new KeyboardEvent(event.type, event));
+    };
+
+    const keyboardEvents = ['keydown', 'keyup'];
+    if (iframeRefs[0].current && iframeRefs[1].current) {
+      keyboardEvents.forEach(eventType => {
+        window.addEventListener(eventType, forwardKeyboardEvent);
       });
     }
 
     return () => {
-      events.forEach(eventType => {
-        window.removeEventListener(eventType, forwardEvent);
+      mouseEvents.forEach(eventType => {
+        window.removeEventListener(eventType, forwardMouseEvent);
       });
+      keyboardEvents.forEach(eventType => {
+        window.removeEventListener(eventType, forwardKeyboardEvent);
+      })
     };
-  }, [iframeRefs]);
+  }, [iframeRefs, sketchContainerRef]);
 
   const generateIframeContent = () => {
     let snippetsCode = ''
@@ -53,7 +89,7 @@ export default function SketchFrame() {
     return `
       <html>
         <head>
-          ${projectData.project.settings.libraries.map((lib) => `<script src="${libs[lib]}"></script>`).join('\n')}
+          ${projectData.project.settings.libraries.map((lib) => `<script src="${JSLibs[lib].cdn}"></script>`).join('\n')}
         </head>
         <body style="margin: 0; overflow: hidden;">
           ${snippetsCode}
@@ -96,7 +132,7 @@ export default function SketchFrame() {
   }, []);
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }} ref={sketchContainerRef}>
       {[0, 1].map((index) => (
         <iframe
           key={index}
