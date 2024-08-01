@@ -40,19 +40,11 @@ export default function Main() {
         <MainContainer>
             <MainTitle>
                 <div><h4>this is</h4></div>
-                <div><h1>STUFF THAT I MADE FOR YOU</h1></div>
+                <div><h1>STUFF I MADE FOR YOU</h1></div>
                 <div><h2>by Orr Kislev</h2></div>
             </MainTitle>
             <div>
-                <MainLink to="/genuary-physics">Friendly Thingies</MainLink>
-            </div>
-
-            <div>
-                <MainLink to="/dithering">Dithering an Image</MainLink>
-            </div>
-
-            <div>
-                <MainLink to="/waters">Living Waters</MainLink>
+                <MainLink to="/thingies">Friendly Thingies</MainLink>
             </div>
 
             <div>

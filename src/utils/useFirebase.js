@@ -14,7 +14,6 @@ export function useFirebase() {
             body: JSON.stringify({ directory: projectName, code: content })
         })
         const hash = await res.text()
-        console.log('hash:', hash)
         return hash
     }
 

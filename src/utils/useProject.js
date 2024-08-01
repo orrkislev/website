@@ -123,7 +123,7 @@ async function getSnippets(snippets) {
 
     let allHelperCode = ''
     for (const file of allHelperFiles) {
-        let newUtil = await fetch(`/code/__utils/${file}.js`);
+        let newUtil = await fetch(`/code/${file}.js`);
         newUtil = await newUtil.text();
         allHelperCode += newUtil + '\n';
     }
