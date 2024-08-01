@@ -10,10 +10,12 @@
         "initP5", "initMatter","choose"
     ],
     "variations": [{
-            "name": "First Test",
+            "name": "Tree like, Color growth",
+            "text": "what if every end would grow two more, and the colors are based on ancestor's color?",
             "file": "1.js"
         },{
-            "name": "Second",
+            "name": "Organism",
+            "text": "what if they move and dance a lot, and the growth would be more towards the existing ends?",
             "file": "2.js"
         }
     ],

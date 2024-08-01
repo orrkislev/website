@@ -6,7 +6,7 @@ import { useState } from "react";
 
 const RunButtonContainer = styled.div`
   position: absolute;
-  top: 1em;
+  top: 1.5em;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
@@ -21,14 +21,15 @@ const RunButtonContainer = styled.div`
 `
 const RunButton = styled.button`
   flex:4;
-  background-color: white;
-  color: #34352F;
+  background-color: cornflowerblue;
+  color: black;
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
   transition: all 0.2s;
   border: none;
   padding: 5px;
+
   
   &:hover {
     background-color: black;

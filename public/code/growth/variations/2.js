@@ -1,8 +1,8 @@
 //FILE Main
 
 lineLength = 2
-lineWidth = .5
-lineColor = '#00000055'
+lineWidth = 1
+lineColor = '#00000099'
 vertexSize = 0
 vertexColor = 0
 endsSize = 0

@@ -1,56 +1,55 @@
 import { useEffect, useRef, useState } from "react";
 import { atom, useRecoilState, useResetRecoilState } from "recoil";
 import parseFile from "./parser";
+import { useFirebase } from "./useFirebase";
 
 export const projectAtom = atom({ key: "projectState", default: {} });
 const allCodeAtom = atom({ key: "allCode", default: '' });
 export const editorModelsAtom = atom({ key: 'editorModels', default: {} })
 
 export default function useProject() {
+    const firebase = useFirebase()
     const [project, setProject] = useRecoilState(projectAtom);
     const [allCode, setAllCode] = useRecoilState(allCodeAtom);
     const resetEditorModels = useResetRecoilState(editorModelsAtom)
     const runCounter = useRef(0);
 
-    const reset = ()=>{
+    const reset = () => {
         setProject({})
         setAllCode('')
         resetEditorModels()
         runCounter.current = 0
     }
 
-    const initProject = async (name) => {
+    const initProject = async (name, withFiles = true, withInfo = true) => {
         try {
-            const res_settings = await fetch(`/code/${name}/settings.json`);
-            const settings = await res_settings.json();
-
+            const settings = await firebase.getFile(name, 'settings.json')
             const params = settings.params
-
-            const res_files = await fetch(`/code/${name}/${settings.script}`);
-            const text_files = await res_files.text();
-            let files = text_files.split('//FILE ');
-            files.shift();
-            files = files.map((part) => {
-                const name = part.split('\n')[0].trim();
-                const code = part.slice(name.length).trim();
-                return { name, code };
-            });
-
-            const snippets = settings.snippets ? await getSnippets(settings.snippets) : []
-
-            const res_exp = await fetch(`/code/${name}/explanation.html`);
-            const explanation = await res_exp.text();
-
-            setProject({ settings, files, explanation, params, name, snippets });
-
-            setAllCode(files.map((f) => f.code).join('\n') + '\n');
+            const snippets = await getSnippets(settings.snippets)
+            const projectObj = { name, settings, params, snippets }
+            
+            if (withInfo)
+                projectObj.explanation = await firebase.getFile(name, 'explanation.html')
+            if (withFiles){
+                const text_files = await firebase.getFile(name, settings.script)
+                let files = text_files.split('//FILE ');
+                files.shift();
+                files = files.map((part) => {
+                    const name = part.split('\n')[0].trim();
+                    const code = part.slice(name.length).trim();
+                    return { name, code };
+                });
+                projectObj.files = files
+                setAllCode(files.map((f) => f.code).join('\n') + '\n');
+            }
+            setProject(projectObj)
         } catch (error) {
             console.error('Error fetching settings:', error);
         }
     }
 
     useEffect(() => {
-        if (project.params) runParameters()
+        if (project.params && project.files) runParameters()
     }, [project.params])
 
     const runCode = (newCode) => {
@@ -70,9 +69,17 @@ export default function useProject() {
     }
 
     const runVariation = async (v) => {
-        const res = await fetch(`/code/${project.name}/variations/${v.file}`);
-        const txt = await res.text();
-        runCode(txt);
+        if (v.code) runCode(v.code)
+        else {
+            const newCode = await firebase.getFile(project.name, `${v.file}`)
+            runCode(newCode);
+            const newVariationsSetting = project.settings.variations.map((variation) => {
+                if (variation.name == v.name) return { ...variation, code: newCode }
+                return variation
+            })
+            const newSettings = { ...project.settings, variations: newVariationsSetting }
+            setProject({ ...project, settings: newSettings })
+        }
     }
 
     const rerun = () => {
@@ -111,6 +118,9 @@ function getCodeLine(key, param) {
 
 const allHelperFiles = ['setup', 'hashgrid', 'utils', 'svg']
 async function getSnippets(snippets) {
+    if (!snippets) return {}
+    if (snippets.length == 0) return {}
+
     let allHelperCode = ''
     for (const file of allHelperFiles) {
         let newUtil = await fetch(`/code/__utils/${file}.js`);

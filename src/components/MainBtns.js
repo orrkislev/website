@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { topBarAtom } from './Tabs';
+import useProject from '../utils/useProject';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -31,6 +32,7 @@ const SVGContainer = styled.div`
 
 export default function MainBtns() {
     const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
+    const project = useProject()
 
     useEffect(() => {
         return () => setTopBarState({ main: 'parameters', info: false })
@@ -150,6 +152,7 @@ export default function MainBtns() {
                         onClick={() => {
                             setActiveButton(button.name)
                             setTopBarState({ ...topBarState, main: button.value })
+                            project.rerun()
                         }}
                         variants={buttonVariants}
                         animate={activeButton === button ? 'active' : 'inactive'}

@@ -19,7 +19,7 @@ export default function HomeLogo() {
     )
 }
 
-function LogoSVG({ width, height }) {
+export function LogoSVG({ width, height }) {
     const [rotation, setRotation] = useState(0);
     const [hover, setHover] = useState(false);
 

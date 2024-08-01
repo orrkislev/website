@@ -12,6 +12,7 @@ const Variation = styled.div`
     border: 2px solid black;
     text-align: center;
     min-width: 6em;
+    max-width: 16em;
 
     background-color: ${props => props.$isactive ? 'black' : 'white'};
     color: ${props => props.$isactive ? 'white' : 'black'};
@@ -21,11 +22,6 @@ const Variation = styled.div`
         background-color: ${(props) => (props.$isactive ? "white" : "black")};
         color: ${(props) => (props.$isactive ? "black" : "white")};
     }
-`
-
-const VariationsContainerOuter = styled.div`
-    display: flex;
-    flex-direction: row;
 `
 
 const VariationsContainerInner = styled.div`
@@ -48,17 +44,18 @@ export default function Variations() {
     }
 
     return (
-        <VariationsContainerOuter >
-            <VariationsContainerInner>
-                {projectData.project.settings.variations.map((v, i) => (
-                    <Variation key={i}
+        <VariationsContainerInner>
+            {projectData.project.settings.variations.map((v, i) => (
+                <div key={i}>
+                    <Variation
                         onClick={() => clickHandler(v)} style={{ padding: '10px', cursor: 'pointer' }}
                         $isactive={currVariation === v.name ? 1 : 0}
                     >
                         {v.name}
                     </Variation>
-                ))}
-            </VariationsContainerInner>
-        </VariationsContainerOuter>
+                    {currVariation == v.name && <div style={{ fontSize: '0.8em', marginLeft: '10px', maxWidth: "16em" }}>{v.text}</div>}
+                </div>
+            ))}
+        </VariationsContainerInner>
     )
 }

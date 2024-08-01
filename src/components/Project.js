@@ -31,7 +31,7 @@ export const TopBar = styled.div`
   flex-direction: row;
   background-color: white;
   border-bottom: 2px solid black;
-  padding: 0 1em;
+  padding: .2em 1em;
   align-items: center;
   justify-content: space-between;
   width: 100%;
