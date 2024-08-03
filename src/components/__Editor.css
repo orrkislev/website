@@ -1,0 +1,33 @@
+.current-line {
+    background-color: #ffffffaa;
+    border: none !important;
+}
+
+.monaco-editor,
+.monaco-editor-background {
+    background-color: transparent !important;
+}
+
+.monaco-editor {
+    --vscode-editor-selectionBackground: #74C991 !important;
+    --vscode-editorGutter-background: transparent !important;
+}
+
+.view-line span {
+    background-color: white;
+}
+
+.mtk8 {
+    background-color: #4B8A6A !important;
+    color: white;
+}
+
+.helperFunctionHighlight {
+    background-color: #CCC !important;
+    text-decoration: underline;
+}
+
+.debugModeHighlight {
+    background-color: black !important;
+    color: #FFD700 !important;
+}

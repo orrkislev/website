@@ -1,6 +1,7 @@
 export function useFirebase() {
     const getFile = async (projectName, fileName) => {
-        const url = `https://storage.googleapis.com/creative-coding-site.appspot.com/${projectName}/${fileName}`
+        let url = `https://storage.googleapis.com/creative-coding-site.appspot.com/${projectName}/${fileName}`
+        if (projectName == 'test') url = `./code/test/${fileName}`
         const res = await fetch(url)
         if (fileName.endsWith('.json')) return await res.json()
         else return await res.text()

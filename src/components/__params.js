@@ -1,26 +1,27 @@
-import { useRecoilState, useRecoilValue } from "recoil";
-import useProject, { projectAtom } from "../utils/useProject";
-import { topBarAtom } from "./Tabs";
+import { useRecoilState } from "recoil";
+import { projectAtom } from "../utils/useProject";
 import styled from "styled-components";
-import { motion } from 'framer-motion';
+import Section from "./__Section";
 
 import { ColorPicker, Checkbox, Slider, Input, ConfigProvider } from "antd";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-
-const ParamContainer = styled(motion.div)`
-    position: sticky;
+    
+const ParamContainer = styled.div`
+    justify-content: center;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     padding: 5px;
     background: white;
-    border: 2px solid black;
     border-radius: 10px;
     margin: 5px;
-    width: 20em;
+    width: 100%;
+    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.5);
 `;
 
 const SingleParam = styled.div`
+    max-width: 8em;
     display: flex;
     gap: 4px;
     align-items: center;
@@ -40,12 +41,6 @@ const ParamInput = styled.div`
 
 export default function Params() {
     const [projectState, setProjectState] = useRecoilState(projectAtom);
-    const topBarState = useRecoilValue(topBarAtom);
-    const [arrowHover, setArrowHover] = useState(false);
-    const [hidden, setHidden] = useState(false);
-
-    if (topBarState.main !== 'parameters') return null;
-    if (!projectState.params) return null;
 
     const onChange = (key, value) => {
         const newParams = structuredClone(projectState.params);
@@ -54,48 +49,21 @@ export default function Params() {
     };
 
     return (
-        <ParamContainer animate={{ x: hidden ? '-20em' : 0 }} initial={{ x: '-25em' }} transition={{ type: 'spring', stiffness: 200, damping: 20 }}>
-            {Object.entries(projectState.params).map(([key, value]) => (
-                <Param key={key} {...value} param={key} update={newVal => onChange(key, newVal)} />
-            ))}
-            <motion.div
-                style={{
-                    position: 'absolute',
-                    top: '45%',
-                    left: '95%',
-                    cursor: 'pointer',
-                    width: '40px',
-                    height: '40px'
-                }}
-                onMouseEnter={() => setArrowHover(true)}
-                onMouseLeave={() => setArrowHover(false)}
-                onClick={() => setHidden(!hidden)}
-                animate={{ rotate: hidden ? 180 : 0 }}
-            >
-                <svg width="40" height="40" viewBox="-10 -10 30 30" xmlns="http://www.w3.org/2000/svg">
-                    <motion.circle
-                        cx="3"
-                        cy="5"
-                        r="8"
-                        fill="white"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        animate={{ r: arrowHover ? 12 : 8 }}
-                        transition={{ duration: 0.3, type: 'spring', stiffness: 200 }}
-                    />
-                    <polyline
-                        points="5,0 0,5 5,10"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-            </motion.div>
-        </ParamContainer>
+        <Section name='params'>
+            <h3 style={{margin:'0 2em'}}>PLAY with parameters</h3>
+            <ParamContainer>
+                {Object.entries(projectState.params).map(([key, value]) => (
+                    <Param key={key} {...value} param={key} update={newVal => onChange(key, newVal)} />
+                ))}
+            </ParamContainer>
+        </Section>
     );
 }
+
+
+
+
+
 
 function Param(props) {
     const newVal = useRef(props.value)
@@ -103,8 +71,7 @@ function Param(props) {
     let el
     if (props.type == 'color')
         el = <ColorPicker format={'hex'} value={props.value}
-            onChange={(val, hex) => newVal.current = hex}
-            onChangeComplete={() => props.update(newVal.current)}
+            onChange={(val, hex) => props.update(hex)}
         />
 
     if (props.type == 'boolean')
@@ -112,14 +79,12 @@ function Param(props) {
 
     if (props.type == 'number')
         el = <Slider defaultValue={props.value} min={props.min} max={props.max} step={props.step}
-            onChange={val => newVal.current = val}
-            onChangeComplete={() => props.update(newVal.current)}
+            onChange={val => props.update(val)}
         />
 
     if (props.type == 'range')
         el = <Slider range={true} defaultValue={props.value} min={props.min} max={props.max} step={props.step}
-            onChange={val => newVal.current = val}
-            onChangeComplete={() => props.update(newVal.current)}
+            onChange={val => props.update(val)}
         />
 
     if (props.type == 'expression' || props.type == 'string')

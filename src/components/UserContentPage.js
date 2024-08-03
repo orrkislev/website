@@ -82,14 +82,20 @@ function UserContent({ name, hash }) {
 
     return (
         <div>
-            <LogoContainer to="/">
-                <LogoSVG width="30px" height="30px" />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <div style={{ fontSize: '16px', fontStyle: 'italic', fontWeight: 800, lineHeight: '8px' }}>Stuff I Made For You</div>
-                    <div style={{ fontSize: '12px' }}>by Orr Kislev</div>
-                </div>
-            </LogoContainer>
+            <Logo />
             <main />
         </div>
+    )
+}
+
+export function Logo() {
+    return (
+        <LogoContainer to="/">
+            <LogoSVG width="30px" height="30px" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <div style={{ fontSize: '16px', fontStyle: 'italic', fontWeight: 800, lineHeight: '8px' }}>Stuff I Made For You</div>
+                <div style={{ fontSize: '12px' }}>by Orr Kislev</div>
+            </div>
+        </LogoContainer>
     )
 }

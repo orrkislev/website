@@ -1,22 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { atom, useRecoilState, useResetRecoilState } from "recoil";
-import parseFile from "./parser";
+import { parseExplanation, parseFile } from "./parser";
 import { useFirebase } from "./useFirebase";
 
 export const projectAtom = atom({ key: "projectState", default: {} });
 const allCodeAtom = atom({ key: "allCode", default: '' });
 export const editorModelsAtom = atom({ key: 'editorModels', default: {} })
+const runningCodeAtom = atom({ key: 'runningCode', default: {} })
 
 export default function useProject() {
     const firebase = useFirebase()
     const [project, setProject] = useRecoilState(projectAtom);
     const [allCode, setAllCode] = useRecoilState(allCodeAtom);
+    const [runningCode, setRunningCode] = useRecoilState(runningCodeAtom);
     const resetEditorModels = useResetRecoilState(editorModelsAtom)
     const runCounter = useRef(0);
 
     const reset = () => {
         setProject({})
         setAllCode('')
+        setRunningCode('')
         resetEditorModels()
         runCounter.current = 0
     }
@@ -27,20 +30,19 @@ export default function useProject() {
             const params = settings.params
             const snippets = await getSnippets(settings.snippets)
             const projectObj = { name, settings, params, snippets }
-            
-            if (withInfo)
-                projectObj.explanation = await firebase.getFile(name, 'explanation.html')
-            if (withFiles){
+
+            if (withInfo) {
+                const explanationText = await firebase.getFile(name, 'explanation.html')
+                projectObj.explanation = parseExplanation(explanationText)
+            }
+            if (withFiles) {
                 const text_files = await firebase.getFile(name, settings.script)
-                let files = text_files.split('//FILE ');
-                files.shift();
-                files = files.map((part) => {
-                    const name = part.split('\n')[0].trim();
-                    const code = part.slice(name.length).trim();
-                    return { name, code };
-                });
+                const files = parseFile(text_files)
                 projectObj.files = files
-                setAllCode(files.map((f) => f.code).join('\n') + '\n');
+
+                const code = files.map((f) => f.content).join('\n') + '\n'
+                setAllCode(code);
+                setRunningCode(code);
             }
             setProject(projectObj)
         } catch (error) {
@@ -48,19 +50,14 @@ export default function useProject() {
         }
     }
 
-    useEffect(() => {
-        if (project.params && project.files) runParameters()
-    }, [project.params])
-
     const runCode = (newCode) => {
-        newCode += `\n // ---- this is run ${runCounter.current}`;
+        newCode += `\n // ---- this is run ${runCounter.current++}`;
         setAllCode(newCode);
-        runCounter.current++;
     }
     const runParameters = () => {
         let newCode = ''
         project.files.forEach((f) => {
-            newCode += f.code + '\n';
+            newCode += f.content + '\n';
         })
         Object.entries(project.params).forEach(([key, param]) => {
             newCode += getCodeLine(key, param)
@@ -83,15 +80,20 @@ export default function useProject() {
     }
 
     const rerun = () => {
-        const lines = allCode.split('\n');
-        lines.pop();
-        runCode(lines.join('\n'));
+        setRunningCode(allCode + `\n // ---- this is run ${runCounter.current++}`)
+    }
+    const rerunParameters = () => {
+        rerun()
+        setTimeout(() => {
+            const newParams = { ...project.params, EXTRA: 'extra' + Math.random() }
+            setProject(prev => ({ ...prev, params: newParams }))
+        }, 100)
     }
 
 
     return {
-        project, allCode,
-        reset, initProject,
+        project, allCode, setAllCode, runningCode,
+        reset, initProject, rerunParameters,
         runCode, runParameters, runVariation, rerun
     }
 }
@@ -100,7 +102,7 @@ export default function useProject() {
 
 
 
-function getCodeLine(key, param) {
+export function getCodeLine(key, param) {
     if (param.type == 'range') return `${key} = [${param.value[0]},${param.value[1]}];\n`
 
     if (param.type == 'array') {

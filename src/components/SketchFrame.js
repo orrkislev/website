@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import useProject from '../utils/useProject';
+import useProject, { getCodeLine } from '../utils/useProject';
 import { useRecoilValue } from 'recoil';
 import { topBarAtom } from './Tabs';
 import { useMonaco } from '@monaco-editor/react';
@@ -83,10 +83,12 @@ export default function SketchFrame() {
     };
   }, [iframeRefs, sketchContainerRef]);
 
-  const generateIframeContent = () => {
-    let snippetsCode = ''
-    if (projectData.project.snippets) snippetsCode = '<script>' + Object.values(projectData.project.snippets).join('\n') + '</script>'
-    return `
+
+  const loadIframeContent = (iframeRef) => {
+    if (iframeRef.current) {
+      let snippetsCode = ''
+      if (projectData.project.snippets) snippetsCode = '<script>' + Object.values(projectData.project.snippets).join('\n') + '</script>'
+      iframeRef.current.srcdoc = `
       <html>
         <head>
           ${projectData.project.settings.libraries.map((lib) => `<script src="${JSLibs[lib].cdn}"></script>`).join('\n')}
@@ -95,17 +97,11 @@ export default function SketchFrame() {
           ${snippetsCode}
           <script> 
             const debugMode = ${topBarState.debug ? 'true' : 'false'};
-            ${projectData.allCode} 
+            ${projectData.runningCode} 
           </script>
         </body>
       </html>
     `;
-  };
-
-
-  const loadIframeContent = (iframeRef) => {
-    if (iframeRef.current) {
-      iframeRef.current.srcdoc = generateIframeContent();
     }
   };
 
@@ -125,7 +121,18 @@ export default function SketchFrame() {
         }, 100);
       });
     }
-  }, [projectData.allCode]);
+  }, [projectData.runningCode]);
+
+  useEffect(() => {
+    if (iframeRefs[activeIframe].current) {
+      const cnnt = iframeRefs[activeIframe].current.contentWindow;
+      let newCode = ''
+      Object.entries(projectData.project.params).forEach(([key, param]) => {
+        newCode += getCodeLine(key, param)
+      })
+      cnnt.eval(newCode)
+    }
+  }, [projectData.project.params])
 
   useEffect(() => {
     loadIframeContent(iframeRefs[0]);
