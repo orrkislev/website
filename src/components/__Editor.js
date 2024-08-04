@@ -2,7 +2,7 @@ import MonacoEditor, { useMonaco } from '@monaco-editor/react';
 import { useEffect, useRef } from 'react';
 import { useRecoilValue, atom, useRecoilState } from 'recoil';
 import useProject, { projectAtom } from '../utils/useProject';
-import { ApplyDecoration, ApplyHoverProvider, monacoOptions } from '../utils/monacoStuff';
+import { ApplyDecoration, ApplyHoverProvider, monacoOptions, setupMonaco } from '../utils/monacoStuff';
 import './__Editor.css';
 import styled from "styled-components";
 import Section from "./__Section";
@@ -44,6 +44,11 @@ export default function Editor() {
     const project = useProject()
     const editors = useRef([])
     const codeParts = useRef()
+    const monaco = useMonaco()
+
+    useEffect(()=>{
+        if (monaco) setupMonaco(monaco)
+    }, [monaco])
 
     useEffect(() => {
         if (project.project.files) {
@@ -70,7 +75,7 @@ export default function Editor() {
                             <EditorCardHeaderTitle>{f.title || f.name}</EditorCardHeaderTitle>
                             <EditorCardHeaderDescription>{f.description}</EditorCardHeaderDescription>
                         </EditorCardHeader>
-                        <EditorSection code={f.content} updateEditor={(editor) => setEditor(i, editor)} updateCode={(value) => updateCode(i, value)} />
+                        <EditorSection monaco={monaco} code={f.content} updateEditor={(editor) => setEditor(i, editor)} updateCode={(value) => updateCode(i, value)} />
                     </EditorCard>
                 ))}
             </EditorContainer>
@@ -78,58 +83,25 @@ export default function Editor() {
     )
 }
 
-function EditorSection({ code, updateEditor, updateCode }) {
+function EditorSection({ monaco, code, updateEditor, updateCode }) {
     const projectState = useRecoilValue(projectAtom)
-    const monaco = useMonaco()
     const editorRef = useRef(null)
-
-    useEffect(() => {
-        const initMonaco = async () => {
-            monaco.languages.typescript.javascriptDefaults.addExtraLib(
-                await fetch('/code/p5.global-mode.d.ts').then(response => response.text()),
-                'p5.d.ts'
-            );
-
-            //     monaco.languages.register({ id: 'p5js' });
-
-            //     monaco.languages.setMonarchTokensProvider('p5js', {
-            //         tokenizer: {
-            //             root: [
-            //                 [/\b(createCanvas|background|fill|ellipse|rect|line)\b/, 'p5jsKeyword'], // More specific p5js keywords
-            //                 [/\b(function|var|let)\b/, 'keyword'],
-            //                 // ... more rules for other token types
-            //             ]
-            //         }
-            //     });
-
-            //     monaco.editor.defineTheme('p5jsTheme', {
-            //         base: 'vs',
-            //         inherit: true,
-            //         rules: [
-            //             { token: 'p5jsKeyword', foreground: '0000FF' }, // Custom token type for p5js keywords
-            //             { token: 'keyword', foreground: 'FF00FF' },
-            //         ],
-            //         colors: {
-            //             'editor.foreground': '#000000'
-            //         }
-            //     });
-        }
-        if (monaco) initMonaco()
-    }, [monaco])
 
     const initEditor = (editor) => {
         editorRef.current = editor;
         ApplyDecoration(editorRef.current, Object.keys(projectState.snippets), 'helperFunctionHighlight');
         ApplyDecoration(editorRef.current, ['debugMode'], 'debugModeHighlight');
-        ApplyHoverProvider(monaco, projectState.snippets);
+        ApplyDecoration(editorRef.current, Object.keys(projectState.params), 'parameterHighlight');
         updateEditor(editorRef.current);
+        ApplyHoverProvider(monaco, projectState.snippets);
     }
 
-    if (!projectState) return null
     if (!monaco) return null
     return (
         <div style={{ width: '100%', height: '100%', borderRadius: '1em', overflow: 'hidden' }}>
             <MonacoEditor
+                language='creativeCode'
+                theme='creativeCodeTheme'
                 defaultValue={code}
                 onMount={initEditor}
                 options={monacoOptions}

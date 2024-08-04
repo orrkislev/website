@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "creative-coding-site",
+    "staging": "creative-coding-site"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}

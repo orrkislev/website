@@ -17,10 +17,10 @@
     background-color: white;
 }
 
-.mtk8 {
+/* .mtk8 {
     background-color: #4B8A6A !important;
     color: white;
-}
+} */
 
 .helperFunctionHighlight {
     background-color: #CCC !important;
@@ -30,4 +30,8 @@
 .debugModeHighlight {
     background-color: black !important;
     color: #FFD700 !important;
+}
+.parameterHighlight{
+    background-color: #FFA50044 !important;
+    color: black !important;
 }
