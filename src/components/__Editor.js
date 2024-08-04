@@ -1,5 +1,5 @@
 import MonacoEditor, { useMonaco } from '@monaco-editor/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRecoilValue, atom, useRecoilState } from 'recoil';
 import useProject, { projectAtom } from '../utils/useProject';
 import { ApplyDecoration, ApplyHoverProvider, monacoOptions, setupMonaco } from '../utils/monacoStuff';
@@ -8,17 +8,16 @@ import styled from "styled-components";
 import Section from "./__Section";
 
 const EditorContainer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: .5em;
-    grid-template-rows: repeat(5, 1fr);
+    display: flex;
+    flex-direction: column;
     margin: 1em;
+    padding-top: 20em;
 `;
 
 const EditorCard = styled.div`
-    height: 80vh;
-    grid-column: ${props => props.$index % 2 + 1} / span 1;
-    grid-row: ${props => props.$index * 2 + 1} / span 3;
+    margin-top: -20em;
+    width: calc(50% - .5em);
+    align-self: ${props => props.$index % 2 === 0 ? 'flex-start' : 'flex-end'};
     display: flex;
     flex-direction: column;
     border-radius: 1em;
@@ -46,7 +45,7 @@ export default function Editor() {
     const codeParts = useRef()
     const monaco = useMonaco()
 
-    useEffect(()=>{
+    useEffect(() => {
         if (monaco) setupMonaco(monaco)
     }, [monaco])
 
@@ -68,45 +67,89 @@ export default function Editor() {
 
     return (
         <Section name='editor'>
+            <h3 style={{margin:'0 2em'}}>STUDY the code</h3>
             <EditorContainer>
                 {project.project.files && project.project.files.map((f, i) => (
-                    <EditorCard key={f.name} $index={i}>
-                        <EditorCardHeader>
-                            <EditorCardHeaderTitle>{f.title || f.name}</EditorCardHeaderTitle>
-                            <EditorCardHeaderDescription>{f.description}</EditorCardHeaderDescription>
-                        </EditorCardHeader>
-                        <EditorSection monaco={monaco} code={f.content} updateEditor={(editor) => setEditor(i, editor)} updateCode={(value) => updateCode(i, value)} />
-                    </EditorCard>
+                    <EditorSection key={f.name}
+                        index={i}
+                        monaco={monaco}
+                        code={f.content}
+                        updateEditor={(editor) => setEditor(i, editor)}
+                        updateCode={(value) => updateCode(i, value)}
+                        title={f.title || f.name}
+                        description={f.description}
+                    />
                 ))}
             </EditorContainer>
         </Section>
     )
 }
 
-function EditorSection({ monaco, code, updateEditor, updateCode }) {
-    const projectState = useRecoilValue(projectAtom)
+function EditorSection({ monaco, code, updateEditor, updateCode, title, description, index }) {
+    const project = useProject()
     const editorRef = useRef(null)
+    const [changed, setChanged] = useState(false)
+    const [dot, setDot] = useState(false)
+    const [initialCode, setInitialCode] = useState(code)
+
+    useEffect(()=>{
+        if (project.project.files && editorRef.current) {
+            code = project.project.files[index].content
+            editorRef.current.setValue(code)
+            setInitialCode(code)
+            setChanged(false)
+            setDot(false)
+        }
+    },[project.project.files])
+
+    useEffect(()=>{
+        setDot(false)
+    },[project.runningCode])
 
     const initEditor = (editor) => {
         editorRef.current = editor;
-        ApplyDecoration(editorRef.current, Object.keys(projectState.snippets), 'helperFunctionHighlight');
+        ApplyDecoration(editorRef.current, Object.keys(project.project.snippets), 'helperFunctionHighlight');
         ApplyDecoration(editorRef.current, ['debugMode'], 'debugModeHighlight');
-        ApplyDecoration(editorRef.current, Object.keys(projectState.params), 'parameterHighlight');
+        ApplyDecoration(editorRef.current, Object.keys(project.project.params), 'parameterHighlight');
         updateEditor(editorRef.current);
-        ApplyHoverProvider(monaco, projectState.snippets);
+        ApplyHoverProvider(monaco, project.project.snippets);
+
+        const numOfLines = editorRef.current.getModel().getLineCount();
+        const lineHeight = editorRef.current.getOption(monaco.editor.EditorOption.lineHeight);
+        const totalHeight = numOfLines * lineHeight;
+        editorRef.current.layout({ height: totalHeight });
+    }
+
+    const onChange = (value) => {
+        updateCode(value)
+        setChanged(true)
+        setDot(true)
+    }
+
+    const revert = () => {
+        editorRef.current.setValue(initialCode)
+        setChanged(false)
     }
 
     if (!monaco) return null
     return (
-        <div style={{ width: '100%', height: '100%', borderRadius: '1em', overflow: 'hidden' }}>
-            <MonacoEditor
-                language='creativeCode'
-                theme='creativeCodeTheme'
-                defaultValue={code}
-                onMount={initEditor}
-                options={monacoOptions}
-                onChange={updateCode}
-            />
-        </div>
+        <EditorCard $index={index}>
+            <EditorCardHeader>
+                <EditorCardHeaderTitle>{title}</EditorCardHeaderTitle>
+                <EditorCardHeaderDescription>{description} </EditorCardHeaderDescription>
+                {changed && <button onClick={revert}>Revert</button>}
+                {dot && <span style={{color: 'red', fontSize: '1.5em', position: 'absolute', top: '1em', right: '1em'}}>•</span>}
+            </EditorCardHeader>
+            <div style={{ width: '100%', height: '100%', borderRadius: '1em', overflow: 'hidden' }}>
+                <MonacoEditor
+                    language='creativeCode'
+                    theme='creativeCodeTheme'
+                    defaultValue={code}
+                    onMount={initEditor}
+                    options={monacoOptions}
+                    onChange={onChange}
+                />
+            </div>
+        </EditorCard>
     )
 }

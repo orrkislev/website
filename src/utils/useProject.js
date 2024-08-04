@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { atom, useRecoilState, useResetRecoilState } from "recoil";
 import { parseExplanation, parseFile } from "./parser";
 import { useFirebase } from "./useFirebase";
@@ -29,7 +29,7 @@ export default function useProject() {
             const settings = await firebase.getFile(name, 'settings.json')
             const params = settings.params
             const snippets = await getSnippets(settings.snippets)
-            const projectObj = { name, settings, params, snippets }
+            const projectObj = { name, settings, params, snippets, variations: settings.variations }
 
             if (withInfo) {
                 const explanationText = await firebase.getFile(name, 'explanation.html')
@@ -38,16 +38,20 @@ export default function useProject() {
             if (withFiles) {
                 const text_files = await firebase.getFile(name, settings.script)
                 const files = parseFile(text_files)
+                projectObj.originalFiles = files
                 projectObj.files = files
-
-                const code = files.map((f) => f.content).join('\n') + '\n'
-                setAllCode(code);
-                setRunningCode(code);
+                applyFiles(files)
             }
             setProject(projectObj)
         } catch (error) {
             console.error('Error fetching settings:', error);
         }
+    }
+
+    const applyFiles = (files) => {
+        const code = files.map((f) => f.content).join('\n') + '\n'
+        setAllCode(code);
+        setRunningCode(code);
     }
 
     const runCode = (newCode) => {
@@ -79,6 +83,28 @@ export default function useProject() {
         }
     }
 
+    const applyVariation = async (v) => {
+        if (v.name == 'original'){
+            setProject(prev => ({ ...prev, files: prev.originalFiles }))
+            applyFiles(project.originalFiles)
+            return
+        }
+        if (v.files){
+            setProject(prev => ({ ...prev, files: v.files }))
+            applyFiles(v.files)
+            return
+        }
+        const variationFile = await firebase.getFile(project.name, `${v.file}`)
+        const files = parseFile(variationFile)
+        const newVariation = { ...v, files }
+        const newVariations = [...project.variations]
+        const index = newVariations.findIndex((variation) => variation.name == v.name)
+        newVariations[index] = newVariation
+
+        setProject({ ...project, files, variations: newVariations })
+        applyFiles(files)
+    }
+
     const rerun = () => {
         setRunningCode(allCode + `\n // ---- this is run ${runCounter.current++}`)
     }
@@ -94,7 +120,7 @@ export default function useProject() {
     return {
         project, allCode, setAllCode, runningCode,
         reset, initProject, rerunParameters,
-        runCode, runParameters, runVariation, rerun
+        runCode, runParameters, runVariation, rerun, applyVariation
     }
 }
 

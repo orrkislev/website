@@ -27,6 +27,7 @@ const ExpTitleTitle = styled.div`
     font-size: 40pt;
     font-weight: bold;
     font-family: "Noto Serif", serif;
+    margin-bottom: -0.3em;
     `;
 const ExpTitleSubtitle = styled.div`
     font-size: 20pt;

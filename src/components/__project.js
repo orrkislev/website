@@ -1,11 +1,11 @@
-import SketchFrame from './SketchFrame';
+import { useEffect } from "react";
 import useProject from '../utils/useProject';
+import SketchFrame from './SketchFrame';
+
 import Editor from './__Editor';
 import Params from "./__params";
-import Variations from "./Variations";
-import { useEffect } from "react";
+import Variations from "./__Variations";
 import Explanation from "./__explanation";
-import { Logo } from "./UserContentPage";
 import TopBar from './__TopBar';
 import RunBtn from './__RunBtn';
 

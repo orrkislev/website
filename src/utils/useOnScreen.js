@@ -6,9 +6,8 @@ export function useOnScreen(ref) {
 
   useEffect(() => {
     const ioConfiguration = {
-      // check for the center of the element
       rootMargin: '-50px',
-      threshold: 0.5,
+      threshold: 0.2,
     };
     observerRef.current = new IntersectionObserver(([entry]) =>
       setIsOnScreen(entry.isIntersecting)

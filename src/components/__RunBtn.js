@@ -11,26 +11,23 @@ const RunButtonContainer = styled.div`
   top: 2em;
   left: 50%;
   transform: translateX(-50%);
-  border: 2px solid black;
-  border-radius: 999px;
   display:flex;
   min-width: 200px;
   align-items: center;
   overflow: hidden;
+  height: 3em;
+
 `
 const RunButton = styled.button`
   flex:4;
-  background-color: rgba(50, 50, 105, 0.5);
-  backdrop-filter: blur(5px);
+  background:white;
   color: black;
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
   transition: all 0.2s;
   border: none;
-  border-right: 2px solid black;
-  padding: 5px;
-
+  height: 100%;
   
   &:hover {
     background-color: black;
@@ -43,10 +40,12 @@ const DebugButton = styled.button`
   cursor: pointer;
   transition: all 0.2s;
   border: none;
-  background-color: ${(props) => (props.$isactive ? "black" : "white")};  
+  height: 100%;
+  background: transparent;
+
   &:hover {
-    background-color: ${(props) => (props.$isactive ? "white" : "black")};
-  } 
+    background-color: black;
+    }
 `;
 
 export default function RunBtn() {

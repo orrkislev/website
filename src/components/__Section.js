@@ -6,7 +6,7 @@ import { topBarAtom } from './Tabs';
 
 export const SectionEl = styled.section`
     position: relative;
-    height: 80vh;
+    min-height: 80vh;
     margin: 2em 5em;
     user-select: none;
     scroll-margin-top: 10vh;

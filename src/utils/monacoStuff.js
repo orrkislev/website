@@ -13,12 +13,12 @@ export const monacoOptions = {
         ]
     },
     scrollbar: {
-        alwaysConsumeMouseWheel: false
+        vertical: 'hidden',
+        horizontal: 'hidden'
     }
 }
 
 export async function setupMonaco(monaco) {
-    console.log('setupMonaco')
     // monaco.languages.typescript.javascriptDefaults.addExtraLib(
     //     await fetch('/code/p5.global-mode.d.ts').then(response => response.text()),
     //     'p5.d.ts'
@@ -92,7 +92,6 @@ export async function setupMonaco(monaco) {
 }
 
 export function ApplyDecoration(editor, words, classname) {
-    console.log('ApplyDecoration')
     const model = editor.getModel();
     const findWords = () => {
         let decorations = [];
@@ -122,7 +121,6 @@ export function ApplyDecoration(editor, words, classname) {
 }
 
 export function ApplyHoverProvider(monaco, snippets) {
-    console.log('ApplyHoverProvider', monaco)
     return monaco.languages.registerHoverProvider('creativeCode', {
         provideHover: (model, position) => {
             const word = model.getWordAtPosition(position);
