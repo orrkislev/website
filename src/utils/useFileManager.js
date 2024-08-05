@@ -1,7 +1,9 @@
-export function useFirebase() {
+export function useFileManager() {
     const getFile = async (projectName, fileName) => {
-        let url = `https://storage.googleapis.com/creative-coding-site.appspot.com/${projectName}/${fileName}`
-        if (projectName == 'test') url = `./code/test/${fileName}`
+        let url = `https://cdn.jsdelivr.net/gh/orrkislev/stuff-I-made-for-you/${projectName}/${fileName}`
+        // let url = `https://storage.googleapis.com/creative-coding-site.appspot.com/${projectName}/${fileName}`
+        // if (projectName == 'test' && !process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+            // url = `./code/test/${fileName}`
         const res = await fetch(url)
         if (fileName.endsWith('.json')) return await res.json()
         else return await res.text()

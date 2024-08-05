@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { atom, useRecoilState, useResetRecoilState } from "recoil";
 import { parseExplanation, parseFile } from "./parser";
-import { useFirebase } from "./useFirebase";
+import { useFileManager } from "./useFileManager";
 
 export const projectAtom = atom({ key: "projectState", default: {} });
 const allCodeAtom = atom({ key: "allCode", default: '' });
@@ -9,7 +9,7 @@ export const editorModelsAtom = atom({ key: 'editorModels', default: {} })
 const runningCodeAtom = atom({ key: 'runningCode', default: {} })
 
 export default function useProject() {
-    const firebase = useFirebase()
+    const fileManager = useFileManager()
     const [project, setProject] = useRecoilState(projectAtom);
     const [allCode, setAllCode] = useRecoilState(allCodeAtom);
     const [runningCode, setRunningCode] = useRecoilState(runningCodeAtom);
@@ -26,17 +26,17 @@ export default function useProject() {
 
     const initProject = async (name, withFiles = true, withInfo = true) => {
         try {
-            const settings = await firebase.getFile(name, 'settings.json')
+            const settings = await fileManager.getFile(name, 'settings.json')
             const params = settings.params
             const snippets = await getSnippets(settings.snippets)
             const projectObj = { name, settings, params, snippets, variations: settings.variations }
 
             if (withInfo) {
-                const explanationText = await firebase.getFile(name, 'explanation.html')
+                const explanationText = await fileManager.getFile(name, 'explanation.html')
                 projectObj.explanation = parseExplanation(explanationText)
             }
             if (withFiles) {
-                const text_files = await firebase.getFile(name, settings.script)
+                const text_files = await fileManager.getFile(name, settings.script)
                 const files = parseFile(text_files)
                 projectObj.originalFiles = files
                 projectObj.files = files
@@ -72,7 +72,7 @@ export default function useProject() {
     const runVariation = async (v) => {
         if (v.code) runCode(v.code)
         else {
-            const newCode = await firebase.getFile(project.name, `${v.file}`)
+            const newCode = await fileManager.getFile(project.name, `${v.file}`)
             runCode(newCode);
             const newVariationsSetting = project.settings.variations.map((variation) => {
                 if (variation.name == v.name) return { ...variation, code: newCode }
@@ -94,7 +94,7 @@ export default function useProject() {
             applyFiles(v.files)
             return
         }
-        const variationFile = await firebase.getFile(project.name, `${v.file}`)
+        const variationFile = await fileManager.getFile(project.name, `variations/${v.file}`)
         const files = parseFile(variationFile)
         const newVariation = { ...v, files }
         const newVariations = [...project.variations]

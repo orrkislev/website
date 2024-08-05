@@ -5,7 +5,7 @@ import useProject, { editorModelsAtom, projectAtom } from '../utils/useProject';
 import styled from 'styled-components';
 import { JSLibs } from './SketchFrame';
 import { Popover } from 'antd';
-import { useFirebase } from '../utils/useFirebase';
+import { useFileManager } from '../utils/useFileManager';
 
 const options = {
     language: 'javascript',
@@ -289,7 +289,7 @@ const ShareButtonSVG = styled.svg`
 function ShareButton() {
     const monaco = useMonaco()
     const project = useProject()
-    const firebase = useFirebase()
+    const fileManager = useFileManager()
 
     const click = async () => {
         console.log('click share')
@@ -298,7 +298,7 @@ function ShareButton() {
             newFile += `//FILE ${m.uri.path.slice(1)}\n`
             newFile += m.getValue() + '\n'
         })
-        const hash = await firebase.storeFile(project.project.name, newFile)
+        const hash = await fileManager.storeFile(project.project.name, newFile)
         const url = `${location.origin}/${project.project.name}/${hash}`
         // copy to clipboard and open in a new tab
         navigator.clipboard.writeText(url)

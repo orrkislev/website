@@ -4,14 +4,15 @@ import styled from "styled-components";
 import Section from "./__Section";
 
 import { ColorPicker, Checkbox, Slider, Input, ConfigProvider } from "antd";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
     
 const ParamContainer = styled.div`
     justify-content: center;
     display: flex;
+    gap: 1em;
     flex-wrap: wrap;
-    padding: 5px;
+    padding: .5em 1em;
     background: white;
     border-radius: 10px;
     margin: 5px;
@@ -21,11 +22,10 @@ const ParamContainer = styled.div`
 `;
 
 const SingleParam = styled.div`
-    max-width: 8em;
+    width: 12em;
     display: flex;
     gap: 4px;
     align-items: center;
-    width: 100%;
 `;
 
 const ParamName = styled.div`

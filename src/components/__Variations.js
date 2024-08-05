@@ -2,6 +2,8 @@ import useProject from "../utils/useProject"
 import styled from "styled-components"
 import { useState } from "react"
 import Section from "./__Section"
+import { useRecoilState } from "recoil";
+import { topBarAtom } from "./Tabs";
 
 const VariationsContainer = styled.div`
     display: flex;
@@ -38,11 +40,13 @@ const Variation = styled.div`
 
 export default function Variations() {
     const project = useProject()
+    const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
     const [currVariation, setCurrVariation] = useState('default')
 
     const clickHandler = (v) => {
         setCurrVariation(v.name)
         project.applyVariation(v)
+        setTopBarState({ ...topBarState, scrollTo: 'info' })
     }
 
     const variations = [...project.project.variations]
@@ -50,18 +54,18 @@ export default function Variations() {
 
     return (
         <Section name="variations">
-            <h3 style={{margin:'0 2em'}}>EXPLORE different variations</h3>
+            <h3 style={{ margin: '0 2em' }}>EXPLORE different variations</h3>
             <VariationsContainer>
-            {variations.map((v, i) => (
-                <div key={i}>
-                    <Variation
-                        onClick={() => clickHandler(v)} style={{ padding: '10px', cursor: 'pointer' }}
-                        $isactive={currVariation === v.name ? 1 : 0}>
-                        {v.name}
-                    </Variation>
-                    {currVariation == v.name && <div style={{ fontSize: '0.8em', marginLeft: '10px', maxWidth: "16em" }}>{v.text}</div>}
-                </div>
-            ))}
+                {variations.map((v, i) => (
+                    <div key={i}>
+                        <Variation
+                            onClick={() => clickHandler(v)} style={{ padding: '10px', cursor: 'pointer' }}
+                            $isactive={currVariation === v.name ? 1 : 0}>
+                            {v.name}
+                        </Variation>
+                        {currVariation == v.name && <div style={{ fontSize: '0.8em', marginLeft: '10px', maxWidth: "16em" }}>{v.text}</div>}
+                    </div>
+                ))}
             </VariationsContainer>
         </Section>
     )

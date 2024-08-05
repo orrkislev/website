@@ -99,6 +99,7 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
             setInitialCode(code)
             setChanged(false)
             setDot(false)
+            setEditorSize()
         }
     },[project.project.files])
 
@@ -114,6 +115,10 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
         updateEditor(editorRef.current);
         ApplyHoverProvider(monaco, project.project.snippets);
 
+        setEditorSize()
+    }
+
+    const setEditorSize = () => {
         const numOfLines = editorRef.current.getModel().getLineCount();
         const lineHeight = editorRef.current.getOption(monaco.editor.EditorOption.lineHeight);
         const totalHeight = numOfLines * lineHeight;

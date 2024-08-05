@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom"
 import { JSLibs } from "./SketchFrame"
 import useProject from "../utils/useProject"
 import { RecoilRoot } from "recoil"
-import { useFirebase } from "../utils/useFirebase"
+import { useFileManager } from "../utils/useFileManager"
 import { LogoSVG } from "./HomeLogo"
 import { styled } from 'styled-components'
 
@@ -42,7 +42,7 @@ export default function UserContentPage() {
 
 function UserContent({ name, hash }) {
     const project = useProject()
-    const firebase = useFirebase()
+    const fileManager = useFileManager()
     const [running, setRunning] = useState(false)
 
     useEffect(() => {
@@ -51,9 +51,9 @@ function UserContent({ name, hash }) {
 
     useEffect(() => {
         if (!project.project.settings) return
-        if (!firebase) return
+        if (!fileManager) return
         setSketch()
-    }, [project, firebase])
+    }, [project, fileManager])
 
     const setSketch = async () => {
         if (running) return
@@ -71,7 +71,7 @@ function UserContent({ name, hash }) {
         await Promise.all(promises)
 
         let code = Object.values(project.project.snippets).join('\n')
-        code += await firebase.getFile(name, hash) + '\n'
+        code += await fileManager.getFile(name, hash) + '\n'
 
         const script = document.createElement('script')
         script.innerHTML = code
