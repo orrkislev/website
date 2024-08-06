@@ -14,7 +14,8 @@ export const monacoOptions = {
     },
     scrollbar: {
         vertical: 'hidden',
-        horizontal: 'hidden'
+        horizontal: 'hidden',
+        alwaysConsumeMouseWheel: false
     }
 }
 

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { styled } from 'styled-components';
 import { useOnScreen } from '../utils/useOnScreen';
 import { useRecoilState } from 'recoil';
-import { topBarAtom } from './Tabs';
+import { topBarAtom } from "./__TopBar";
 
 export const SectionEl = styled.section`
     position: relative;

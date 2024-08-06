@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom"
 import { JSLibs } from "./SketchFrame"
 import useProject from "../utils/useProject"
 import { RecoilRoot } from "recoil"
-import { useFileManager } from "../utils/useFileManager"
+import { getFromFirebase, useFileManager } from "../utils/useFileManager"
 import { LogoSVG } from "./HomeLogo"
 import { styled } from 'styled-components'
 
@@ -70,11 +70,12 @@ function UserContent({ name, hash }) {
 
         await Promise.all(promises)
 
-        let code = Object.values(project.project.snippets).join('\n')
-        code += await fileManager.getFile(name, hash) + '\n'
+        let code = Object.values(project.project.snippets).join('\n') + '\n'
+        code += await getFromFirebase(name, hash) + '\n'
 
         const script = document.createElement('script')
         script.innerHTML = code
+        console.log(code)
         document.body.appendChild(script)
         eval('new p5()')
         setRunning(true)

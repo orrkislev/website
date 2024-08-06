@@ -1,9 +1,16 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components'
 import { LogoSVG } from './HomeLogo';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { topBarAtom } from './Tabs';
-import { useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+import { atom } from "recoil";
+
+export const topBarAtom = atom({
+  key: "topBarState", default: {
+    main: 'parameters',
+    info: true,
+    debug: false
+  }
+});
 
 const TopBarContainer = styled.div`
     position: fixed;

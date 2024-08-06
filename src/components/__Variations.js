@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { useState } from "react"
 import Section from "./__Section"
 import { useRecoilState } from "recoil";
-import { topBarAtom } from "./Tabs";
+import { topBarAtom } from "./__TopBar";
 
 const VariationsContainer = styled.div`
     display: flex;

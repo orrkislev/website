@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useFileManager } from "../utils/useFileManager";
+import { useEffect, useState } from "react";
 
 const MainContainer = styled.div`
     display: flex;
@@ -36,6 +38,15 @@ const MainLink = styled(Link)`
 
 
 export default function Main() {
+    const [projects, setProjects] = useState([])
+    const fileManager = useFileManager()
+
+    useEffect(() => {
+        fileManager.getFile('', 'projectIndex.json').then(data => {
+            setProjects(data.projects)
+        })
+    }, [])
+
     return (
         <MainContainer>
             <MainTitle>
@@ -43,17 +54,11 @@ export default function Main() {
                 <div><h1>STUFF I MADE FOR YOU</h1></div>
                 <div><h2>by Orr Kislev</h2></div>
             </MainTitle>
-            <div>
-                <MainLink to="/thingies">Friendly Thingies</MainLink>
-            </div>
-
-            <div>
-                <MainLink to="/marbling">Marbling</MainLink>
-            </div>
-
-            <div>
-                <MainLink to="/growth">Growth</MainLink>
-            </div>
+            {projects.map(project => (
+                <div>
+                    <MainLink to={"/"+project.directory}>{project.name}</MainLink>
+                </div>
+            ))}
         </MainContainer>
     )
 }

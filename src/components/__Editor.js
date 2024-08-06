@@ -6,6 +6,7 @@ import { ApplyDecoration, ApplyHoverProvider, monacoOptions, setupMonaco } from 
 import './__Editor.css';
 import styled from "styled-components";
 import Section from "./__Section";
+import RevertIcon from '../assets/revert.svg';
 
 const EditorContainer = styled.div`
     display: flex;
@@ -85,6 +86,35 @@ export default function Editor() {
     )
 }
 
+
+
+
+const Revert = styled.img`
+    cursor: pointer;
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    width: 1.5em;
+    height: 1.5em;
+    padding: 0.5em;
+    transition: 0.2s;
+
+    &:hover {
+        filter: invert(1);
+        background: white;
+    }
+`;
+const Dot = styled.div`
+    background-color: red;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    position: absolute;
+    top: 1.25em;
+    right: -.25em;
+`;
+
+
 function EditorSection({ monaco, code, updateEditor, updateCode, title, description, index }) {
     const project = useProject()
     const editorRef = useRef(null)
@@ -137,13 +167,14 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
     }
 
     if (!monaco) return null
+    const shouldBeFullWidth = project.project.files.length === 1
     return (
-        <EditorCard $index={index}>
+        <EditorCard $index={index} style={{ width: shouldBeFullWidth ? '100%' : 'calc(50% - .5em)' }}>
             <EditorCardHeader>
                 <EditorCardHeaderTitle>{title}</EditorCardHeaderTitle>
                 <EditorCardHeaderDescription>{description} </EditorCardHeaderDescription>
-                {changed && <button onClick={revert}>Revert</button>}
-                {dot && <span style={{color: 'red', fontSize: '1.5em', position: 'absolute', top: '1em', right: '1em'}}>•</span>}
+                {changed && <Revert src={RevertIcon} style={{cursor: 'pointer', position: 'absolute', top: '1em', right: '1em'}} onClick={revert} />}
+                {dot && <Dot />}
             </EditorCardHeader>
             <div style={{ width: '100%', height: '100%', borderRadius: '1em', overflow: 'hidden' }}>
                 <MonacoEditor

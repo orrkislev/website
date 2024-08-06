@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useProject, { getCodeLine } from '../utils/useProject';
 import { useRecoilValue } from 'recoil';
-import { topBarAtom } from './Tabs';
+import { topBarAtom } from "./__TopBar";
 import { useMonaco } from '@monaco-editor/react';
 
 export const JSLibs = {

@@ -58,38 +58,14 @@ export default function useProject() {
         newCode += `\n // ---- this is run ${runCounter.current++}`;
         setAllCode(newCode);
     }
-    const runParameters = () => {
-        let newCode = ''
-        project.files.forEach((f) => {
-            newCode += f.content + '\n';
-        })
-        Object.entries(project.params).forEach(([key, param]) => {
-            newCode += getCodeLine(key, param)
-        })
-        runCode(newCode)
-    }
-
-    const runVariation = async (v) => {
-        if (v.code) runCode(v.code)
-        else {
-            const newCode = await fileManager.getFile(project.name, `${v.file}`)
-            runCode(newCode);
-            const newVariationsSetting = project.settings.variations.map((variation) => {
-                if (variation.name == v.name) return { ...variation, code: newCode }
-                return variation
-            })
-            const newSettings = { ...project.settings, variations: newVariationsSetting }
-            setProject({ ...project, settings: newSettings })
-        }
-    }
 
     const applyVariation = async (v) => {
-        if (v.name == 'original'){
+        if (v.name == 'original') {
             setProject(prev => ({ ...prev, files: prev.originalFiles }))
             applyFiles(project.originalFiles)
             return
         }
-        if (v.files){
+        if (v.files) {
             setProject(prev => ({ ...prev, files: v.files }))
             applyFiles(v.files)
             return
@@ -116,11 +92,18 @@ export default function useProject() {
         }, 100)
     }
 
+    const share = async () => {
+        const hash = await fileManager.storeFile(project.name, runningCode)
+        const url = location.origin + `/${project.name}/${hash}`
+        navigator.clipboard.writeText(url)
+        window.open(url, '_blank').focus();
+    }
+
 
     return {
         project, allCode, setAllCode, runningCode,
         reset, initProject, rerunParameters,
-        runCode, runParameters, runVariation, rerun, applyVariation
+        runCode, rerun, applyVariation, share
     }
 }
 
