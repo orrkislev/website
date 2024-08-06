@@ -4,6 +4,8 @@ import { useFileManager } from "../utils/useFileManager";
 import { useEffect, useState } from "react";
 
 const MainContainer = styled.div`
+    position: fixed;
+    width: 100%;
     margin-top: 10em;
     padding: 3em;
     display: flex;
