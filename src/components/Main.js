@@ -4,6 +4,8 @@ import { useFileManager } from "../utils/useFileManager";
 import { useEffect, useState } from "react";
 
 const MainContainer = styled.div`
+    margin-top: 10em;
+    padding: 3em;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -36,6 +38,21 @@ const MainLink = styled(Link)`
     }
 `;
 
+const Thisis = styled.div`
+    font-size: 16px;
+    margin-bottom: -.5em;
+`;
+const STUFF = styled.div`
+    font-size: 56px;
+    font-weight: bold;
+    font-family: "Noto Serif", serif;
+`;
+const ByOrr = styled.div`
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: -.5em;
+`;
+
 
 export default function Main() {
     const [projects, setProjects] = useState([])
@@ -48,17 +65,30 @@ export default function Main() {
     }, [])
 
     return (
-        <MainContainer>
-            <MainTitle>
-                <div><h4>this is</h4></div>
-                <div><h1>STUFF I MADE FOR YOU</h1></div>
-                <div><h2>by Orr Kislev</h2></div>
-            </MainTitle>
-            {projects.map(project => (
-                <div>
-                    <MainLink to={"/"+project.directory}>{project.name}</MainLink>
-                </div>
-            ))}
-        </MainContainer>
+        <>
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, backdropFilter:'saturate(1000)' }}></div>
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, backdropFilter:'saturate(0)' }}></div>
+            <MainContainer>
+                <MainTitle>
+                    <Thisis>this is</Thisis>
+                    <STUFF>STUFF I MADE FOR YOU</STUFF>
+                    <ByOrr>by Orr Kislev</ByOrr>
+                </MainTitle>
+                {projects.map(project => (
+                    <div>
+                        <MainLink to={"/" + project.directory}>{project.name}</MainLink>
+                    </div>
+                ))}
+            </MainContainer>
+
+            <style jsx>{`
+                body {
+                    background-image: url("https://picsum.photos/1920/1080");
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                }
+            `}</style>
+        </>
     )
 }
