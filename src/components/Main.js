@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { useFileManager } from "../utils/useFileManager";
+import { getGithubUrl, useFileManager } from "../utils/useFileManager";
 import { useEffect, useState } from "react";
 
 const MainContainer = styled.div`
     position: fixed;
     width: 100%;
     margin-top: 10em;
-    padding: 3em;
+    padding: 3em 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5em;
-    background: pink;
+    background: #999;
 `;
 const MainTitle = styled.h1`
     display: flex;
@@ -21,21 +21,41 @@ const MainTitle = styled.h1`
     font-size: 24px;
     font-weight: bold;
 `;
+
+
+
+const LinksContainer = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1em;
+    flex-wrap: wrap;
+    justify-content: center;
+`;
 const MainLink = styled(Link)`
-    padding: 8px 16px;
-    border: none;
-    background: none;
-    font-size: 16px;
     cursor: pointer;
-    color: black;
+
+    font-family: "Noto Serif", serif;
+    font-weight: bold;
+    text-align: center;
     text-decoration: none;
-    padding: 8px 16px;
-    border: 2px solid black;
-    border-radius: 999px;
+    color: black;
+
+    padding: 2.5em 1em;
+    border: none;
+    border-radius: 5px;
+
     transition: all 0.3s ease;
 
+    background-image: url(${props => getGithubUrl(props.$project, 'thumb.png')});
+    background-size: 100%;
+    background-position: center;
+    box-shadow: 2px 5px 10px 0 rgba(0, 0, 0, 0.2);
+
+    min-width: 200px;
+
     &:hover {
-        background: black;
+        transform: scale(1.05);
+        background-size: 110%;
         color: white;
     }
 `;
@@ -68,19 +88,21 @@ export default function Main() {
 
     return (
         <>
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, backdropFilter:'saturate(1000)' }}></div>
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, backdropFilter:'saturate(0)' }}></div>
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, backdropFilter: 'saturate(1000)' }}></div>
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, backdropFilter: 'saturate(0)' }}></div>
             <MainContainer>
                 <MainTitle>
                     <Thisis>this is</Thisis>
                     <STUFF>STUFF I MADE FOR YOU</STUFF>
                     <ByOrr>by Orr Kislev</ByOrr>
                 </MainTitle>
-                {projects.map(project => (
-                    <div>
-                        <MainLink to={"/" + project.directory}>{project.name}</MainLink>
-                    </div>
-                ))}
+                <LinksContainer>
+                    {projects.map(project => (
+                            <MainLink to={"/" + project.directory} $project={project.directory}>
+                                {project.name}
+                            </MainLink>
+                    ))}
+                </LinksContainer>
             </MainContainer>
 
             <style jsx>{`

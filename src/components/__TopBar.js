@@ -14,9 +14,9 @@ export const topBarAtom = atom({
 
 const TopBarContainer = styled.div`
     position: fixed;
-    top: 1.5em;
-    left: 1.5em;
-    right: 1.5em;
+    top: 1em;
+    left: 1em;
+    right: 1em;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -28,6 +28,7 @@ const TopBarButtons = styled.div`
     display: flex;
     flex-direction: row;
     background: white;
+    font-size: .8em;
 `;
 
 const TopBarButton = styled.div`
@@ -75,10 +76,10 @@ export default function TopBar() {
     return (
         <TopBarContainer>
             <LogoContainer to="/">
-                <LogoSVG width="30px" height="30px" />
+                <LogoSVG width="20px" height="20px" />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <div style={{ fontSize: '16px', fontStyle: 'italic', fontWeight: 800, lineHeight: '8px' }}>Stuff I Made For You</div>
-                    <div style={{ fontSize: '12px' }}>by Orr Kislev</div>
+                    <div style={{ fontSize: '14px', fontStyle: 'italic', fontWeight: 800, lineHeight: '8px' }}>Stuff I Made For You</div>
+                    <div style={{ fontSize: '11px' }}>by Orr Kislev</div>
                 </div>
             </LogoContainer>
             <TopBarButtons>

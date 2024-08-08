@@ -85,11 +85,7 @@ export default function useProject() {
         setRunningCode(allCode + `\n // ---- this is run ${runCounter.current++}`)
     }
     const rerunParameters = () => {
-        rerun()
-        setTimeout(() => {
-            const newParams = { ...project.params, EXTRA: 'extra' + Math.random() }
-            setProject(prev => ({ ...prev, params: newParams }))
-        }, 100)
+        setRunningCode(allCode + '\n\n' + getParamsCode())
     }
 
     const share = async () => {
@@ -99,11 +95,19 @@ export default function useProject() {
         window.open(url, '_blank').focus();
     }
 
+    const getParamsCode = () => {
+        let newCode = ''
+        Object.entries(project.params).forEach(([key, param]) => {
+            newCode += getCodeLine(key, param)
+        })
+        return newCode
+    }
+
 
     return {
         project, allCode, setAllCode, runningCode,
         reset, initProject, rerunParameters,
-        runCode, rerun, applyVariation, share
+        runCode, rerun, applyVariation, share, getParamsCode
     }
 }
 

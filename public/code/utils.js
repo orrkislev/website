@@ -14,16 +14,26 @@ Array.prototype.get = function get(i) {
 }
 //SNIPPET timeout
 const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-//SNIPPET ease
+//SNIPPET easeInQuad
 const easeInQuad = t => t * t
+//SNIPPET easeOutQuad
 const easeOutQuad = t => t * (2 - t)
+//SNIPPET easeInOutQuad
 const easeInOutQuad = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+//SNIPPET easeInCubic
 const easeInCubic = t => t * t * t
+//SNIPPET easeOutCubic
 const easeOutCubic = t => (--t) * t * t + 1
+//SNIPPET easeInOutCubic
 const easeInOutCubic = t => t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
+//SNIPPET easeInQuart
 const easeInQuart = t => t * t * t * t
+//SNIPPET easeOutQuart
 const easeOutQuart = t => 1 - (--t) * t * t * t
+//SNIPPET easeInOutQuart
 const easeInOutQuart = t => t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t
+//SNIPPET easeMap
+const easeMap = (ease,t,a,b,c,d) => ease((t - a) / (b - a)) * (d - c) + c
 
 
 //SNIPPET ApplyShader

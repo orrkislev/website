@@ -8,6 +8,7 @@ import Variations from "./__Variations";
 import Explanation from "./__explanation";
 import TopBar from './__TopBar';
 import RunBtn from './__RunBtn';
+import PopUp from "./PopUp";
 
 
 export default function Project({ name }) {
@@ -27,7 +28,7 @@ export default function Project({ name }) {
       </div>
 
 
-      <div style={{ zIndex: 10, marginTop: '10vh'}}>
+      <div style={{ zIndex: 10, marginTop: '10vh', marginBottom: '100vh'}}>
         <Explanation />
         <Params />
         <Editor />
@@ -38,6 +39,7 @@ export default function Project({ name }) {
 
       <RunBtn />
 
+      <PopUp />
     </ >
   )
 }

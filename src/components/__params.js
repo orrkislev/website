@@ -16,9 +16,9 @@ const ParamContainer = styled.div`
     background: white;
     border-radius: 10px;
     margin: 5px;
-    width: 100%;
     backdrop-filter: blur(5px);
     background: rgba(255, 255, 255, 0.5);
+    min-height: 6vh;
 `;
 
 const SingleParam = styled.div`
@@ -49,8 +49,7 @@ export default function Params() {
     };
 
     return (
-        <Section name='params'>
-            <h3 style={{margin:'0 2em'}}>PLAY with parameters</h3>
+        <Section name='params' title="PLAY with parameters">
             <ParamContainer>
                 {Object.entries(projectState.params).map(([key, value]) => (
                     <Param key={key} {...value} param={key} update={newVal => onChange(key, newVal)} />

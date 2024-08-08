@@ -15,7 +15,7 @@ const Container = styled.div`
   display:flex;
   align-items: center;
   overflow: hidden;
-  height: 3em;
+  height: 2em;
 `
 
 const RunButton = styled.button`
@@ -56,8 +56,8 @@ export default function RunBtn() {
   const project = useProject()
 
   const clickRun = () => {
-    if (topBarState.main == 'editor') project.rerun();
-    else if (topBarState.main == 'info' || topBarState.main == 'params') project.rerunParameters()
+    if (topBarState.main == 'info' || topBarState.main == 'params') project.rerunParameters()
+    else project.rerun();
   }
 
   const clickDebug = () => {

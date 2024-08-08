@@ -25,7 +25,6 @@ const Variation = styled.div`
     cursor: pointer;
     text-align: center;
 
-    font-size: 1.2em;
     font-family: "Noto Serif", serif;
 
     background-color: ${props => props.$isactive ? 'black' : 'white'};
@@ -53,8 +52,7 @@ export default function Variations() {
     variations.unshift({ name: 'original' })
 
     return (
-        <Section name="variations">
-            <h3 style={{ margin: '0 2em' }}>EXPLORE different variations</h3>
+        <Section name="variations" title="EXPLORE different variations">
             <VariationsContainer>
                 {variations.map((v, i) => (
                     <div key={i}>

@@ -45,6 +45,7 @@ export default function Editor() {
     const editors = useRef([])
     const codeParts = useRef()
     const monaco = useMonaco()
+    const numEdits = useRef(0)
 
     useEffect(() => {
         if (monaco) setupMonaco(monaco)
@@ -63,12 +64,14 @@ export default function Editor() {
 
     const updateCode = (i, value) => {
         codeParts.current[i] = value
+        if (numEdits.current++ == 20){
+            
+        }
         project.setAllCode(codeParts.current.join('\n'))
     }
 
     return (
-        <Section name='editor'>
-            <h3 style={{margin:'0 2em'}}>STUDY the code</h3>
+        <Section name='editor' title="STUDY the code">
             <EditorContainer>
                 {project.project.files && project.project.files.map((f, i) => (
                     <EditorSection key={f.name}

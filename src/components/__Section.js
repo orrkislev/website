@@ -7,12 +7,12 @@ import { topBarAtom } from "./__TopBar";
 export const SectionEl = styled.section`
     position: relative;
     min-height: 80vh;
-    margin: 2em 5em;
+    margin: 1em 3em;
     user-select: none;
     scroll-margin-top: 10vh;
     `;
 
-export default function Section({ name, children }) {
+export default function Section({ name, children, title }) {
     const sectionRef = useRef(null)
     const onScreen = useOnScreen(sectionRef)
     const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
@@ -29,6 +29,7 @@ export default function Section({ name, children }) {
 
     return (
         <SectionEl ref={sectionRef}>
+            <h3 style={{ margin: '0 2em', fontSize:'0.8em'}}>{title}</h3>
             {children}
         </SectionEl>
     )

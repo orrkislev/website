@@ -126,11 +126,7 @@ export default function SketchFrame() {
   useEffect(() => {
     if (iframeRefs[activeIframe].current) {
       const cnnt = iframeRefs[activeIframe].current.contentWindow;
-      let newCode = ''
-      Object.entries(projectData.project.params).forEach(([key, param]) => {
-        newCode += getCodeLine(key, param)
-      })
-      cnnt.eval(newCode)
+      cnnt.eval(projectData.getParamsCode());
     }
   }, [projectData.project.params])
 

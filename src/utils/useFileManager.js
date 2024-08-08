@@ -41,3 +41,7 @@ export async function getFromFirebase(projectName, fileName) {
     const url = await getDownloadURL(docRef)
     return fetch(url).then(res => res.text())
 }
+
+export function getGithubUrl(projectName, fileName) {
+    return `https://cdn.jsdelivr.net/gh/orrkislev/stuff-I-made-for-you/${projectName}/${fileName}`
+}
