@@ -85,7 +85,7 @@ export default function useProject() {
         setRunningCode(allCode + `\n // ---- this is run ${runCounter.current++}`)
     }
     const rerunParameters = () => {
-        setRunningCode(allCode + '\n\n' + getParamsCode())
+        setRunningCode(allCode + '\n\n' + getParamsCode() + `\n // ---- this is run ${runCounter.current++}`)
     }
 
     const share = async () => {

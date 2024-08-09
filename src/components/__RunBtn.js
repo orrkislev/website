@@ -67,9 +67,9 @@ export default function RunBtn() {
 
   return (
     <Container>
-      <ShareButton />
+      {/* <ShareButton /> */}
       <RunButton onClick={clickRun}>RUN</RunButton>
-      <DebugButtonComp isActive={topBarState.debug} onClick={clickDebug} />
+      {/* <DebugButtonComp isActive={topBarState.debug} onClick={clickDebug} /> */}
       
     </Container>
   )
@@ -96,12 +96,13 @@ function ShareButton() {
   }
   return (
     <SideButton onClick={onClick} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100"  width="40" height="30" stroke={hover ? "white" : "black"} strokeWidth="10"> 
+      PUBLISH
+      {/* <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100"  width="40" height="30" stroke={hover ? "white" : "black"} strokeWidth="10"> 
         <polyline points="80 18 30 45 80 80"  fill="none"/>
         <circle cx="80" cy="18" r="11" />
         <circle cx="30" cy="45" r="11" />
         <circle cx="80" cy="80" r="13" />
-      </svg>
+      </svg> */}
     </SideButton>
   )
 }

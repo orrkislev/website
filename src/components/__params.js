@@ -5,6 +5,7 @@ import Section from "./__Section";
 
 import { ColorPicker, Checkbox, Slider, Input, ConfigProvider } from "antd";
 import { useRef, useState } from "react";
+import { topBarAtom } from "./__TopBar";
 
     
 const ParamContainer = styled.div`
@@ -41,11 +42,17 @@ const ParamInput = styled.div`
 
 export default function Params() {
     const [projectState, setProjectState] = useRecoilState(projectAtom);
+    const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
+    const changes = useRef(0)
 
     const onChange = (key, value) => {
         const newParams = structuredClone(projectState.params);
         newParams[key].value = value;
         setProjectState({ ...projectState, params: newParams });
+
+        if (changes.current++ == 10) {
+            setTopBarState({ ...topBarState, publish:true });
+        }
     };
 
     return (

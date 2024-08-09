@@ -1,7 +1,8 @@
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { projectAtom } from "../utils/useProject";
+import useProject, { projectAtom } from "../utils/useProject";
 import Section from "./__Section";
+import { topBarAtom } from "./__TopBar";
 
 const ExplanationContainer = styled.div`
     user-select: none;
@@ -11,6 +12,7 @@ const ExplanationContainer = styled.div`
     flex-wrap: wrap;
     justify-content: start;
     align-items: end;
+    margin-bottom: 1em;
     `;
 
 const ExpTitleCard = styled.div`
@@ -42,7 +44,7 @@ const ExpCard = styled.div`
     backdrop-filter: blur(5px);
     background: rgba(255, 255, 255, 0.5);
     `;
-    
+
 const ExpCardTitle = styled.div`
     font-size: 11pt;
     font-weight: bold;
@@ -54,12 +56,31 @@ const ExpCardSubtitle = styled.div`
 const ExpCardContent = styled.div` 
     font-size: 9pt;
     `;
+const DebugButton = styled.button`
+    cursor: pointer;
+    padding: 0.5em 1em;
+    color: ${props => props.$active ? 'white' : 'black'};
+    background: ${props => props.$active ? 'black' : 'white'};
+    transition: color 0.5s;
+    border:none;
 
+    &:hover {
+        background: black;
+        color: white;
+    }
+    `;
 
 export default function Explanation() {
-    const projectState = useRecoilValue(projectAtom)
+    const project = useProject()
+    const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
 
-    const exp = projectState.explanation
+
+    const clickDebug = () => {
+        setTopBarState({ ...topBarState, debug: !topBarState.debug })
+        project.rerunParameters()
+    }
+
+    const exp = project.project.explanation
     return (
         <Section name='info'>
             <ExplanationContainer>
@@ -76,9 +97,10 @@ export default function Explanation() {
                         <ExpCardContent dangerouslySetInnerHTML={{ __html: card.content }} />
                     </ExpCard>
                 ))}
-
-
             </ExplanationContainer>
+            <div>
+                <DebugButton $active={topBarState.debug} onClick={clickDebug}>Peek under the hood</DebugButton>
+            </div>
         </Section>
     )
 }

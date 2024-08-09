@@ -7,6 +7,7 @@ import './__Editor.css';
 import styled from "styled-components";
 import Section from "./__Section";
 import RevertIcon from '../assets/revert.svg';
+import { topBarAtom } from './__TopBar';
 
 const EditorContainer = styled.div`
     display: flex;
@@ -45,6 +46,7 @@ export default function Editor() {
     const editors = useRef([])
     const codeParts = useRef()
     const monaco = useMonaco()
+    const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
     const numEdits = useRef(0)
 
     useEffect(() => {
@@ -64,9 +66,7 @@ export default function Editor() {
 
     const updateCode = (i, value) => {
         codeParts.current[i] = value
-        if (numEdits.current++ == 20){
-            
-        }
+        if (numEdits.current++ == 10) setTopBarState({ ...topBarState, publish:true });
         project.setAllCode(codeParts.current.join('\n'))
     }
 
