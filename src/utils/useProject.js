@@ -131,7 +131,7 @@ export function getCodeLine(key, param) {
 }
 
 
-const allHelperFiles = ['setup', 'hashgrid', 'utils', 'svg']
+const allHelperFiles = ['setup', 'hashgrid', 'utils', 'svg', 'paperUtils']
 async function getSnippets(snippets) {
     if (!snippets) return {}
     if (snippets.length == 0) return {}

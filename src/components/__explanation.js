@@ -98,9 +98,9 @@ export default function Explanation() {
                     </ExpCard>
                 ))}
             </ExplanationContainer>
-            <div>
-                <DebugButton $active={topBarState.debug} onClick={clickDebug}>Peek under the hood</DebugButton>
-            </div>
+            {/* <div>
+                <DebugButton $active={topBarState.debug} onClick={clickDebug}>TECHNIQUE SPOTLIGHT</DebugButton>
+            </div> */}
         </Section>
     )
 }
