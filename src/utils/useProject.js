@@ -84,8 +84,10 @@ export default function useProject() {
     const rerun = () => {
         setRunningCode(allCode + `\n // ---- this is run ${runCounter.current++}`)
     }
-    const rerunParameters = () => {
-        setRunningCode(allCode + '\n\n' + getParamsCode() + `\n // ---- this is run ${runCounter.current++}`)
+    const rerunParameters = (newParams) => {
+        newParams = newParams || project.params
+        const newCode = allCode + '\n\n' + getParamsCode(newParams) + `\n // ---- this is run ${runCounter.current++}`
+        setRunningCode(newCode)
     }
 
     const share = async () => {
@@ -95,9 +97,10 @@ export default function useProject() {
         window.open(url, '_blank').focus();
     }
 
-    const getParamsCode = () => {
+    const getParamsCode = (params) => {
+        params = params || project.params
         let newCode = ''
-        Object.entries(project.params).forEach(([key, param]) => {
+        Object.entries(params).forEach(([key, param]) => {
             newCode += getCodeLine(key, param)
         })
         return newCode

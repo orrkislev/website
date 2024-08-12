@@ -75,7 +75,6 @@ function UserContent({ name, hash }) {
 
         const script = document.createElement('script')
         script.innerHTML = code
-        console.log(code)
         document.body.appendChild(script)
         eval('new p5()')
         setRunning(true)

@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import { projectAtom } from "../utils/useProject";
+import useProject, { projectAtom } from "../utils/useProject";
 import styled from "styled-components";
 import Section from "./__Section";
 
@@ -7,7 +7,7 @@ import { ColorPicker, Checkbox, Slider, Input, ConfigProvider } from "antd";
 import { useRef, useState } from "react";
 import { topBarAtom } from "./__TopBar";
 
-    
+
 const ParamContainer = styled.div`
     justify-content: center;
     display: flex;
@@ -42,16 +42,21 @@ const ParamInput = styled.div`
 
 export default function Params() {
     const [projectState, setProjectState] = useRecoilState(projectAtom);
+    const project = useProject()
     const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
     const changes = useRef(0)
 
-    const onChange = (key, value) => {
+    const onChange = (key, value, type) => {
         const newParams = structuredClone(projectState.params);
         newParams[key].value = value;
         setProjectState({ ...projectState, params: newParams });
 
         if (changes.current++ == 10) {
-            setTopBarState({ ...topBarState, publish:true });
+            setTopBarState({ ...topBarState, publish: true });
+        }
+
+        if (type == 'finish' && projectState.settings.refreshOnParamsChange) {
+            project.rerunParameters(newParams)
         }
     };
 
@@ -59,7 +64,12 @@ export default function Params() {
         <Section name='params' title="PLAY with parameters">
             <ParamContainer>
                 {Object.entries(projectState.params).map(([key, value]) => (
-                    <Param key={key} {...value} param={key} update={newVal => onChange(key, newVal)} />
+                    <Param key={key}
+                        {...value}
+                        param={key}
+                        update={newVal => onChange(key, newVal, 'update')}
+                        finish={newVal => onChange(key, newVal, 'finish')}
+                    />
                 ))}
             </ParamContainer>
         </Section>
@@ -74,32 +84,43 @@ export default function Params() {
 function Param(props) {
     const newVal = useRef(props.value)
 
+    const update = (val) =>{
+        newVal.current = val
+        props.update(val)
+    }
+
+    const finish = () =>{
+        props.finish(newVal.current)
+    }
+
     let el
     if (props.type == 'color')
         el = <ColorPicker format={'hex'} value={props.value}
-            onChange={(val, hex) => props.update(hex)}
-        />
+            onChange={(val, hex) => update(hex)}
+            onChangeComplete={finish} />
 
     if (props.type == 'boolean')
-        el = <Checkbox checked={props.value} onChange={(e) => props.update(e.target.checked)} />
+        el = <Checkbox checked={props.value}
+            onChange={(e) => update(e.target.checked)}
+            onChangeComplete={finish} />
 
     if (props.type == 'number')
         el = <Slider defaultValue={props.value} min={props.min} max={props.max} step={props.step}
-            onChange={val => props.update(val)}
-        />
+            onChange={val => update(val)}
+            onChangeComplete={finish} />
 
     if (props.type == 'range')
         el = <Slider range={true} defaultValue={props.value} min={props.min} max={props.max} step={props.step}
-            onChange={val => props.update(val)}
-        />
+            onChange={val => update(val)}
+            onChangeComplete={finish} />
 
     if (props.type == 'expression' || props.type == 'string')
         el = <Input defaultValue={props.value}
             onChange={val => newVal.current = val}
-            onChangeComplete={() => props.update(newVal.current)}
+            onChangeComplete={finish}
         />
     if (props.type == 'image')
-        el = <CustomImageUploader defaultImage={props.value} onImageUpdate={props.update} />
+        el = <CustomImageUploader defaultImage={props.value} onImageUpdate={props.finish} />
 
     if (props.type == 'array') {
         if (props.subtype == 'color') {
@@ -109,8 +130,9 @@ function Param(props) {
                         const newVals = [...newVal.current]
                         newVals[i] = hex
                         newVal.current = newVals
+                        props.update(newVals)
                     }}
-                    onChangeComplete={() => props.update(newVal.current)}
+                    onChangeComplete={finish}
                 />
             ))
         }

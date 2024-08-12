@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getGithubUrl, useFileManager } from "../utils/useFileManager";
 import { useEffect, useState } from "react";
+import usePatreon from "../utils/usePatreon";
+import Patreon from "./Patreon";
 
 const MainContainer = styled.div`
     position: fixed;
@@ -31,34 +33,7 @@ const LinksContainer = styled.div`
     flex-wrap: wrap;
     justify-content: center;
 `;
-const MainLink = styled(Link)`
-    cursor: pointer;
 
-    font-family: "Noto Serif", serif;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    color: black;
-
-    padding: 2.5em 1em;
-    border: none;
-    border-radius: 5px;
-
-    transition: all 0.3s ease;
-
-    background-image: url(${props => getGithubUrl(props.$project, 'thumb.png')});
-    background-size: 100%;
-    background-position: center;
-    box-shadow: 2px 5px 10px 0 rgba(0, 0, 0, 0.2);
-
-    min-width: 200px;
-
-    &:hover {
-        transform: scale(1.05);
-        background-size: 110%;
-        color: white;
-    }
-`;
 
 const Thisis = styled.div`
     font-size: 16px;
@@ -77,14 +52,20 @@ const ByOrr = styled.div`
 
 
 export default function Main() {
+    const patreon = usePatreon()
     const [projects, setProjects] = useState([])
     const fileManager = useFileManager()
+    const navigate = useNavigate()
 
     useEffect(() => {
         fileManager.getFile('', 'projectIndex.json').then(data => {
             setProjects(data.projects)
         })
     }, [])
+
+    const goToProject = (project) => {
+        navigate(`/${project}`)
+    }
 
     return (
         <>
@@ -96,16 +77,27 @@ export default function Main() {
                     <STUFF>STUFF I MADE FOR YOU</STUFF>
                     <ByOrr>by Orr Kislev</ByOrr>
                 </MainTitle>
+
+                <Patreon />
+
                 <LinksContainer>
-                    {projects.map(project => (
-                            <MainLink to={"/" + project.directory} $project={project.directory}>
-                                {project.name}
-                            </MainLink>
-                    ))}
+                    {projects.map(project => {
+                        let func = () => goToProject(project.directory)
+                        const disabled = project.locked && !patreon.gotAccess
+                        if (disabled) func = () => alert('You need to be a patron to access this project')
+                        return (
+                            <ProjectLink
+                                key={project.directory}
+                                project={project}
+                                disabled={disabled}
+                                click={func}
+                            />
+                        )
+                    })}
                 </LinksContainer>
             </MainContainer>
 
-            <style jsx>{`
+            <style>{`
                 body {
                     background-image: url("https://picsum.photos/1920/1080");
                     background-size: cover;
@@ -114,5 +106,88 @@ export default function Main() {
                 }
             `}</style>
         </>
+    )
+}
+
+
+
+
+
+
+const ProjectContainer = styled.div`
+    position: relative;
+    cursor: pointer;
+    min-width: 200px;
+    height: 6em;
+    box-shadow: 2px 5px 10px 0 rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    overflow: hidden;
+    &:hover {
+        transform: scale(1.05);
+    }
+`;
+
+const ProjectBackground = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url(${props => getGithubUrl(props.$project, 'thumb.png')});
+    background-size: ${props => props.$hover ? '110%' : '100%'};
+    background-position: center;
+    transition: all 0.3s ease;
+    `
+
+const ProjectText = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "Noto Serif", serif;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: ${props => props.$hover ? 'white' : 'black'};
+    transition: all 0.3s ease;
+`
+
+const ProjectDisabled = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 1.5em;
+    padding: .1em .4em;
+    background: crimson;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    transform: ${props => props.$hover ? 'translateY(0%)' : 'translateY(-150%)'};
+`
+const ProjectDisabled2 = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        -30deg,
+        #00000000,
+        #00000000 4px,
+        #00000088 4px,
+        #00000088 8px
+    );
+    transition: all 0.3s ease;
+`;
+
+function ProjectLink({ project, disabled, click }) {
+    const [hover, setHover] = useState(false)
+
+    return (
+        <ProjectContainer onClick={click} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+            <ProjectBackground $project={project.directory} $hover={hover} />
+            {disabled && <ProjectDisabled2 $hover={hover} />}
+            {disabled && <ProjectDisabled $hover={hover}>Patrons Only</ProjectDisabled>}
+            <ProjectText $hover={hover}>
+                {project.name}
+            </ProjectText>
+        </ProjectContainer>
     )
 }

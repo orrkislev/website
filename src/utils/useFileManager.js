@@ -3,8 +3,10 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage"
 
 export function useFileManager() {
     const getFile = async (projectName, fileName) => {
-        let url = `https://cdn.jsdelivr.net/gh/orrkislev/stuff-I-made-for-you/${projectName}/${fileName}`
-        if (projectName.length == 0) url = `https://cdn.jsdelivr.net/gh/orrkislev/stuff-I-made-for-you/${fileName}`
+        // const baseUrl = 'https://cdn.jsdelivr.net/gh/orrkislev/stuff-I-made-for-you/'
+        const baseUrl = 'https://raw.githubusercontent.com/orrkislev/stuff-I-made-for-you/main/'
+        let url = baseUrl + `${projectName}/${fileName}`
+        if (projectName.length == 0) url = baseUrl + `${fileName}`
         if (projectName.includes('-test') && (!process.env.NODE_ENV || process.env.NODE_ENV === 'development'))
             url = `http://127.0.0.1:5500/${projectName.replace('-test', '')}/${fileName}`
         const res = await fetch(url)

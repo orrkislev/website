@@ -74,7 +74,7 @@ export default function Editor() {
         <Section name='editor' title="STUDY the code">
             <EditorContainer>
                 {project.project.files && project.project.files.map((f, i) => (
-                    <EditorSection key={f.name}
+                    <EditorSection key={i}
                         index={i}
                         monaco={monaco}
                         code={f.content}

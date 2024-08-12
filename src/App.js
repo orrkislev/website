@@ -3,6 +3,7 @@ import Main from "./components/Main";
 import ProjectPage from "./components/ProjectPage";
 import UserContentPage from "./components/UserContentPage";
 import './App.css';
+import LoginPage from "./components/LoginPage";
 
 
 
@@ -11,6 +12,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/:name" element={<ProjectPage />} />
         <Route path="/:name/:hash" element={<UserContentPage />} />
       </Routes>
