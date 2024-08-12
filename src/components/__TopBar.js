@@ -4,6 +4,7 @@ import { LogoSVG } from './HomeLogo';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { atom } from "recoil";
 import { useState } from 'react';
+import useProject from '../utils/useProject';
 
 export const topBarAtom = atom({
     key: "topBarState", default: {
@@ -138,12 +139,13 @@ export default function TopBar() {
 }
 
 function Publish() {
+    const project = useProject()
     const [loading, setLoading] = useState(false)
     const topBarState = useRecoilValue(topBarAtom)
 
     const click = async () => {
         setLoading(true)
-        await new Promise(resolve => setTimeout(resolve, 3000))
+        await project.share()
         setLoading(false)
     }
 

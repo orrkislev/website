@@ -91,7 +91,8 @@ export default function useProject() {
     }
 
     const share = async () => {
-        const hash = await fileManager.storeFile(project.name, runningCode)
+        const newCode = allCode + '\n\n' + getParamsCode(project.params) + `\n // ---- this is run ${runCounter.current++}`
+        const hash = await fileManager.storeFile(project.name, newCode)
         const url = location.origin + `/${project.name}/${hash}`
         navigator.clipboard.writeText(url)
         window.open(url, '_blank').focus();
