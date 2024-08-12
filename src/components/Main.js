@@ -84,7 +84,7 @@ export default function Main() {
                     {projects.map(project => {
                         let func = () => goToProject(project.directory)
                         const disabled = project.locked && !patreon.gotAccess
-                        if (disabled) func = () => alert('You need to be a patron to access this project')
+                        if (disabled) func = () => window.open('https://www.patreon.com/orrkislev', '_blank')
                         return (
                             <ProjectLink
                                 key={project.directory}

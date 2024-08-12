@@ -34,11 +34,12 @@ export default function usePatreon() {
                 throw new Error(`Failed to fetch pledge status: ${response.status}`);
             }
             const data = await response.json();
+            console.log('Pledge status:', data);
             const username = data.userInfo.full_name;
             Cookies.set('username', username, { expires: 7 });
             setUsername(username);
 
-            if (data.pledgeAmount > 2) {
+            if (data.pledgeAmount == 7) {
                 Cookies.set('gotAccess', 'true', { expires: 7 });
                 setGotAccess(true);
             }
