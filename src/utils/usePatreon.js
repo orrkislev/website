@@ -34,7 +34,6 @@ export default function usePatreon() {
                 throw new Error(`Failed to fetch pledge status: ${response.status}`);
             }
             const data = await response.json();
-            console.log('Pledge status:', data);
             const username = data.userInfo.full_name;
             Cookies.set('username', username, { expires: 7 });
             setUsername(username);

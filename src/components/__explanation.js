@@ -6,7 +6,8 @@ import { topBarAtom } from "./__TopBar";
 
 const ExplanationContainer = styled.div`
     user-select: none;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: .8em;
     flex-direction: row;
     flex-wrap: wrap;
@@ -16,7 +17,7 @@ const ExplanationContainer = styled.div`
     `;
 
 const ExpTitleCard = styled.div`
-    width: 50%;
+    // width: 50%;
     border-radius: 12px;
     padding: .8em;
     color: #2F242C;
@@ -37,12 +38,17 @@ const ExpTitleSubtitle = styled.div`
     `;
 
 const ExpCard = styled.div`
-    width: 30%;
     border-radius: 11px;
     padding: .6em 1em;
     color: #2F242C;
     backdrop-filter: blur(5px);
     background: rgba(255, 255, 255, 0.5);
+    ${props => props.$isFirst ? `
+        width: 70%;
+    ` : `
+        width: 70%;
+        grid-column: 1 / 2;
+    `}
     `;
 
 const ExpCardTitle = styled.div`
@@ -91,7 +97,7 @@ export default function Explanation() {
                     </ExpTitleCard>
                 )}
                 {exp.cards && exp.cards.map((card, i) => (
-                    <ExpCard key={i}>
+                    <ExpCard key={i} $isFirst={i === 0}>
                         <ExpCardTitle>{card.title}</ExpCardTitle>
                         <ExpCardSubtitle>{card.subtitle}</ExpCardSubtitle>
                         <ExpCardContent dangerouslySetInnerHTML={{ __html: card.content }} />
