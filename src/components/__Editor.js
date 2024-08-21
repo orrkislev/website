@@ -79,7 +79,7 @@ export default function Editor() {
                         code={f.content}
                         updateEditor={(editor) => setEditor(i, editor)}
                         updateCode={(value) => updateCode(i, value)}
-                        title={f.title || f.name}
+                        title={f.title ? f.title.replace('_',' ') : f.name}
                         description={f.description}
                     />
                 ))}
@@ -173,7 +173,7 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
     return (
         <EditorCard $index={index} style={{ width: shouldBeFullWidth ? '100%' : 'calc(50% - .5em)' }}>
             <EditorCardHeader>
-                <EditorCardHeaderTitle>{title.replace('_',' ')}</EditorCardHeaderTitle>
+                <EditorCardHeaderTitle>{title}</EditorCardHeaderTitle>
                 <EditorCardHeaderDescription>{description} </EditorCardHeaderDescription>
                 {changed && <Revert src={RevertIcon} style={{cursor: 'pointer', position: 'absolute', top: '1em', right: '1em'}} onClick={revert} />}
                 {dot && <Dot />}
