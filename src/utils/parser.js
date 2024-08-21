@@ -1,5 +1,3 @@
-import { Parser } from 'htmlparser2';
-
 export function parseFile(content) {
   const lines = content.split('\n');
   const result = [];
@@ -80,7 +78,6 @@ export function parseFile(content) {
     console.warn(`Unclosed section: ${currentSection.type}`);
     endSection(currentSection.type);
   }
-
   return result;
 }
 

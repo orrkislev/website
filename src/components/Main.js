@@ -78,7 +78,7 @@ export default function Main() {
                     <ByOrr>by Orr Kislev</ByOrr>
                 </MainTitle>
 
-                {/* <Patreon /> */}
+                <Patreon />
 
                 <LinksContainer>
                     {projects.map(project => {

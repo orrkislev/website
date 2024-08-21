@@ -100,8 +100,11 @@ function Param(props) {
             onChangeComplete={finish} />
 
     if (props.type == 'boolean')
-        el = <Checkbox checked={props.value}
-            onChange={(e) => finish(e.target.checked)} />
+        el = <Checkbox checked={newVal.current}
+            onChange={(e) => {
+                update(e.target.checked)
+                finish()}
+             }/>
 
     if (props.type == 'number')
         el = <Slider defaultValue={props.value} min={props.min} max={props.max} step={props.step}

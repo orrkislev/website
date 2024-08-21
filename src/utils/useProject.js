@@ -70,6 +70,7 @@ export default function useProject() {
             applyFiles(v.files)
             return
         }
+        if (typeof v == 'string') v = project.variations.find((variation) => variation.file == v)
         const variationFile = await fileManager.getFile(project.name, `variations/${v.file}`)
         const files = parseFile(variationFile)
         const newVariation = { ...v, files }
@@ -104,6 +105,7 @@ export default function useProject() {
         Object.entries(params).forEach(([key, param]) => {
             newCode += getCodeLine(key, param)
         })
+        newCode += 'if (window.updateParams) updateParams();\n'
         return newCode
     }
 

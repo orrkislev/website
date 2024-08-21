@@ -34,8 +34,6 @@ const EditorCardHeader = styled.div`
 const EditorCardHeaderTitle = styled.h2`
     font-size: 1.5em;
     margin: 0;
-    font-family: "Noto Serif", serif;
-
 `;
 const EditorCardHeaderDescription = styled.div`
     font-size: 1em;
@@ -74,6 +72,7 @@ export default function Editor() {
         <Section name='editor' title="STUDY the code">
             <EditorContainer>
                 {project.project.files && project.project.files.map((f, i) => (
+                    f.hidden ? null :
                     <EditorSection key={i}
                         index={i}
                         monaco={monaco}
@@ -174,7 +173,7 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
     return (
         <EditorCard $index={index} style={{ width: shouldBeFullWidth ? '100%' : 'calc(50% - .5em)' }}>
             <EditorCardHeader>
-                <EditorCardHeaderTitle>{title}</EditorCardHeaderTitle>
+                <EditorCardHeaderTitle>{title.replace('_',' ')}</EditorCardHeaderTitle>
                 <EditorCardHeaderDescription>{description} </EditorCardHeaderDescription>
                 {changed && <Revert src={RevertIcon} style={{cursor: 'pointer', position: 'absolute', top: '1em', right: '1em'}} onClick={revert} />}
                 {dot && <Dot />}
