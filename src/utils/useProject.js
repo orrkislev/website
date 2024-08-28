@@ -40,7 +40,7 @@ export default function useProject() {
                 const files = parseFile(text_files)
                 projectObj.originalFiles = files
                 projectObj.files = files
-                applyFiles(files)
+                applyFiles(files, params)
             }
             setProject(projectObj)
         } catch (error) {
@@ -48,8 +48,9 @@ export default function useProject() {
         }
     }
 
-    const applyFiles = (files) => {
-        const code = files.map((f) => f.content).join('\n') + '\n'
+    const applyFiles = (files, params) => {
+        let code = files.map((f) => f.content).join('\n') + '\n'
+        if (params) code = code + '\n\n' + getParamsCode(params) + `\n // ---- this is run ${runCounter.current++}`
         setAllCode(code);
         setRunningCode(code);
     }
@@ -137,7 +138,7 @@ export function getCodeLine(key, param) {
 }
 
 
-const allHelperFiles = ['setup', 'hashgrid', 'utils', 'svg', 'paperUtils']
+const allHelperFiles = ['setup', 'hashgrid', 'utils', 'svg', 'paperUtils', 'poisson']
 async function getSnippets(snippets) {
     if (!snippets) return {}
     if (snippets.length == 0) return {}

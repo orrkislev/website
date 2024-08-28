@@ -16,17 +16,6 @@ const EditorContainer = styled.div`
     padding-top: 20em;
 `;
 
-const EditorCard = styled.div`
-    margin-top: -20em;
-    width: calc(50% - .5em);
-    align-self: ${props => props.$index % 2 === 0 ? 'flex-start' : 'flex-end'};
-    display: flex;
-    flex-direction: column;
-    border-radius: 1em;
-    margin-bottom: 5em;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(5px);
-`;
 
 const EditorCardHeader = styled.div`
     padding: 1em 2em;
@@ -46,6 +35,7 @@ export default function Editor() {
     const monaco = useMonaco()
     const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
     const numEdits = useRef(0)
+    const [sideInFocus, setSideInFocus] = useState(null)
 
     useEffect(() => {
         if (monaco) setupMonaco(monaco)
@@ -64,24 +54,36 @@ export default function Editor() {
 
     const updateCode = (i, value) => {
         codeParts.current[i] = value
-        if (numEdits.current++ == 10) setTopBarState({ ...topBarState, publish:true });
+        if (numEdits.current++ == 10) setTopBarState({ ...topBarState, publish: true });
         project.setAllCode(codeParts.current.join('\n'))
     }
+
+    console.log(sideInFocus)
+    let widths = [50,50]
+    if (sideInFocus == 'left') widths = [65, 35]
+    if (sideInFocus == 'right') widths = [35, 65]
 
     return (
         <Section name='editor' title="STUDY the code">
             <EditorContainer>
                 {project.project.files && project.project.files.map((f, i) => (
                     f.hidden ? null :
-                    <EditorSection key={i}
-                        index={i}
-                        monaco={monaco}
-                        code={f.content}
-                        updateEditor={(editor) => setEditor(i, editor)}
-                        updateCode={(value) => updateCode(i, value)}
-                        title={f.title ? f.title.replace('_',' ') : f.name}
-                        description={f.description}
-                    />
+                        <EditorSection key={i}
+                            index={i}
+                            side={i % 2 === 0 ? 'left' : 'right'}
+                            width={widths[i % 2]}
+                            monaco={monaco}
+                            code={f.content}
+                            updateEditor={(editor) => setEditor(i, editor)}
+                            updateCode={(value) => updateCode(i, value)}
+                            title={f.title ? f.title.replace('_', ' ') : f.name.replace('_', ' ')}
+                            notes={f.notes}
+                            description={f.description}
+                            onFocus={(side) => setSideInFocus(side)}
+                            onBlur={(side) => {
+                                if (side === sideInFocus) setSideInFocus(null)
+                            }}
+                        />
                 ))}
             </EditorContainer>
         </Section>
@@ -90,6 +92,19 @@ export default function Editor() {
 
 
 
+const EditorCard = styled.div`
+    margin-top: -20em;
+    width: calc(50% - .5em);
+    align-self: ${props => props.$index % 2 === 0 ? 'flex-start' : 'flex-end'};
+    width: ${props => props.$index % 2 === 0 ? '80%' : '20%'};
+    display: flex;
+    flex-direction: column;
+    border-radius: 1em;
+    margin-bottom: 5em;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    transition: 0.2s;
+`;
 
 const Revert = styled.img`
     cursor: pointer;
@@ -116,15 +131,29 @@ const Dot = styled.div`
     right: -.25em;
 `;
 
+const EditorNotes = styled.div`
+    font-family: "Caveat", cursive;
+    font-size: 1.5em;
+    margin: 1em;
 
-function EditorSection({ monaco, code, updateEditor, updateCode, title, description, index }) {
+    position: absolute;
+    top: -5em;
+    `
+const EditorNote = styled.div`
+    background: rgba(255, 255, 255);
+    transform: rotate(${props => props.$angle}deg);
+    `
+
+
+function EditorSection({ monaco, code, updateEditor, updateCode, title, description, index, notes, side, onFocus, onBlur, width }) {
     const project = useProject()
     const editorRef = useRef(null)
     const [changed, setChanged] = useState(false)
     const [dot, setDot] = useState(false)
     const [initialCode, setInitialCode] = useState(code)
+    const [focus, setFocus] = useState(false)
 
-    useEffect(()=>{
+    useEffect(() => {
         if (project.project.files && editorRef.current) {
             code = project.project.files[index].content
             editorRef.current.setValue(code)
@@ -133,11 +162,11 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
             setDot(false)
             setEditorSize()
         }
-    },[project.project.files])
+    }, [project.project.files])
 
-    useEffect(()=>{
+    useEffect(() => {
         setDot(false)
-    },[project.runningCode])
+    }, [project.runningCode])
 
     const initEditor = (editor) => {
         editorRef.current = editor;
@@ -168,14 +197,26 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
         setChanged(false)
     }
 
+    const handleFocus = () => {
+        setFocus(true)
+        onFocus(side)
+    }
+    const handleBlur = () => {
+        setFocus(false)
+        onBlur(side)
+    }
+
     if (!monaco) return null
-    const shouldBeFullWidth = project.project.files.length === 1
+    let editorWidth = 50
+    if (project.project.files.length === 1) editorWidth = 100
+    if (width) editorWidth = width
+    editorWidth = `calc(${editorWidth}% - .5em)`
     return (
-        <EditorCard $index={index} style={{ width: shouldBeFullWidth ? '100%' : 'calc(50% - .5em)' }}>
+        <EditorCard $index={index} style={{ width: editorWidth }} onFocus={handleFocus} onBlur={handleBlur}>
             <EditorCardHeader>
                 <EditorCardHeaderTitle>{title}</EditorCardHeaderTitle>
                 <EditorCardHeaderDescription>{description} </EditorCardHeaderDescription>
-                {changed && <Revert src={RevertIcon} style={{cursor: 'pointer', position: 'absolute', top: '1em', right: '1em'}} onClick={revert} />}
+                {changed && <Revert src={RevertIcon} style={{ cursor: 'pointer', position: 'absolute', top: '1em', right: '1em' }} onClick={revert} />}
                 {dot && <Dot />}
             </EditorCardHeader>
             <div style={{ width: '100%', height: '100%', borderRadius: '1em', overflow: 'hidden' }}>
@@ -188,6 +229,11 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
                     onChange={onChange}
                 />
             </div>
+            {focus && notes && <EditorNotes>
+                {notes.map(note => (
+                    <EditorNote $angle={Math.random() * 10 - 5}>{note}</EditorNote>
+                ))}
+            </EditorNotes>}
         </EditorCard>
     )
 }
