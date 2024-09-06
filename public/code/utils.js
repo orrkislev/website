@@ -12,6 +12,12 @@ const repeat = (n, func) => { for(let i = 0; i < n; i++) func(i) }
 Array.prototype.get = function get(i) {
     return this[i % this.length]
 }
+//SNIPPET Array.last
+Array.prototype.last = function last() {
+    return this[this.length - 1]
+}
+//SNIPPET lerp
+const lerp = (a, b, t) => a + (b - a) * t
 //SNIPPET timeout
 const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 //SNIPPET easeInQuad

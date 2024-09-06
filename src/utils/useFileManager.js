@@ -8,7 +8,7 @@ export function useFileManager() {
         let url = baseUrl + `${projectName}/${fileName}`
         if (projectName.length == 0) url = baseUrl + `${fileName}`
         if (projectName.includes('-test') && (!process.env.NODE_ENV || process.env.NODE_ENV === 'development'))
-            url = `http://127.0.0.1:5500/${projectName.replace('-test', '')}/${fileName}`
+            url = `http://127.0.0.1:5501/${projectName.replace('-test', '')}/${fileName}`
         const res = await fetch(url)
         if (fileName.endsWith('.json')) return await res.json()
         else return await res.text()

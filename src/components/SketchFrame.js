@@ -6,23 +6,37 @@ import { useMonaco } from '@monaco-editor/react';
 
 export const JSLibs = {
   matter: {
-    cdn: "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js",
+    importTag: "<script src='https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js'></script>",
     url: "https://brm.io/matter-js/",
     name: "Matter.js",
     desc: "2D physics engine for the web"
   },
   p5: {
-    cdn: "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js",
+    importTag: "<script src='https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js'></script>",
     url: "https://p5js.org/",
     name: "p5.js",
     desc: "creative coding multi-toolkit"
   },
   paper: {
-    cdn: "https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.0/paper-full.min.js",
+    importTag: "<script src='https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.0/paper-full.min.js'></script>",
     url: "http://paperjs.org/",
     name: "Paper.js",
     desc: "vector graphics scripting framework"
-  }
+  },
+  three: {
+    importTag: `<script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@v0.168.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.168.0/examples/jsm/"
+          }
+        }
+      </script>`,
+    url: "https://threejs.org/",
+    name: "Three.js",
+    desc: "3D library built with WebGL",
+    usesModule:true,
+  },
 }
 
 export default function SketchFrame() {
@@ -49,7 +63,6 @@ export default function SketchFrame() {
       newEventProps.clientY = _y;
 
       const new_event = new MouseEvent(event.type, newEventProps);
-
       iframeRefs[0].current.contentWindow.dispatchEvent(new_event);
       iframeRefs[1].current.contentWindow.dispatchEvent(new_event);
     };
@@ -91,11 +104,11 @@ export default function SketchFrame() {
       iframeRef.current.srcdoc = `
       <html>
         <head>
-          ${projectData.project.settings.libraries.map((lib) => `<script src="${JSLibs[lib].cdn}"></script>`).join('\n')}
+          ${projectData.project.settings.libraries.map((lib) => JSLibs[lib].importTag).join('\n')}
         </head>
         <body style="margin: 0; overflow: hidden;">
           ${snippetsCode}
-          <script> 
+          <script ${JSLibs.three.usesModule ? 'type="module"' : ''}>
             const debugMode = ${topBarState.debug ? 'true' : 'false'};
             ${projectData.runningCode} 
           </script>

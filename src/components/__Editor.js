@@ -58,7 +58,6 @@ export default function Editor() {
         project.setAllCode(codeParts.current.join('\n'))
     }
 
-    console.log(sideInFocus)
     let widths = [50,50]
     if (sideInFocus == 'left') widths = [65, 35]
     if (sideInFocus == 'right') widths = [35, 65]

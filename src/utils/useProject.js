@@ -103,10 +103,13 @@ export default function useProject() {
     const getParamsCode = (params) => {
         params = params || project.params
         let newCode = ''
+        let objectCode = '{'
         Object.entries(params).forEach(([key, param]) => {
             newCode += getCodeLine(key, param)
+            objectCode += `${key}:${key},`
         })
-        newCode += 'if (window.updateParams) updateParams();\n'
+        objectCode += '}'
+        newCode += `if (window.updateParams) updateParams(${objectCode});`
         return newCode
     }
 

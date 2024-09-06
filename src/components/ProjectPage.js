@@ -14,9 +14,8 @@ export default function ProjectPage() {
 }
 
 export function VariationPage() {
-    const { name, variation} = useParams();
+    const { name, variation } = useParams();
     document.title = name + ' - Stuff I Made For You, by Orr Kislev'
-
     return (
         <RecoilRoot>
             <Project name={name} variation={variation} />
