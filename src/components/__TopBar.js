@@ -128,7 +128,7 @@ export default function TopBar() {
     useEffect(() => {
         setTimeout(() => {
             setShowMore(true)
-        }, 1000)
+        }, 15000)
     }, [])
 
     const click = (name) => {
