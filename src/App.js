@@ -14,7 +14,7 @@ export default function App() {
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/:name" element={<ProjectPage />} />
-        <Route path="/:name/:hash" element={<UserContentPage />} />
+        <Route path="/:name/u/:hash" element={<UserContentPage />} />
         <Route path="/:name/v/:variation" element={<VariationPage />} />
       </Routes>
     </BrowserRouter>

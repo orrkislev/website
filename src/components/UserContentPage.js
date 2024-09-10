@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import { JSLibs } from "./SketchFrame"
+import SketchFrame, { JSLibs } from "./SketchFrame"
 import useProject from "../utils/useProject"
 import { RecoilRoot } from "recoil"
 import { getFromFirebase, useFileManager } from "../utils/useFileManager"
@@ -9,6 +9,7 @@ import { styled } from 'styled-components'
 
 const LogoContainer = styled(Link)`
     position: fixed;
+    z-index: 100;
     top: 1.5em;
     left: 1.5em;
     display: flex;
@@ -42,48 +43,21 @@ export default function UserContentPage() {
 
 function UserContent({ name, hash }) {
     const project = useProject()
-    const fileManager = useFileManager()
-    const [running, setRunning] = useState(false)
 
     useEffect(() => {
-        project.initProject(name, false, false)
-    }, [name])
-
-    useEffect(() => {
-        if (!project.project.settings) return
-        if (!fileManager) return
-        setSketch()
-    }, [project, fileManager])
-
-    const setSketch = async () => {
-        if (running) return
-        const promises = []
-        project.project.settings.libraries.forEach(lib => {
-            const script = document.createElement('script')
-            script.src = JSLibs[lib].cdn
-            document.body.appendChild(script)
-            promises.push(new Promise((resolve, reject) => {
-                script.onload = () => resolve()
-                script.onerror = () => reject()
-            }))
+        project.initProject(name, false, false).then(() => {
+            project.loadUserContent(name, hash)
         })
+    }, [name, hash])
 
-        await Promise.all(promises)
-
-        let code = Object.values(project.project.snippets).join('\n') + '\n'
-        code += await getFromFirebase(name, hash) + '\n'
-
-        const script = document.createElement('script')
-        script.innerHTML = code
-        document.body.appendChild(script)
-        eval('new p5()')
-        setRunning(true)
-    }
+    if (!project.project.settings) return null
 
     return (
         <div>
             <Logo />
-            <main />
+            <div style={{ width: '100%', height: '100%', position: 'fixed', top: 0, left: 0, zIndex: 0 }}>
+                <SketchFrame />
+            </div>
         </div>
     )
 }

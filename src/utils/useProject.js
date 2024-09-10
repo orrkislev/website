@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import { atom, useRecoilState, useResetRecoilState } from "recoil";
 import { parseExplanation, parseFile } from "./parser";
-import { useFileManager } from "./useFileManager";
+import { getFromFirebase, useFileManager } from "./useFileManager";
 
 export const projectAtom = atom({ key: "projectState", default: {} });
 const allCodeAtom = atom({ key: "allCode", default: '' });
 export const editorModelsAtom = atom({ key: 'editorModels', default: {} })
-const runningCodeAtom = atom({ key: 'runningCode', default: {} })
+const runningCodeAtom = atom({ key: 'runningCode', default: '' })
 
 export default function useProject() {
     const fileManager = useFileManager()
@@ -46,6 +46,7 @@ export default function useProject() {
         } catch (error) {
             console.error('Error fetching settings:', error);
         }
+        return
     }
 
     const applyFiles = (files, params) => {
@@ -95,7 +96,7 @@ export default function useProject() {
     const share = async () => {
         const newCode = allCode + '\n\n' + getParamsCode(project.params) + `\n // ---- this is run ${runCounter.current++}`
         const hash = await fileManager.storeFile(project.name, newCode)
-        const url = location.origin + `/${project.name}/${hash}`
+        const url = `${location.origin}/${project.name}/u/${hash}`
         navigator.clipboard.writeText(url)
         window.open(url, '_blank').focus();
     }
@@ -113,11 +114,18 @@ export default function useProject() {
         return newCode
     }
 
+    const loadUserContent = async (name,hash) => {
+        const code = await getFromFirebase(name, hash)
+        const newCode = code + `\n // ---- this is run ${runCounter.current++}`
+        setRunningCode(newCode)
+    }
+
 
     return {
         project, allCode, setAllCode, runningCode,
         reset, initProject, rerunParameters,
-        runCode, rerun, applyVariation, share, getParamsCode
+        runCode, rerun, applyVariation, share, getParamsCode,
+        loadUserContent
     }
 }
 

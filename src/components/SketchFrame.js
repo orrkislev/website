@@ -101,6 +101,7 @@ export default function SketchFrame() {
     if (iframeRef.current) {
       let snippetsCode = ''
       if (projectData.project.snippets) snippetsCode = '<script>' + Object.values(projectData.project.snippets).join('\n') + '</script>'
+      const isModule = projectData.project.settings.libraries.some(lib => JSLibs[lib].usesModule)
       iframeRef.current.srcdoc = `
       <html>
         <head>
@@ -108,7 +109,7 @@ export default function SketchFrame() {
         </head>
         <body style="margin: 0; overflow: hidden;">
           ${snippetsCode}
-          <script ${JSLibs.three.usesModule ? 'type="module"' : ''}>
+          <script ${isModule ? 'type="module"' : ''}>
             const debugMode = ${topBarState.debug ? 'true' : 'false'};
             ${projectData.runningCode} 
           </script>
