@@ -53,13 +53,14 @@ export default function usePatreon() {
 
     const logIn = async () => {
         const urlParams = new URLSearchParams(window.location.search);
+        const myUrl = window.location.origin.includes('localhost') ? 'http://localhost:3000' : 'https://www.orrkislev.work'
         if (urlParams.has('code')) {
             const code = urlParams.get('code')
             const url = `https://us-central1-creative-coding-site.cloudfunctions.net/patreonLogIn`
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code, redirect: window.location.origin + '/login' })
+                body: JSON.stringify({ code, redirect: myUrl + '/login' })
             })
             const data = await response.json()
             if (data.error) {
@@ -92,10 +93,11 @@ export default function usePatreon() {
 }
 
 export function getPatreonLogInUrl() {
+    const myUrl = window.location.origin.includes('localhost') ? 'http://localhost:3000' : 'https://www.orrkislev.work'
     const client_id = 'uMJ3AF3vKVimCZtb4m5PHEMWFEAIZtFoo-JADsokNDajzhujZIHYxWBNjvNv64V4'
     const url = 'https://www.patreon.com/oauth2/authorize' +
         '?response_type=code' +
         '&client_id=' + client_id +
-        '&redirect_uri=' + encodeURIComponent(window.location.origin) + '/login'
+        '&redirect_uri=' + myUrl + '/login'
     return url
 }
