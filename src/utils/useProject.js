@@ -51,14 +51,9 @@ export default function useProject() {
 
     const applyFiles = (files, params) => {
         let code = files.map((f) => f.content).join('\n') + '\n'
-        if (params) code = code + '\n\n' + getParamsCode(params) + `\n // ---- this is run ${runCounter.current++}`
         setAllCode(code);
+        if (params) code = code + '\n\n' + getParamsCode(params) + `\n // ---- this is run ${runCounter.current++}`
         setRunningCode(code);
-    }
-
-    const runCode = (newCode) => {
-        newCode += `\n // ---- this is run ${runCounter.current++}`;
-        setAllCode(newCode);
     }
 
     const applyVariation = async (v) => {
@@ -124,7 +119,7 @@ export default function useProject() {
     return {
         project, allCode, setAllCode, runningCode,
         reset, initProject, rerunParameters,
-        runCode, rerun, applyVariation, share, getParamsCode,
+        rerun, applyVariation, share, getParamsCode,
         loadUserContent
     }
 }

@@ -8,6 +8,10 @@ const round_random = (a = 1, b = 0) => Math.floor(random(a, b + 1))
 const choose = (arr) => arr[Math.floor(random(arr.length))]
 //SNIPPET repeat
 const repeat = (n, func) => { for(let i = 0; i < n; i++) func(i) }
+//SNIPPET sum
+const sum = (arr) => arr.reduce((a, b) => a + b, 0)
+
+
 //SNIPPET Array.get
 Array.prototype.get = function get(i) {
     return this[i % this.length]
@@ -16,6 +20,26 @@ Array.prototype.get = function get(i) {
 Array.prototype.last = function last() {
     return this[this.length - 1]
 }
+
+//SNIPPET object_filter
+Object.prototype.filter = function filter(func) {
+    const newObj = {}
+    for (let key in this) {
+        if (func(this[key], key)) newObj[key] = this[key]
+    }
+    return newObj
+}
+//SNIPPET object_length
+Object.prototype.length = function length() {
+    return Object.keys(this).length
+}
+//SNIPPET object_getKey
+Object.prototype.getKey = function getKey(i) {
+    return Object.keys(this)[i]
+}
+
+
+
 //SNIPPET lerp
 const lerp = (a, b, t) => a + (b - a) * t
 //SNIPPET timeout
