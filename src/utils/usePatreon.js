@@ -93,11 +93,12 @@ export default function usePatreon() {
 }
 
 export function getPatreonLogInUrl() {
-    const myUrl = window.location.origin.includes('localhost') ? 'http://localhost:3000' : 'https://www.orrkislev.work'
+    let myUrl = window.location.origin.includes('localhost') ? 'http://localhost:3000' : 'https://www.orrkislev.work'
+    myUrl += '/login'
     const client_id = 'uMJ3AF3vKVimCZtb4m5PHEMWFEAIZtFoo-JADsokNDajzhujZIHYxWBNjvNv64V4'
     const url = 'https://www.patreon.com/oauth2/authorize' +
         '?response_type=code' +
         '&client_id=' + client_id +
-        '&redirect_uri=' + myUrl + '/login'
+        '&redirect_uri=' + myUrl
     return url
 }

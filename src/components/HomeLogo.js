@@ -11,11 +11,46 @@ const HomeLogoDiv = styled(Link)`
     gap: 8px;
 `;
 
+const LogoContainer = styled(Link)`
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    align-items: center;
+    padding: 0.5em;
+    border-radius: 999px;
+    box-shadow: 0px 0px 0px 0px black;
+    transition: all 0.5s;
+    border: 2px solid transparent;
+    cursor: pointer;
+    color: black;
+    text-decoration: none;
+
+    background: ${props => props.$fancy ? 'linear-gradient(90deg, #FFC107 0%, #FF9800 100%)' : 'transparent'};
+
+    &:hover {
+        background-color: white;
+        border: 2px solid black;
+        box-shadow: 10px 10px 0px 0px black;
+    }
+`;
+
 export default function HomeLogo() {
     return (
         <HomeLogoDiv to="/">
             <LogoSVG width="30px" height="30px" />
         </HomeLogoDiv>
+    )
+}
+
+export function FullLogo() {
+    return (
+        <LogoContainer to="/" >
+            <LogoSVG width="30px" height="30px" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <div style={{ fontSize: '14px', fontStyle: 'italic', fontWeight: 800, lineHeight: '8px' }}>Stuff I Made For You</div>
+                <div style={{ fontSize: '11px' }}>by Orr Kislev</div>
+            </div>
+        </LogoContainer>
     )
 }
 
