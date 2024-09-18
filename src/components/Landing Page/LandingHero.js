@@ -7,10 +7,10 @@ export default function HeroSection() {
     const sectionRef = useRef(null);
     return (
         <section className="flex justify-between items-start p-20 bg-gray-200 relative" ref={sectionRef}>
-            <div className="w-1/2">
+            <div className="w-1/4">
                 <HeroLeftSide sectionRef={sectionRef} />
             </div>
-            <div className="absolute top-0 h-full right-8 w-3/5 bg-white rounded-lg translate-y-1/4 aspect-w-16 aspect-h-9 overflow-hidden">
+            <div className="absolute top-0 h-full right-8 w-3/5 bg-white rounded-lg translate-y-1/4  overflow-hidden shadow-lg">
                 <Demo />
             </div>
         </section>
@@ -70,29 +70,33 @@ function HeroLeftSide({ sectionRef }) {
         navigate(`/thingies`)
     }
 
-    let buttons = [
-        <button className="bg-white px-4 py-2 rounded mr-4 hover:bg-orange-300 transition-colors hover:text-bold hover:scale-110 transition-all duration-300"
-            onMouseEnter={() => setShowBig(true)} onMouseLeave={() => setShowBig(false)}
-            onClick={()=>startExploring()}
-        >
-            Start Here
-        </button>,
-        <button className="bg-transparent border-gray-500 px-4 py-2 rounded hover:bg-gray-400 hover:text-bold hover:scale-110 transition-all duration-300"
-            onClick={logIn}>login with Patreon</button>
-    ]
+    const mainButtonClass = "bg-black px-4 py-2 mr-4 text-white hover:bg-orange-300 transition-colors hover:text-bold hover:scale-110 transition-all duration-300"
+    const secondaryButtonClass = "bg-white px-4 py-2 text-black hover:bg-black hover:text-white hover:scale-110 transition-all duration-300"
+
+    let buttons = (
+        <>
+            <button className={mainButtonClass} onMouseEnter={() => setShowBig(true)} onMouseLeave={() => setShowBig(false)} onClick={() => startExploring()}>
+                Start Here
+            </button>
+            <button className={secondaryButtonClass} onClick={logIn}>login with Patreon</button>
+        </>
+    )
 
     if (state == 'fullAccess') {
-        buttons = [
-            <div>HI {patreon.username}, thanks for your support!</div>,
-            <button className="bg-white px-4 py-2 rounded mr-4 hover:bg-gray-200" onClick={()=>keepExploring()}>Keep Exploring</button>,
-        ]
+        buttons = (
+            <>
+                <div>HI {patreon.username}, thanks for your support!</div>
+                <button className={mainButtonClass} onClick={() => keepExploring()}>Keep Exploring</button>,
+            </>
+        )
     } else if (state == 'noAccess') {
-        buttons = [
-            <div>HI {patreon.username}</div>,
-            <button className="bg-white px-4 py-2 rounded mr-4" onClick={openPatreon}>Become a Patron</button>,
-            <button className="bg-transparent border-gray-500 px-4 py-2 rounded hover:bg-gray-400 hover:text-bold hover:scale-110 transition-all duration-300"
-                    onClick={()=>keepExploring()}>Keep Exploring</button>
-        ]
+        buttons = (
+            <>
+                <div>HI {patreon.username}</div>
+                <button className={mainButtonClass} onClick={openPatreon}>Become a Patron</button>
+                <button className={secondaryButtonClass} onClick={() => keepExploring()}>Keep Exploring</button>
+            </>
+        )
     }
 
     return (
@@ -128,7 +132,7 @@ function HeroTitle() {
                 newIndices[setToChange] = (newIndices[setToChange] + 1) % wordSets[setToChange].length;
                 return newIndices;
             });
-        }, 2000); // Change a word every 2 seconds
+        }, 2000);
 
         return () => clearInterval(intervalId);
     }, []);
@@ -137,7 +141,7 @@ function HeroTitle() {
     words.splice(2, 0, <br key="br" />);
 
     return (
-        <h1 className="text-4xl font-bold mb-4 font-light">
+        <h1 className="text-4xl font-bold mb-4 font-light text-nowrap">
             {words}
         </h1>
     );

@@ -67,7 +67,9 @@ export default function ProjectsSection() {
                     />
                 ))}
             </div>
-            <p className="text-center mt-4">more projects coming every week</p>
+            <h2 className="text-2xl mb-4 font-light text-nowrap text-gray-700 text-center mt-8">
+            New experiments added regularly
+             </h2>
         </section>
     )
 }

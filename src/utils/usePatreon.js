@@ -87,6 +87,7 @@ export default function usePatreon() {
         setUsername(null)
         setGotAccess(null)
         setAccessToken(null)
+        console.log('Logged out')
     }
 
     return { username, gotAccess, logIn, logOut }

@@ -20,7 +20,7 @@ export default function Demo() {
             p5.fill(255, 255, 200);
             p5.angleMode(p5.DEGREES);
             p5.stroke(255,255,200)
-            p5.background(0);
+            p5.background(40);
 
             vals1 = Array(4).fill(0).map((_, i) => p5.random(3));
             vals2 = Array(4).fill(0).map((_, i) => p5.random(3));
@@ -28,8 +28,10 @@ export default function Demo() {
             lastPos = [0,0]
         }
         p5.draw = () => {
+            p5.background(40,2)
             const g = p5.get();
-            p5.image(g, -1, 0);
+            p5.tint(255, 220, 220, 40);
+            p5.image(g, -10, 0);
 
             const t = p5.frameCount * 1;
             const ss1 = vals1.map((s, i) => p5.sin(t * s));
@@ -51,7 +53,6 @@ export default function Demo() {
             p5.strokeWeight(mult3 * 12 + 3)
             p5.line(p5.width * 0.8 + lastPos[0], p5.height / 2 + lastPos[1], p5.width * 0.8 + x, p5.height / 2 + y)
             lastPos = [x, y]
-            // p5.circle(p5.width * 0.8 + x, p5.height / 2 + y, mult3 * 12 + 3);
         }
 
     }

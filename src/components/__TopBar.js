@@ -28,7 +28,7 @@ const TopBarContainer = styled.div`
     align-items: start;
 `;
 
-const TopBarButtons = styled.div`
+export const TopBarButtons = styled.div`
     display: flex;
     flex-direction: row;
     background: white;
@@ -36,6 +36,13 @@ const TopBarButtons = styled.div`
 `;
 
 const TopBarButton = styled.div`
+    cursor: pointer;
+    padding: 0.5em 1em;
+    color: ${props => props.$active ? 'white' : 'gray'};
+    background-color: ${props => props.$active ? 'black' : 'transparent'};
+    transition: color 0.5s;
+`;
+export const TopBarAnchor = styled.a`
     cursor: pointer;
     padding: 0.5em 1em;
     color: ${props => props.$active ? 'white' : 'gray'};
