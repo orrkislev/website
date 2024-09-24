@@ -43,7 +43,7 @@ export default function ProjectsSection() {
     const activeTags = Object.keys(tags).filter(tag => tags[tag])
     let filteredProjects = projects
     if (activeTags.length > 0) filteredProjects = projects.filter(project => project.tags.some(tag => activeTags.includes(tag)))
-
+    filteredProjects.reverse()
 
     return (
         <section className="p-8" ref={thisRef}>

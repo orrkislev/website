@@ -37,6 +37,12 @@ export const JSLibs = {
     desc: "3D library built with WebGL",
     usesModule:true,
   },
+  kdbush:{
+    importTag: "<script src='https://cdn.jsdelivr.net/npm/kdbush'></script>",
+    url: "",
+    name: "kdbush",
+    desc: "A very fast static spatial index for 2D points"
+  }
 }
 
 export default function SketchFrame() {

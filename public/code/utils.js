@@ -87,27 +87,24 @@ function ApplyShader(shaderName, shaderCode, uniforms = {}, graphics) {
 //SNIPPET GenericParticleClass
 class GenericParticleClass{
     constructor(x, y) {
-        this.pos = V(x, y)
-        this.vel = V(0,0)
-        this.acc = V(0,0)
+        this.pos = VV(x, y)
+        this.vel = VV(0,0)
+        this.acc = VV(0,0)
         this.dampening = 0.8
     }
     update() {
         this.vel.add(this.acc)
         this.pos.add(this.vel)
-        this.acc.mult(0)
-        this.vel.mult(this.dampening)
+        this.acc.multiply(0)
+        this.vel.multiply(this.dampening)
     }
     applyForce(force) {
         this.acc.add(force)
     }
     relativeForce(target, strength = 1, flip = false) {
-        const dir = p5.Vector.sub(target, this.pos)
-        let dist = dir.mag()
-        if (dist < 1) dist = 1
-        const forceMag = strength / dist
-        dir.setMag(forceMag)
-        if (flip) dir.mult(-1)
+        const forceMag = strength / max(this.pos.distance(target), 1)
+        const dir = this.pos.direction(target).normalize(forceMag)
+        if (flip) dir.multiply(-1)
         this.applyForce(dir)
     }
     attractTo(target, strength = 1) {
@@ -135,3 +132,65 @@ class GenericParticleClass{
         }
     }
 }
+class Vector {
+    constructor(x, y) {
+        this.x = x
+        this.y = y
+    }
+    add(v) {
+        this.x += v.x
+        this.y += v.y
+        return this
+    }
+    subtract(v) {
+        this.x -= v.x
+        this.y -= v.y
+        return this
+    }
+    multiply(s) {
+        this.x *= s
+        this.y *= s
+        return this
+    }
+    divide(s) {
+        this.x /= s
+        this.y /= s
+        return this
+    }
+    length() {
+        return Math.sqrt(this.x * this.x + this.y * this.y)
+    }
+    normalize(l = 1) {
+        const len = this.length()
+        if (len == 0) return this
+        this.x = this.x / len * l
+        this.y = this.y / len * l
+        return this
+    }
+    distance(v) {
+        const dx = this.x - v.x
+        const dy = this.y - v.y
+        return Math.sqrt(dx * dx + dy * dy)
+    }
+    lerpTo(v, t) {
+        this.x = lerp(this.x, v.x, t)
+        this.y = lerp(this.y, v.y, t)
+    }
+    direction(v) {
+        return new Vector(v.x - this.x, v.y - this.y)
+    }
+    copy() {
+        return new Vector(this.x, this.y)
+    }
+    rotate(angle) {
+        const x = this.x
+        const y = this.y
+        this.x = x * Math.cos(angle) - y * Math.sin(angle)
+        this.y = x * Math.sin(angle) + y * Math.cos(angle)
+        return this
+    }
+    static fromAngle(angle, length = 1) {
+        return new Vector(length * Math.cos(angle), length * Math.sin(angle))
+    }
+}
+VV = (x, y) => new Vector(x, y)
