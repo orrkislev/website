@@ -1,10 +1,9 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import ProjectPage, { VariationPage } from "./components/ProjectPage";
 import UserContentPage from "./components/UserContentPage";
 import './App.css';
 import LoginPage from "./components/LoginPage";
 import LandingPage from "./components/Landing Page/Landing";
-
 
 
 export default function App() {
