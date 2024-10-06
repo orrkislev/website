@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import useProject from "../utils/useProject";
 import { topBarAtom } from "./__TopBar";
 import { motion } from "framer-motion";
-
+import ReactGA from 'react-ga4';
 
 const Container = styled.div`
   position: fixed;
@@ -56,6 +56,11 @@ export default function RunBtn() {
   const project = useProject()
 
   const clickRun = () => {
+    ReactGA.event({
+      category: 'Project Interaction',
+      action: 'Run',
+      label: project.project.name,
+    });
     if (topBarState.main == 'info' || topBarState.main == 'params') project.rerunParameters()
     else project.rerun();
   }
@@ -70,7 +75,7 @@ export default function RunBtn() {
       {/* <ShareButton /> */}
       <RunButton onClick={clickRun}>RUN</RunButton>
       {/* <DebugButtonComp isActive={topBarState.debug} onClick={clickDebug} /> */}
-      
+
     </Container>
   )
 }
@@ -91,7 +96,7 @@ function DebugButtonComp({ isActive, onClick }) {
 function ShareButton() {
   const [hover, setHover] = useState(false);
   const project = useProject()
-  const onClick = ()=>{
+  const onClick = () => {
     project.share()
   }
   return (

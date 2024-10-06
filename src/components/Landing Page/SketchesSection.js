@@ -40,7 +40,7 @@ export default function SketchesSection() {
 function SketchLink({ sketch }) {
     return (
         <div key={sketch.directory}
-            className="bg-gray-200 rounded-xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl hover:scale-105 hover:bg-gray-300 transition-colors transition-transform duration-300"
+            className="bg-stone-200 rounded-xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl hover:scale-105 hover:bg-stone-300 transition-colors transition-transform duration-300"
             onClick={() => window.open(sketch.url, '_blank')}>
             <div className="p-4 text-center pb-8">
                 <div className="text-xl text-bold">{sketch.name}</div>

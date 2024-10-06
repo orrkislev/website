@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 export default function HeroSection() {
     const sectionRef = useRef(null);
     return (
-        <section className="flex justify-between items-start p-20 bg-gray-200 relative" ref={sectionRef}>
+        <section className="flex justify-between items-start p-20 bg-stone-200 relative" ref={sectionRef}>
             <div className="w-1/4">
                 <HeroLeftSide sectionRef={sectionRef} />
             </div>

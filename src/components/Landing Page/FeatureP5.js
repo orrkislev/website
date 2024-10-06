@@ -22,7 +22,7 @@ export default function FeatureBoxes() {
 
     return (
         <section className="flex items-center p-8 justify-between flex-col pt-32 pb-16">
-             <h2 className="text-2xl mb-4 font-light text-nowrap text-gray-700">
+             <h2 className="text-2xl mb-4 font-light text-nowrap text-stone-700">
                 Fun coding experiments to play with. Here's what you can do:
              </h2>
             <div className="grid grid-cols-4 gap-4 p-8 w-full">
@@ -35,10 +35,10 @@ export default function FeatureBoxes() {
                     </>
                 ) : (
                     <>
-                        <div ref={refs[0]} className="w-full h-32 bg-gray-300 rounded-t" />
-                        <div ref={refs[1]} className="w-full h-32 bg-gray-300 rounded-t" />
-                        <div ref={refs[2]} className="w-full h-32 bg-gray-300 rounded-t" />
-                        <div ref={refs[3]} className="w-full h-32 bg-gray-300 rounded-t" />
+                        <div ref={refs[0]} className="w-full h-32 bg-stone-300 rounded-t" />
+                        <div ref={refs[1]} className="w-full h-32 bg-stone-300 rounded-t" />
+                        <div ref={refs[2]} className="w-full h-32 bg-stone-300 rounded-t" />
+                        <div ref={refs[3]} className="w-full h-32 bg-stone-300 rounded-t" />
                     </>
                 )}
             </div>
@@ -182,11 +182,11 @@ function LearnFeatureP5({ width, height }) {
                 <p>Change settings to see how it works. There's a short explanation too.</p>
                 <br />
                 <input
-                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
                     type="range" onChange={(e) => setCircleSize(e.target.value)} value={circleSize} min={10} max={100} />
                 <br />
                 <input
-                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
                     type="range" onChange={(e) => setAvoidStrength(e.target.value)} value={avoidStrength} min={0} max={1} step={0.01} />
             </div>
         </div>
@@ -261,7 +261,7 @@ function draw(){
                 <h3>STUDY THE CODE, MAKE CHANGES</h3>
                 <p>Look at the code and change it. See how your changes affect things.g</p>
                 <br />
-                <pre className={`p-4 bg-gray-100 rounded-lg text-left ${hover ? 'h-64' : 'h-0'} overflow-auto transition-all duration-300 ease-in-out text-sm`}>
+                <pre className={`p-4 bg-stone-100 rounded-lg text-left ${hover ? 'h-64' : 'h-0'} overflow-auto transition-all duration-300 ease-in-out text-sm`}>
                     {code}
                 </pre>
             </div>
@@ -396,7 +396,7 @@ function ExploreFeatureP5({ width, height }) {
                 <br />
                 <div className="flex justify-center gap-4">
                     {sketches.map((_, i) => (
-                        <button key={i} onClick={() => setCurrSketch(i)} className={`px-4 py-2 rounded ${currSketch === i ? 'bg-gray-400' : 'bg-gray-200'}`} />
+                        <button key={i} onClick={() => setCurrSketch(i)} className={`px-4 py-2 rounded ${currSketch === i ? 'bg-stone-400' : 'bg-stone-200'}`} />
                     ))}
                 </div>
             </div>

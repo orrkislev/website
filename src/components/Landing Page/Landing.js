@@ -6,6 +6,7 @@ import HeroSection from './LandingHero';
 import SketchesSection from './SketchesSection';
 import usePatreon from '../../utils/usePatreon';
 import { TopBarAnchor, TopBarButtons } from '../__TopBar';
+import SalesSection from './SalesSection';
 
 
 function Header() {
@@ -17,7 +18,7 @@ function Header() {
         patreon.logOut()
     }
     return (
-        <header className="flex justify-between items-center p-4 bg-gray-200">
+        <header className="flex justify-between items-center p-4 bg-stone-200">
             <FullLogo width="30px" height="30px" />
             <nav className='flex gap-4'>
                 <TopBarButtons>
@@ -27,8 +28,8 @@ function Header() {
                     <TopBarAnchor href="#about" className="mx-2">about</TopBarAnchor>
                 </TopBarButtons>
                 {patreon.username
-                    ? <button className="bg-gray-300 px-3 py-1 rounded" onClick={() => logOut()}>logout</button>
-                    : <button className="bg-gray-300 px-3 py-1 rounded" onClick={() => logIn()}>login</button>
+                    ? <button className="bg-stone-300 px-3 py-1 rounded" onClick={() => logOut()}>logout</button>
+                    : <button className="bg-stone-300 px-3 py-1 rounded" onClick={() => logIn()}>login</button>
                 }
             </nav>
         </header>
@@ -36,7 +37,7 @@ function Header() {
 }
 
 const AboutSection = () => (
-    <section className="flex items-center p-8 bg-gray-200 justify-between">
+    <section className="flex items-center p-8 bg-stone-200 justify-between">
         <div>
             <h2 className="text-3xl font-bold mb-4">ABOUT</h2>
             <p>Creative Technologist | Designer | Maker | Educator | A Dad </p>
@@ -81,10 +82,11 @@ const AboutSection = () => (
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-gray-100 landing-main">
+        <div className="min-h-screen bg-stone-100 landing-main">
             <Header />
             <HeroSection />
             <FeatureBoxes />
+            <SalesSection />
             <ProjectsSection />
             <SketchesSection />
             <AboutSection />

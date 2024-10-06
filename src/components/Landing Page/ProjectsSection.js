@@ -50,7 +50,7 @@ export default function ProjectsSection() {
             <h2 className="text-3xl font-bold mb-4">PROJECTS</h2>
             <div className="flex flex-wrap gap-2 mb-4 text-xs">
                 {Object.keys(tags).map(tag => (
-                    <span key={tag} className={`${tags[tag] ? 'bg-blue-300 hover:bg-blue-600' : 'bg-gray-200 hover:bg-gray-400'} px-2 py-1 rounded-full cursor-pointer`}
+                    <span key={tag} className={`${tags[tag] ? 'bg-blue-300 hover:bg-blue-600' : 'bg-stone-200 hover:bg-stone-400'} px-2 py-1 rounded-full cursor-pointer`}
                         onClick={() => clickTag(tag)}
                     >
                         {tag.toLowerCase()}
@@ -67,7 +67,7 @@ export default function ProjectsSection() {
                     />
                 ))}
             </div>
-            <h2 className="text-2xl mb-4 font-light text-nowrap text-gray-700 text-center mt-8">
+            <h2 className="text-2xl mb-4 font-light text-nowrap text-stone-700 text-center mt-8">
             New experiments added regularly
              </h2>
         </section>

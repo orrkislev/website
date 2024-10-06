@@ -4,10 +4,15 @@ import Project from "./__project";
 import usePatreon, { getPatreonLogInUrl } from "../utils/usePatreon";
 import { useEffect, useState } from "react";
 import { useFileManager } from "../utils/useFileManager";
+import ReactGA from 'react-ga4';
 
 export default function ProjectPage() {
     const { name } = useParams();
     document.title = name + ' - Stuff I Made For You, by Orr Kislev'
+
+    useEffect(() => {
+        ReactGA.send({ hitType: "pageview", page: name, title: "Project" + name });
+    }, [])
 
     return (
         <RecoilRoot>
@@ -73,8 +78,8 @@ function PayWall() {
                 <p>I love you, but it seems you don't have access to this project.</p>
                 <p>You need to be a patron to view this project.</p>
                 <div className="flex justify-between mt-4">
-                    <button className="bg-gray-300 px-3 py-1 rounded bg-orange-400" onClick={() => logIn()}>login with Patreon</button>
-                    <button className="bg-gray-300 px-3 py-1 rounded ml-2" onClick={() => goToHome()}>home</button>
+                    <button className="bg-stone-300 px-3 py-1 rounded bg-orange-400" onClick={() => logIn()}>login with Patreon</button>
+                    <button className="bg-stone-300 px-3 py-1 rounded ml-2" onClick={() => goToHome()}>home</button>
                 </div>
             </div>
         </div>
