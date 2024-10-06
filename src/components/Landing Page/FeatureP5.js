@@ -182,11 +182,11 @@ function LearnFeatureP5({ width, height }) {
                 <p>Change settings to see how it works. There's a short explanation too.</p>
                 <br />
                 <input
-                    class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
+                    className="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
                     type="range" onChange={(e) => setCircleSize(e.target.value)} value={circleSize} min={10} max={100} />
                 <br />
                 <input
-                    class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
+                    className="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
                     type="range" onChange={(e) => setAvoidStrength(e.target.value)} value={avoidStrength} min={0} max={1} step={0.01} />
             </div>
         </div>
