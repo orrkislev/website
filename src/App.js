@@ -5,6 +5,7 @@ import './App.css';
 import LoginPage from "./components/LoginPage";
 import LandingPage from "./components/Landing Page/Landing";
 import ReactGA from 'react-ga4';
+import { useEffect } from "react";
 
 const TRACKING_ID = "G-4TBZDMD106"
 
