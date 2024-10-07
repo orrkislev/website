@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 
 const TRACKING_ID = "G-4TBZDMD106"
 
-export default function Concent(props) {
+export default function Concent() {
+    const { name } = useParams();
 
     useEffect(() => {
         ReactGA.gtag('concent', 'default', {
@@ -23,6 +24,7 @@ export default function Concent(props) {
             'analytics_storage': 'granted'
         });
         ReactGA.initialize(TRACKING_ID);
+        ReactGA.send({ hitType: "pageview", page: name, title: "Project" + name });
     }
     const onDecline = () => {
         console.log("Cookies declined")
