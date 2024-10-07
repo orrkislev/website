@@ -1,6 +1,7 @@
 import ReactGA from 'react-ga4';
 import CookieConsent from "react-cookie-consent";
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 const TRACKING_ID = "G-4TBZDMD106"
 
