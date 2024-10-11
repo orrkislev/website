@@ -61,7 +61,7 @@ function TutorialPageActual(props) {
             <div style={{ width: '100%', height: '100%', position: 'fixed', top: 0, left: 0, zIndex: 0 }}>
                 <SketchFrame />
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5em', paddingTop: '20em', opacity: focus ? 1 : 0.5 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '80vh', paddingTop: '20em', opacity: focus ? 1 : 0.5 }}>
                 {canGoBack && (
                     <div onClick={prevLevel} disabled={!canGoBack} className="text-5xl text-white font-bold" style={{ zIndex: 100, cursor: 'pointer', marginTop: '-10em' }}>
                         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
