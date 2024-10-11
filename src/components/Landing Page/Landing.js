@@ -7,6 +7,7 @@ import SketchesSection from './SketchesSection';
 import usePatreon from '../../utils/usePatreon';
 import { TopBarAnchor, TopBarButtons } from '../__TopBar';
 import SalesSection from './SalesSection';
+import TutorialsSection from './Tutorials';
 
 
 function Header() {
@@ -88,6 +89,7 @@ export default function LandingPage() {
             <FeatureBoxes />
             <SalesSection />
             <ProjectsSection />
+            <TutorialsSection />
             <SketchesSection />
             <AboutSection />
         </div>

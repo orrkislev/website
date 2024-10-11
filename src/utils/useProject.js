@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { atom, useRecoilState, useResetRecoilState } from "recoil";
-import { parseExplanation, parseFile } from "./parser";
+import { parseExplanation, parseFile, parseTutorialFile } from "./parser";
 import { getFromFirebase, useFileManager } from "./useFileManager";
 
 export const projectAtom = atom({ key: "projectState", default: {} });
@@ -97,6 +97,7 @@ export default function useProject() {
     }
 
     const getParamsCode = (params) => {
+        if (!project.params) return ''
         params = params || project.params
         let newCode = ''
         let objectCode = '{'
@@ -115,12 +116,35 @@ export default function useProject() {
         setRunningCode(newCode)
     }
 
+    /// ----------------- TUTORIAL ----------------- ///
+    /// ----------------- TUTORIAL ----------------- ///
+    const loadTutorialLevel = async (levelIndex) => {
+        if (levelIndex >= project.settings.levels.length) return
+        const levelTxt = await fileManager.getFile(project.name, project.settings.levels[levelIndex])
+        const levelObj = parseTutorialFile(levelTxt)
+        let baseCode = project.baseCode
+        if (!baseCode) {
+            baseCode = await fileManager.getFile(project.name, 'base.js')
+            setProject(prev => ({ ...prev, baseCode }))
+        }
+        if (!baseCode) return
+        const newCode = baseCode.replace('***REPLACE***', levelObj.js) + `\n // ---- this is run ${runCounter.current++}`
+        setRunningCode(newCode)
+        setAllCode(levelObj.js)
+        return levelObj
+    }
+    const updateTutorialCode = (code) => {
+        const newCode = project.baseCode.replace('***REPLACE***', code) + `\n // ---- this is run ${runCounter.current++}`
+        setRunningCode(newCode)
+    }
+
 
     return {
         project, allCode, setAllCode, runningCode,
         reset, initProject, rerunParameters,
         rerun, applyVariation, share, getParamsCode,
-        loadUserContent
+        loadUserContent, 
+        loadTutorialLevel, updateTutorialCode
     }
 }
 

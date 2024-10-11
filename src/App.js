@@ -5,6 +5,7 @@ import './App.css';
 import LoginPage from "./components/LoginPage";
 import LandingPage from "./components/Landing Page/Landing";
 import Concent from "./components/Concent";
+import TutorialPage from "./components/Tutorial";
 
 export default function App() {
 
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/:name" element={<ProjectPage />} />
           <Route path="/:name/u/:hash" element={<UserContentPage />} />
           <Route path="/:name/v/:variation" element={<VariationPage />} />
+          <Route path="/tutorial/:name" element={<TutorialPage />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="*" element={<CatchAll />} />
         </Routes>

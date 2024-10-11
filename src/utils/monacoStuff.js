@@ -121,6 +121,33 @@ export function ApplyDecoration(editor, words, classname) {
     });
 }
 
+export function applyLineDecoration(editor,className, condition = () => true) {
+    const model = editor.getModel();
+    const linesToDecorate = []
+    for (let i = 1; i <= model.getLineCount(); i++) {
+        if (condition(model.getLineContent(i))) {
+            linesToDecorate.push(i);
+        }
+    }
+
+    const updateDecorations = () => {
+        const decorations = []
+        linesToDecorate.forEach(line => {
+            decorations.push({
+                range: new monaco.Range(line, 1, line, 1),
+                options: {
+                    isWholeLine: true,
+                    linesDecorationsClassName: className
+                }
+            });
+        });
+    };
+    updateDecorations();
+    model.onDidChangeContent(() => {
+        updateDecorations();
+    });
+}
+
 export function ApplyHoverProvider(monaco, snippets) {
     return monaco.languages.registerHoverProvider('creativeCode', {
         provideHover: (model, position) => {

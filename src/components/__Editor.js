@@ -2,14 +2,14 @@ import MonacoEditor, { useMonaco } from '@monaco-editor/react';
 import { useEffect, useRef, useState } from 'react';
 import { useRecoilValue, atom, useRecoilState } from 'recoil';
 import useProject, { projectAtom } from '../utils/useProject';
-import { ApplyDecoration, ApplyHoverProvider, monacoOptions, setupMonaco } from '../utils/monacoStuff';
+import { ApplyDecoration, ApplyHoverProvider, applyLineDecoration, monacoOptions, setupMonaco } from '../utils/monacoStuff';
 import './__Editor.css';
 import styled from "styled-components";
 import Section from "./__Section";
 import RevertIcon from '../assets/revert.svg';
 import { topBarAtom } from './__TopBar';
 
-const EditorContainer = styled.div`
+export const EditorContainer = styled.div`
     display: flex;
     flex-direction: column;
     margin: 1em;
@@ -82,6 +82,7 @@ export default function Editor() {
                             onBlur={(side) => {
                                 if (side === sideInFocus) setSideInFocus(null)
                             }}
+                            withFlags={true}
                         />
                 ))}
             </EditorContainer>
@@ -144,7 +145,7 @@ const EditorNote = styled.div`
     `
 
 
-function EditorSection({ monaco, code, updateEditor, updateCode, title, description, index, notes, side, onFocus, onBlur, width }) {
+export function EditorSection({ monaco, code, updateEditor, updateCode, title, description, html, index, notes, side, onFocus, onBlur, width, withFlags }) {
     const project = useProject()
     const editorRef = useRef(null)
     const [changed, setChanged] = useState(false)
@@ -169,11 +170,15 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
 
     const initEditor = (editor) => {
         editorRef.current = editor;
-        ApplyDecoration(editorRef.current, Object.keys(project.project.snippets), 'helperFunctionHighlight');
+        if (project.project.snippets)
+            ApplyDecoration(editorRef.current, Object.keys(project.project.snippets), 'helperFunctionHighlight');
         ApplyDecoration(editorRef.current, ['debugMode'], 'debugModeHighlight');
-        ApplyDecoration(editorRef.current, Object.keys(project.project.params), 'parameterHighlight');
+        if (project.project.params)
+            ApplyDecoration(editorRef.current, Object.keys(project.project.params), 'parameterHighlight');
         updateEditor(editorRef.current);
         ApplyHoverProvider(monaco, project.project.snippets);
+
+        applyLineDecoration(editorRef.current, 'diffLineHighlight', (line) => line.startsWith('!!!'));
 
         setEditorSize()
     }
@@ -207,16 +212,18 @@ function EditorSection({ monaco, code, updateEditor, updateCode, title, descript
 
     if (!monaco) return null
     let editorWidth = 50
-    if (project.project.files.length === 1) editorWidth = 100
+    if (project.project.files && project.project.files.length === 1) editorWidth = 100
     if (width) editorWidth = width
     editorWidth = `calc(${editorWidth}% - .5em)`
+
     return (
         <EditorCard $index={index} style={{ width: editorWidth }} onFocus={handleFocus} onBlur={handleBlur}>
             <EditorCardHeader>
-                <EditorCardHeaderTitle>{title}</EditorCardHeaderTitle>
-                <EditorCardHeaderDescription>{description} </EditorCardHeaderDescription>
-                {changed && <Revert src={RevertIcon} style={{ cursor: 'pointer', position: 'absolute', top: '1em', right: '1em' }} onClick={revert} />}
-                {dot && <Dot />}
+                {title && <EditorCardHeaderTitle>{title}</EditorCardHeaderTitle>}
+                {description && <EditorCardHeaderDescription>{description} </EditorCardHeaderDescription>}
+                {html && <div dangerouslySetInnerHTML={{ __html: html }} />}
+                {changed && withFlags && <Revert src={RevertIcon} style={{ cursor: 'pointer', position: 'absolute', top: '1em', right: '1em' }} onClick={revert} />}
+                {dot && withFlags && <Dot />}
             </EditorCardHeader>
             <div style={{ width: '100%', height: '100%', borderRadius: '1em', overflow: 'hidden' }}>
                 <MonacoEditor

@@ -1,11 +1,9 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components'
-import { LogoSVG } from './HomeLogo';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { atom } from "recoil";
 import { useEffect, useState } from 'react';
 import useProject from '../utils/useProject';
-import { AnimatePresence, motion } from 'framer-motion';
+import ExpandingLogo from './Logo';
 
 export const topBarAtom = atom({
     key: "topBarState", default: {
@@ -50,28 +48,7 @@ export const TopBarAnchor = styled.a`
     transition: color 0.5s;
 `;
 
-const LogoContainer = styled(Link)`
-    display: flex;
-    flex-direction: row;
-    gap: 0.5em;
-    align-items: center;
-    padding: 0.5em;
-    border-radius: 999px;
-    box-shadow: 0px 0px 0px 0px black;
-    transition: all 0.5s;
-    border: 2px solid transparent;
-    cursor: pointer;
-    color: black;
-    text-decoration: none;
 
-    background: ${props => props.$fancy ? 'linear-gradient(90deg, #FFC107 0%, #FF9800 100%)' : 'transparent'};
-
-    &:hover {
-        background-color: white;
-        border: 2px solid black;
-        box-shadow: 10px 10px 0px 0px black;
-    }
-`;
 
 const RightSide = styled.div`
     display: flex;
@@ -118,25 +95,10 @@ const PublishButton = styled.div`
     }
 `;
 
-const MoreProjects = styled(motion.div)`
-    padding: 0.5em 1em;
-    border-radius: 5px;
-    color: black;
-    animation: pulse 4s infinite;
-    fontSize: 14px; 
-    fontStyle: italic; 
-    fontWeight: 800; 
-`;
+
 
 export default function TopBar() {
     const [topBarState, setTopBarState] = useRecoilState(topBarAtom)
-    const [showMore, setShowMore] = useState(false)
-
-    useEffect(() => {
-        setTimeout(() => {
-            setShowMore(true)
-        }, 15000)
-    }, [])
 
     const click = (name) => {
         setTopBarState(prev => ({ ...prev, scrollTo: name }))
@@ -144,18 +106,7 @@ export default function TopBar() {
 
     return (
         <TopBarContainer>
-            <LogoContainer to="/" $fancy={showMore ? 1 : 0} onMouseLeave={()=>setShowMore(false)}>
-                <LogoSVG width="20px" height="20px" />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <div style={{ fontSize: '14px', fontStyle: 'italic', fontWeight: 800, lineHeight: '8px' }}>Stuff I Made For You</div>
-                    <div style={{ fontSize: '11px' }}>by Orr Kislev</div>
-                </div>
-                    {showMore && <MoreProjects
-                        initial={{ x: -100 }}
-                        animate={{ x: 0 }}>
-                        Check out more projects here
-                    </MoreProjects>}
-            </LogoContainer>
+            <ExpandingLogo />
 
             <RightSide>
                 <TopBarButtons>

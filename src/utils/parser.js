@@ -106,3 +106,41 @@ export function parseExplanation(txt) {
 
   return result;
 }
+
+
+// tutorial files have the following format:
+//: HTML
+//...
+//: JS
+//...
+
+// this function should return an object with the following structure:
+// { html: '...', js: '...' }
+export function parseTutorialFile(txt){
+  const lines = txt.split('\n');
+  const result = {};
+  let currentSection = null;
+  let sectionContent = [];
+
+  for (const line of lines) {
+    if (line.trim().startsWith('//:')) {
+      const match = line.trim().slice(3).match(/(\S+)/);
+      if (match) {
+        const [, type] = match;
+        if (currentSection) {
+          result[currentSection] = sectionContent.join('\n').trim();
+        }
+        currentSection = type.toLowerCase();
+        sectionContent = [];
+      }
+    } else if (currentSection) {
+      sectionContent.push(line);
+    }
+  }
+
+  if (currentSection) {
+    result[currentSection] = sectionContent.join('\n').trim();
+  }
+
+  return result;
+}

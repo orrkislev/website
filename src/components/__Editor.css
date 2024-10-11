@@ -35,3 +35,7 @@
     background-color: #FFA50044 !important;
     color: black !important;
 }
+.diffLineHighlight {
+    background-color: #FF000044 !important;
+    color: black !important;
+}
