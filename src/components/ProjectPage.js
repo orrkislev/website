@@ -43,13 +43,8 @@ function PayWall() {
     useEffect(() => {
         fileManager.getFile('', 'projectIndex.json').then(data => {
             const projectData = data.projects.find(project => project.directory === name)
-            if (!projectData) {
-                navigate('/')
-                return
-            }
-            if (projectData.locked && !patreon.gotAccess) {
+            if (projectData && projectData.locked && !patreon.gotAccess) 
                 setAllow(false)
-            }
         })
     }, [name, patreon])
 

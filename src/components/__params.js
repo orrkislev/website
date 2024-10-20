@@ -118,8 +118,7 @@ function Param(props) {
 
     if (props.type == 'expression' || props.type == 'string')
         el = <Input defaultValue={props.value}
-            onChange={val => newVal.current = val}
-            onChangeComplete={finish}
+            onChange={val => update(val.target.value)}
         />
     if (props.type == 'image')
         el = <CustomImageUploader defaultImage={props.value} onImageUpdate={props.finish} />
