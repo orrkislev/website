@@ -1,27 +1,26 @@
-import { useEffect, useRef } from "react";
-import { atom, useRecoilState, useResetRecoilState } from "recoil";
+import { atom, useRecoilState } from "recoil";
 import { parseExplanation, parseFile, parseTutorialFile } from "./parser";
 import { getFromFirebase, useFileManager } from "./useFileManager";
 
 export const projectAtom = atom({ key: "projectState", default: {} });
 const allCodeAtom = atom({ key: "allCode", default: '' });
-export const editorModelsAtom = atom({ key: 'editorModels', default: {} })
-const runningCodeAtom = atom({ key: 'runningCode', default: '' })
+const runningCodeAtom = atom({
+    key: 'runningCode', default: {
+        code: '',
+        trigger: true
+    }
+})
 
 export default function useProject() {
     const fileManager = useFileManager()
     const [project, setProject] = useRecoilState(projectAtom);
     const [allCode, setAllCode] = useRecoilState(allCodeAtom);
     const [runningCode, setRunningCode] = useRecoilState(runningCodeAtom);
-    const resetEditorModels = useResetRecoilState(editorModelsAtom)
-    const runCounter = useRef(0);
 
     const reset = () => {
         setProject({})
         setAllCode('')
-        setRunningCode('')
-        resetEditorModels()
-        runCounter.current = 0
+        setRunningCode({ code: '', trigger: true })
     }
 
     const initProject = async (name, withFiles = true, withInfo = true) => {
@@ -52,8 +51,8 @@ export default function useProject() {
     const applyFiles = (files, params) => {
         let code = files.map((f) => f.content).join('\n') + '\n'
         setAllCode(code);
-        if (params) code = code + '\n\n' + getParamsCode(params) + `\n // ---- this is run ${runCounter.current++}`
-        setRunningCode(code);
+        if (params) code = code + '\n\n' + getParamsCode(params)
+        setRunningCode(prev => ({ code, trigger: !prev.trigger }))
     }
 
     const applyVariation = async (v) => {
@@ -80,16 +79,16 @@ export default function useProject() {
     }
 
     const rerun = () => {
-        setRunningCode(allCode + `\n // ---- this is run ${runCounter.current++}`)
+        setRunningCode(prev => ({ code: allCode, trigger: !prev.trigger }))
     }
     const rerunParameters = (newParams) => {
         newParams = newParams || project.params
-        const newCode = allCode + '\n\n' + getParamsCode(newParams) + `\n // ---- this is run ${runCounter.current++}`
-        setRunningCode(newCode)
+        const newCode = allCode + '\n\n' + getParamsCode(newParams)
+        setRunningCode(prev => ({ code: newCode, trigger: !prev.trigger }))
     }
 
     const share = async () => {
-        const newCode = allCode + '\n\n' + getParamsCode(project.params) + `\n // ---- this is run ${runCounter.current++}`
+        const newCode = allCode + '\n\n' + getParamsCode(project.params)
         const hash = await fileManager.storeFile(project.name, newCode)
         const url = `${location.origin}/${project.name}/u/${hash}`
         navigator.clipboard.writeText(url)
@@ -110,10 +109,9 @@ export default function useProject() {
         return newCode
     }
 
-    const loadUserContent = async (name,hash) => {
+    const loadUserContent = async (name, hash) => {
         const code = await getFromFirebase(name, hash)
-        const newCode = code + `\n // ---- this is run ${runCounter.current++}`
-        setRunningCode(newCode)
+        setRunningCode(prev => ({ code, trigger: !prev.trigger }))
     }
 
     /// ----------------- TUTORIAL ----------------- ///
@@ -128,14 +126,14 @@ export default function useProject() {
             setProject(prev => ({ ...prev, baseCode }))
         }
         if (!baseCode) return
-        const newCode = baseCode.replace('***REPLACE***', levelObj.js) + `\n // ---- this is run ${runCounter.current++}`
-        setRunningCode(newCode)
+        const newCode = baseCode.replace('***REPLACE***', levelObj.js)
+        setRunningCode(prev => ({ code: newCode, trigger: !prev.trigger }))
         setAllCode(levelObj.js)
         return levelObj
     }
     const updateTutorialCode = (code) => {
-        const newCode = project.baseCode.replace('***REPLACE***', code) + `\n // ---- this is run ${runCounter.current++}`
-        setRunningCode(newCode)
+        const newCode = project.baseCode.replace('***REPLACE***', code)
+        setRunningCode(prev => ({ code: newCode, trigger: !prev.trigger }))
     }
 
 
@@ -143,7 +141,7 @@ export default function useProject() {
         project, allCode, setAllCode, runningCode,
         reset, initProject, rerunParameters,
         rerun, applyVariation, share, getParamsCode,
-        loadUserContent, 
+        loadUserContent,
         loadTutorialLevel, updateTutorialCode
     }
 }

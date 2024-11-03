@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import useProject, { getCodeLine } from '../utils/useProject';
+import useProject from '../utils/useProject';
 import { useRecoilValue } from 'recoil';
 import { topBarAtom } from "./__TopBar";
-import { useMonaco } from '@monaco-editor/react';
 
 export const JSLibs = {
   matter: {
@@ -48,7 +47,6 @@ export const JSLibs = {
 export default function SketchFrame() {
   const projectData = useProject()
   const topBarState = useRecoilValue(topBarAtom)
-  useMonaco()
 
   const [activeIframe, setActiveIframe] = useState(0);
   const iframeRefs = [useRef(null), useRef(null)]
@@ -117,7 +115,7 @@ export default function SketchFrame() {
           ${snippetsCode}
           <script ${isModule ? 'type="module"' : ''}>
             const debugMode = ${topBarState.debug ? 'true' : 'false'};
-            ${projectData.runningCode} 
+            ${projectData.runningCode.code} 
           </script>
         </body>
       </html>

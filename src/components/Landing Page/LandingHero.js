@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Demo from './Demo';
 import usePatreon, { getPatreonLogInUrl } from '../../utils/usePatreon';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../utils/useUser';
 
 export default function HeroSection() {
     const sectionRef = useRef(null);
@@ -53,16 +54,10 @@ function BigCircle({ active, parentRef }) {
 
 function HeroLeftSide({ sectionRef }) {
     const navigate = useNavigate()
-    const patreon = usePatreon()
-    const state = patreon.gotAccess ? 'fullAccess' : patreon.username ? 'noAccess' : 'notLoggedIn'
+    const user = useUser()
+    const state = user.getPlan() == 'pro' ? 'fullAccess' : user.getPlan() == 'free' ? 'noAccess' : 'notLoggedIn'
     const [showBig, setShowBig] = useState(false)
 
-    const logIn = () => {
-        window.location.href = getPatreonLogInUrl()
-    }
-    const openPatreon = () => {
-        window.open('https://www.patreon.com/orrkislev', '_blank')
-    }
     const startExploring = () => {
         navigate(`/thingies`)
     }
@@ -78,22 +73,22 @@ function HeroLeftSide({ sectionRef }) {
             <button className={mainButtonClass} onMouseEnter={() => setShowBig(true)} onMouseLeave={() => setShowBig(false)} onClick={() => startExploring()}>
                 Start Here
             </button>
-            <button className={secondaryButtonClass} onClick={logIn}>login with Patreon</button>
+            <button className={secondaryButtonClass} onClick={user.login}>Sign In</button>
         </>
     )
 
     if (state == 'fullAccess') {
         buttons = (
             <>
-                <div>HI {patreon.username}, thanks for your support!</div>
+                <div>HI {user.name}, thanks for your support!</div>
                 <button className={mainButtonClass} onClick={() => keepExploring()}>Keep Exploring</button>,
             </>
         )
     } else if (state == 'noAccess') {
         buttons = (
             <>
-                <div>HI {patreon.username}</div>
-                <button className={mainButtonClass} onClick={openPatreon}>Become a Patron</button>
+                <div>HI {user.user.name}</div>
+                <button className={mainButtonClass} onClick={user.upgrade}>Upgrade</button>
                 <button className={secondaryButtonClass} onClick={() => keepExploring()}>Keep Exploring</button>
             </>
         )

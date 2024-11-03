@@ -40,11 +40,11 @@ const MoreProjects = styled(motion.div)`
 export default function ExpandingLogo() {
     const [showMore, setShowMore] = useState(false)
 
-    useEffect(() => {
-        setTimeout(() => {
-            setShowMore(true)
-        }, 15000)
-    }, [])
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setShowMore(true)
+    //     }, 15000)
+    // }, [])
 
     return (
         <LogoContainer to="/" $fancy={showMore ? 1 : 0} onMouseLeave={() => setShowMore(false)}>

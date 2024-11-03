@@ -2,12 +2,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { getGithubUrl, useFileManager } from '../../utils/useFileManager'
 import { useLocation, useNavigate } from 'react-router-dom'
-import usePatreon from '../../utils/usePatreon'
 
 
 export default function ProjectsSection() {
     const location = useLocation();
-    const patreon = usePatreon()
     const [projects, setProjects] = useState([])
     const [tags, setTags] = useState({})
     const fileManager = useFileManager()
@@ -62,7 +60,7 @@ export default function ProjectsSection() {
                     <ProjectLink
                         key={project.directory}
                         project={project}
-                        disabled={project.locked && !patreon.gotAccess}
+                        disabled={false}
                         click={() => goToProject(project.directory)}
                     />
                 ))}

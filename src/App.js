@@ -6,6 +6,7 @@ import LoginPage from "./components/LoginPage";
 import LandingPage from "./components/Landing Page/Landing";
 import Concent from "./components/Concent";
 import TutorialPage from "./components/Tutorial";
+import ProjectPageNew from "./components/new/PageNew";
 
 export default function App() {
 
@@ -15,7 +16,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/:name" element={<ProjectPage />} />
+          <Route path="/:name" element={<ProjectPageNew />} />
           <Route path="/:name/u/:hash" element={<UserContentPage />} />
           <Route path="/:name/v/:variation" element={<VariationPage />} />
           <Route path="/tutorial/:name" element={<TutorialPage />} />

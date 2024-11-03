@@ -1,0 +1,2 @@
+export const LogInBGStyle = { backgroundImage: "url('/plants.png')", backgroundSize: 'cover', backgroundPosition: 'center' }
+export const UpgradeBGStyle = { backgroundImage: "url('/woods.png')", backgroundSize: 'cover', backgroundPosition: 'center' }

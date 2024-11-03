@@ -6,7 +6,7 @@ export const monacoOptions = {
     wordWrap: 'off',
     tabSize: 2,
     fontSize: 14,
-    // lineNumbers: 'off',
+    lineNumbers: 'off',
     libraries: {
         include: [
             '/code/p5.global-mode.d.ts'
@@ -18,6 +18,27 @@ export const monacoOptions = {
         alwaysConsumeMouseWheel: false
     }
 }
+
+export const disabledMonacoOptions = {
+    readOnly: true,                 // Makes the editor read-only
+    domReadOnly: true,              // Prevents DOM events
+    renderLineHighlight: 'none',    // Disables current line highlighting
+    contextmenu: false,             // Disables context menu
+    selectionHighlight: false,      // Disables selection highlighting
+    renderWhitespace: 'none',       // Disables whitespace rendering
+    occurrencesHighlight: false,    // Disables occurrence highlighting
+    lineNumbers: 'off',             // Disables line numbers
+    folding: false,                 // Disables code folding
+    glyphMargin: false,             // Disables glyph margin
+    lineDecorationsWidth: 0,        // Removes left margin
+    lineNumbersMinChars: 0,         // Minimizes space for line numbers
+    overviewRulerBorder: false,     // Removes overview ruler border
+    overviewRulerLanes: 0,          // Disables overview ruler
+    hideCursorInOverviewRuler: true, // Hides cursor in overview ruler
+    matchBrackets: 'never',         // Disables bracket matching
+    cursorStyle: 'line-thin',       // Sets a thin cursor
+    cursorBlinking: 'solid',        // Makes cursor solid instead of blinking
+};
 
 export async function setupMonaco(monaco) {
     // monaco.languages.typescript.javascriptDefaults.addExtraLib(
@@ -121,7 +142,7 @@ export function ApplyDecoration(editor, words, classname) {
     });
 }
 
-export function applyLineDecoration(editor,className, condition = () => true) {
+export function applyLineDecoration(editor, className, condition = () => true) {
     const model = editor.getModel();
     const linesToDecorate = []
     for (let i = 1; i <= model.getLineCount(); i++) {

@@ -1,9 +1,5 @@
-import { initializeApp } from "firebase/app"
-import { getStorage, ref, getDownloadURL } from "firebase/storage"
-
 export function useFileManager() {
     const getFile = async (projectName, fileName) => {
-        // const baseUrl = 'https://cdn.jsdelivr.net/gh/orrkislev/stuff-I-made-for-you/'
         const baseUrl = 'https://raw.githubusercontent.com/orrkislev/stuff-I-made-for-you/main/'
         let url = baseUrl + `${projectName}/${fileName}`
         if (projectName.length == 0) url = baseUrl + `${fileName}`
@@ -28,21 +24,6 @@ export function useFileManager() {
 }
 
 export async function getFromFirebase(projectName, fileName) {
-    // const app = initializeApp({
-    //     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    //     authDomain: "creative-coding-site.firebaseapp.com",
-    //     projectId: "creative-coding-site",
-    //     storageBucket: "creative-coding-site.appspot.com",
-    //     messagingSenderId: "1065803835010",
-    //     appId: "1:1065803835010:web:a59e01e8846767766b769b",
-    //     measurementId: "G-4TBZDMD106"
-    // })
-    // const storage = getStorage(app)
-
-    // const docRef = ref(storage, `${projectName}/${fileName}`)
-    // const url = await getDownloadURL(docRef)
-    // return fetch(url).then(res => res.text())
-
     const url = `https://storage.googleapis.com/creative-coding-site.appspot.com/${projectName}/${fileName}`
     return fetch(url).then(res => res.text())
 }

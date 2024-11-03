@@ -8,16 +8,12 @@ import usePatreon from '../../utils/usePatreon';
 import { TopBarAnchor, TopBarButtons } from '../__TopBar';
 import SalesSection from './SalesSection';
 import TutorialsSection from './Tutorials';
+import { RecoilRoot } from 'recoil';
+import { useUser } from '../../utils/useUser';
 
 
 function Header() {
-    const patreon = usePatreon()
-    const logIn = () => {
-        window.location.href = getPatreonLogInUrl()
-    }
-    const logOut = () => {
-        patreon.logOut()
-    }
+    const user = useUser()
     return (
         <header className="flex justify-between items-center p-4 bg-stone-200">
             <FullLogo width="30px" height="30px" />
@@ -28,9 +24,9 @@ function Header() {
                     <TopBarAnchor href="#sketches" className="mx-2">sketches</TopBarAnchor>
                     <TopBarAnchor href="#about" className="mx-2">about</TopBarAnchor>
                 </TopBarButtons>
-                {patreon.username
-                    ? <button className="bg-stone-300 px-3 py-1 rounded" onClick={() => logOut()}>logout</button>
-                    : <button className="bg-stone-300 px-3 py-1 rounded" onClick={() => logIn()}>login</button>
+                {user.user
+                    ? <button className="bg-stone-300 px-3 py-1 rounded" onClick={user.logout}>Log out</button>
+                    : <button className="bg-stone-300 px-3 py-1 rounded" onClick={user.login}>Sign In</button>
                 }
             </nav>
         </header>
@@ -83,15 +79,17 @@ const AboutSection = () => (
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-stone-100 landing-main">
-            <Header />
-            <HeroSection />
-            <FeatureBoxes />
-            <SalesSection />
-            <ProjectsSection />
-            <TutorialsSection />
-            <SketchesSection />
-            <AboutSection />
-        </div>
+        <RecoilRoot>
+            <div className="min-h-screen bg-stone-100 landing-main">
+                <Header />
+                <HeroSection />
+                <FeatureBoxes />
+                <SalesSection />
+                <ProjectsSection />
+                <TutorialsSection />
+                <SketchesSection />
+                <AboutSection />
+            </div>
+        </RecoilRoot>
     )
 }
