@@ -50,24 +50,7 @@ export default function Discover() {
                         </Card>
                     </Appearing>
                 ))}
-                {exp.cards && exp.cards.map((card, i) => (
-                    <Appearing key={i} active={isActive} className="flex-1">
-                        <Card>
-                            <CardTitle>{card.title}</CardTitle>
-                            <CardSubtitle>{card.subtitle}</CardSubtitle>
-                            <CardContent dangerouslySetInnerHTML={{ __html: card.content }} />
-                        </Card>
-                    </Appearing>
-                ))}
-                {exp.cards && exp.cards.map((card, i) => (
-                    <Appearing key={i} active={isActive} className="flex-1">
-                        <Card>
-                            <CardTitle>{card.title}</CardTitle>
-                            <CardSubtitle>{card.subtitle}</CardSubtitle>
-                            <CardContent dangerouslySetInnerHTML={{ __html: card.content }} />
-                        </Card>
-                    </Appearing>
-                ))}
+
             </Container>
             <Bottom>
                 <Appearing active={!isActive}

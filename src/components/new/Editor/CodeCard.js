@@ -28,10 +28,10 @@ const Checkbox = tw.div`h-6 w-6 border-2 border-gray-400 rounded`
 const NoticeText = tw.p`text-xs`
 
 export default function CodeCard({ file, onEdit, editable}) {
-    const user = useUser()
+    const accessControl = useRecoilValue(accessControlAtom)
     const title = file.title ? file.title.replace('_', ' ') : file.name.replace('_', ' ')
 
-    const canEdit = user.getPlan() != 'none'
+    const canEdit = accessControl.limitations.includes('edit') && editable
 
     return (
         <div>
@@ -82,6 +82,7 @@ const LoginButton = tw.button`mt-4 border-2 text-white px-4 py-2 rounded-full ho
 
 function LimitedAccess() {
     const accessControl = useRecoilValue(accessControlAtom)
+    const user = useUser()
     if (!accessControl.limitations.includes('edit')) return null
     return (
         <LimitedAccessContainer style={LogInBGStyle}>

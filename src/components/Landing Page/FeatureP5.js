@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactP5Wrapper } from "@p5-wrapper/react";
+import { FeaturesBackground, HeroBackground } from './Demo';
 
 
 
@@ -21,10 +22,10 @@ export default function FeatureBoxes() {
 
 
     return (
-        <section className="flex items-center p-8 justify-between flex-col pt-32 pb-16">
-             <h2 className="text-2xl mb-4 font-light text-nowrap text-stone-700">
-                Fun coding experiments to play with. Here's what you can do:
-             </h2>
+        <section className="relative flex flex-col justify-center items-center px-16 mt-[-10em]">
+            <h2 className="text-2xl font-light text-nowrap text-stone-700">
+                Fun coding experiments to play with, learn from, study and explore
+            </h2>
             <div className="grid grid-cols-4 gap-4 p-8 w-full">
                 {dims ? (
                     <>
@@ -54,6 +55,8 @@ export default function FeatureBoxes() {
 
 
 
+
+
 function PlayFeatureP5({ width, height }) {
 
     const sketch = p5 => {
@@ -66,14 +69,14 @@ function PlayFeatureP5({ width, height }) {
             p5.textAlign(p5.CENTER, p5.CENTER);
             p5.background(250);
             p5.fill(0);
-            p5.text("PLAY", p5.width / 2, p5.height / 2);
+            p5.text("DISCOVER", p5.width / 2, p5.height / 2);
             img = p5.get()
         }
 
         p5.draw = () => {
             p5.background(250);
             p5.fill(0);
-            p5.text("PLAY", p5.width / 2, p5.height / 2);
+            p5.text("DISCOVER", p5.width / 2, p5.height / 2);
 
             if (p5.mouseX > 0 && p5.mouseX < p5.width && p5.mouseY > 0 && p5.mouseY < p5.height) {
                 for (let x = 0; x < 15; x++) {
@@ -93,7 +96,7 @@ function PlayFeatureP5({ width, height }) {
         <div className="bg-white rounded-xl overflow-hidden shadow-lg">
             <ReactP5Wrapper sketch={sketch} />
             <div className="p-4 text-center pb-8">
-                <h3>PLAY WITH THE ALGORITHM</h3>
+                <h3>DISCOVER NEW ALGORITHMS</h3>
                 <p>Try out the algorithm yourself. Move things around and see what happens.</p>
             </div>
         </div>
@@ -117,7 +120,7 @@ function LearnFeatureP5({ width, height }) {
 
     const sketch = p5 => {
         let letters = [];
-        const word = "LEARN";
+        const word = "PLAY"
         p5.setup = () => {
             p5.createCanvas(width, height);
             p5.noCursor();
@@ -178,7 +181,7 @@ function LearnFeatureP5({ width, height }) {
         <div className="bg-white rounded-xl overflow-hidden shadow-lg">
             <ReactP5Wrapper sketch={sketch} />
             <div className="p-4 text-center pb-8">
-                <h3>LEARN HOW IT BEHAVES</h3>
+                <h3>PLAY WITH PARAMETERS</h3>
                 <p>Change settings to see how it works. There's a short explanation too.</p>
                 <br />
                 <input

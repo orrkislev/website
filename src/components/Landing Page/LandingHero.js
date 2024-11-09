@@ -1,104 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Demo from './Demo';
-import usePatreon, { getPatreonLogInUrl } from '../../utils/usePatreon';
+import Demo, { HeroBackground } from './Demo';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../utils/useUser';
+import tw from 'tailwind-styled-components';
 
 export default function HeroSection() {
-    const sectionRef = useRef(null);
     return (
-        <section className="flex justify-between items-start p-20 bg-stone-200 relative" ref={sectionRef}>
-            <div className="w-1/4">
-                <HeroLeftSide sectionRef={sectionRef} />
+        <section className="flex justify-center items-center relative h-[65vh]">
+            <div className="absolute inset-0">
+                <HeroBackground />
             </div>
-            <div className="absolute top-0 h-full right-8 w-3/5 bg-white rounded-lg translate-y-1/4  overflow-hidden shadow-lg">
-                <Demo />
+            <div className="relative z-10">
+                <HeroLeftSide />
             </div>
-        </section>
+        </section >
     )
 }
 
 
-function BigCircle({ active, parentRef }) {
-    const [size, setSize] = useState(0);
-    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
-    useEffect(() => {
-        if (parentRef.current) {
-            const { width, height } = parentRef.current.getBoundingClientRect();
-            setDimensions({ width, height });
-            const maxSize = Math.sqrt(width * width + height * height) * 2 + 200;
-            setSize(active ? maxSize : 0);
-        }
-    }, [active, parentRef]);
-
-    return (
-        <svg className="absolute top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-            <defs>
-                <clipPath id="section-clip">
-                    <rect width={dimensions.width} height={dimensions.height} />
-                </clipPath>
-            </defs>
-            <circle
-                cx={-100}
-                cy={dimensions.height / 2}
-                r={size / 2}
-                fill="#f6ad55"
-                clipPath="url(#section-clip)"
-                className="transition-all duration-700 ease-in-out"
-            />
-        </svg>
-    );
-}
+const MainButton = tw.button`bg-black px-4 py-2 mr-4 text-white rounded-full hover:bg-orange-300 transition-colors hover:text-bold hover:scale-110 transition-all duration-300`
+const SecondaryButton = tw.button`px-4 py-2 text-black rounded-full border-2 border-black hover:bg-black hover:text-white hover:scale-110 transition-all duration-300`
 
 
-function HeroLeftSide({ sectionRef }) {
+function HeroLeftSide() {
     const navigate = useNavigate()
-    const user = useUser()
-    const state = user.getPlan() == 'pro' ? 'fullAccess' : user.getPlan() == 'free' ? 'noAccess' : 'notLoggedIn'
-    const [showBig, setShowBig] = useState(false)
 
-    const startExploring = () => {
-        navigate(`/thingies`)
-    }
-    const keepExploring = () => {
-        navigate(`/thingies`)
-    }
-
-    const mainButtonClass = "bg-black px-4 py-2 mr-4 text-white hover:bg-orange-300 transition-colors hover:text-bold hover:scale-110 transition-all duration-300"
-    const secondaryButtonClass = "bg-white px-4 py-2 text-black hover:bg-black hover:text-white hover:scale-110 transition-all duration-300"
-
-    let buttons = (
-        <>
-            <button className={mainButtonClass} onMouseEnter={() => setShowBig(true)} onMouseLeave={() => setShowBig(false)} onClick={() => startExploring()}>
-                Start Here
-            </button>
-            <button className={secondaryButtonClass} onClick={user.login}>Sign In</button>
-        </>
-    )
-
-    if (state == 'fullAccess') {
-        buttons = (
-            <>
-                <div>HI {user.name}, thanks for your support!</div>
-                <button className={mainButtonClass} onClick={() => keepExploring()}>Keep Exploring</button>,
-            </>
-        )
-    } else if (state == 'noAccess') {
-        buttons = (
-            <>
-                <div>HI {user.user.name}</div>
-                <button className={mainButtonClass} onClick={user.upgrade}>Upgrade</button>
-                <button className={secondaryButtonClass} onClick={() => keepExploring()}>Keep Exploring</button>
-            </>
-        )
-    }
+    const goPro = () => { }
 
     return (
         <>
-            <BigCircle active={showBig} parentRef={sectionRef} />
             <HeroTitle />
-            {buttons}
+            <div className="text-center mt-4">
+                <MainButton onClick={()=>navigate('/thingies')}>Try the Demo</MainButton>
+                <SecondaryButton onClick={goPro}>Go Pro</SecondaryButton>
+            </div>
         </>
     )
 }
@@ -136,7 +71,7 @@ function HeroTitle() {
     words.splice(2, 0, <br key="br" />);
 
     return (
-        <h1 className="text-4xl font-bold mb-4 font-light text-nowrap">
+        <h1 className="text-6xl font-bold mb-4 font-light text-nowrap text-center font-serif">
             {words}
         </h1>
     );
